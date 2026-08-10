@@ -18,7 +18,9 @@
     <AssemblyName>RimTalk_LiteratureExpansion</AssemblyName>
 
     <!-- RimWorld mod layout: put DLL directly under <GameVersion>/Assemblies -->
-    <OutputPath>$(GameVersion)\Assemblies\</OutputPath>
+    <BaseOutputPath Condition=" '$(BaseOutputPath)' == '' ">$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-Literature-Expansion\bin\</BaseOutputPath>
+    <BaseIntermediateOutputPath Condition=" '$(BaseIntermediateOutputPath)' == '' ">$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-Literature-Expansion\obj\</BaseIntermediateOutputPath>
+    <OutputPath>$(BaseOutputPath)$(Configuration)\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
     <!-- VSCode/OmniSharp: do not fall back to C# 7.3 -->
@@ -53,7 +55,8 @@
   <!-- RimTalk core reference: configurable location -->
   <PropertyGroup>
     <!-- Override on command line: -p:RimTalkDir=... -->
-    <RimTalkDir Condition=" '$(RimTalkDir)' == '' ">..\..\RimTalk</RimTalkDir>
+    <RimWorldWorkshopDir Condition=" '$(RimWorldWorkshopDir)' == '' ">$(RIMWORLD_WORKSHOP_DIR)</RimWorldWorkshopDir>
+    <RimTalkDir Condition=" '$(RimTalkDir)' == '' ">$(RimWorldWorkshopDir)\3551203752</RimTalkDir>
   </PropertyGroup>
 
   <ItemGroup>
