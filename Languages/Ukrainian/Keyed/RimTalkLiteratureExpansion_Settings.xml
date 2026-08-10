@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <RimTalkLE_Settings_Category>Розширення літератури RimTalk</RimTalkLE_Settings_Category>
+  <RimTalkLE_Settings_PageMain>Загальні</RimTalkLE_Settings_PageMain>
+  <RimTalkLE_Settings_PageContent>Вміст</RimTalkLE_Settings_PageContent>
+  <RimTalkLE_Settings_PageFilters>Фільтри</RimTalkLE_Settings_PageFilters>
+  <RimTalkLE_Settings_PagePrompts>Промпти</RimTalkLE_Settings_PagePrompts>
+  <RimTalkLE_Settings_PromptPageTitle>Промпти незалежної LLM</RimTalkLE_Settings_PromptPageTitle>
+  <RimTalkLE_Settings_PromptPageNote>Якщо залишити порожнім, використовуватимуться вбудовані значення за замовчуванням. Заповнювачі на кшталт {{LANG}} і {{TOKEN_TARGET}} буде замінено, якщо вони доступні.</RimTalkLE_Settings_PromptPageNote>
+  <RimTalkLE_Settings_PromptReset>Скинути до значень за замовчуванням</RimTalkLE_Settings_PromptReset>
+  <RimTalkLE_Settings_Prompt_Synopsis>Промпт синопсису книги</RimTalkLE_Settings_Prompt_Synopsis>
+  <RimTalkLE_Settings_Prompt_Art>Промпт опису мистецького твору</RimTalkLE_Settings_Prompt_Art>
+  <RimTalkLE_Settings_Prompt_PersonaWeapon>Промпт зброї персонажа</RimTalkLE_Settings_Prompt_PersonaWeapon>
+  <RimTalkLE_Settings_Prompt_Journal>Промпт запису в щоденнику</RimTalkLE_Settings_Prompt_Journal>
+  <RimTalkLE_Settings_Prompt_MemorySummary>Промпт підсумку спогадів</RimTalkLE_Settings_Prompt_MemorySummary>
+  <RimTalkLE_Settings_Prompt_BookFromSummary>Промпт створення книги з підсумку</RimTalkLE_Settings_Prompt_BookFromSummary>
+  <RimTalkLE_Settings_Prompt_LetterRewrite>Промпт перефразування листа</RimTalkLE_Settings_Prompt_LetterRewrite>
+  <RimTalkLE_Settings_Prompt_IdeoRewrite>Промпт перефразування ідеології</RimTalkLE_Settings_Prompt_IdeoRewrite>
+  <RimTalkLE_Settings_Prompt_QuestAdvert>Промпт оголошення завдання</RimTalkLE_Settings_Prompt_QuestAdvert>
+  <RimTalkLE_Settings_Prompt_QuestWarning>Промпт із попередженням про завдання</RimTalkLE_Settings_Prompt_QuestWarning>
+  <RimTalkLE_Settings_Prompt_TvProgram>Промпт із вмістом телепрограми</RimTalkLE_Settings_Prompt_TvProgram>
+  <RimTalkLE_Settings_TvContent>Вміст телепрограми</RimTalkLE_Settings_TvContent>
+  <RimTalkLE_Settings_AllowTvContent>Увімкнути додавання вмісту телепрограми до контексту персонажа</RimTalkLE_Settings_AllowTvContent>
+  <RimTalkLE_Settings_AllowManualTvEdits>Увімкнути гізмо для ручного редагування вмісту телепрограми</RimTalkLE_Settings_AllowManualTvEdits>
+  <RimTalkLE_Settings_AllowBooks>Дозволити редагування книжок</RimTalkLE_Settings_AllowBooks>
+  <RimTalkLE_Settings_AllowArt>Дозволити редагування творів мистецтва</RimTalkLE_Settings_AllowArt>
+  <RimTalkLE_Settings_AllowArtBuildings>Дозволити редагування творів мистецтва: будівлі</RimTalkLE_Settings_AllowArtBuildings>
+  <RimTalkLE_Settings_AllowArtWeapons>Дозволити редагування творів мистецтва: зброя</RimTalkLE_Settings_AllowArtWeapons>
+  <RimTalkLE_Settings_AllowArtApparel>Дозволити редагування творів мистецтва: одяг/спорядження</RimTalkLE_Settings_AllowArtApparel>
+  <RimTalkLE_Settings_AllowArtLabels>Дозволити редагування назв/описів творів мистецтва</RimTalkLE_Settings_AllowArtLabels>
+  <RimTalkLE_Settings_UseRimTalkApi>Використовувати той самий API, що й RimTalk</RimTalkLE_Settings_UseRimTalkApi>
+  <RimTalkLE_Settings_StandaloneApi>Окремий API</RimTalkLE_Settings_StandaloneApi>
+  <RimTalkLE_Settings_BaseUrl>Базова URL-адреса</RimTalkLE_Settings_BaseUrl>
+  <RimTalkLE_Settings_ApiKey>Ключ API</RimTalkLE_Settings_ApiKey>
+  <RimTalkLE_Settings_Model>Модель</RimTalkLE_Settings_Model>
+  <RimTalkLE_Settings_Validation>Перевірка</RimTalkLE_Settings_Validation>
+  <RimTalkLE_Settings_Debug>Налагодження</RimTalkLE_Settings_Debug>
+  <RimTalkLE_Settings_TokenTarget>Цільова кількість токенів вмісту книги</RimTalkLE_Settings_TokenTarget>
+  <RimTalkLE_Settings_ClearBookCache>Очистити кешовані короткі описи книг</RimTalkLE_Settings_ClearBookCache>
+  <RimTalkLE_Settings_ClearArtCache>Очистити кешовані описи творів мистецтва</RimTalkLE_Settings_ClearArtCache>
+  <RimTalkLE_Settings_RescanArtBooks>Повторно просканувати твори мистецтва/книги</RimTalkLE_Settings_RescanArtBooks>
+  <RimTalkLE_Settings_TextOverrides>Перевизначення тексту LLM</RimTalkLE_Settings_TextOverrides>
+  <RimTalkLE_Settings_AllowIdeoDescriptionRewrite>Переписувати описи ідеологій</RimTalkLE_Settings_AllowIdeoDescriptionRewrite>
+  <RimTalkLE_Settings_AllowLetterTextRewrite>Переписувати текст листів (не користувацьких)</RimTalkLE_Settings_AllowLetterTextRewrite>
+  <RimTalkLE_Settings_AllowEasterLetters>Увімкнути спеціальні листи з Source/подій/листів</RimTalkLE_Settings_AllowEasterLetters>
+  <RimTalkLE_Settings_BookFilter>Фільтр книг</RimTalkLE_Settings_BookFilter>
+  <RimTalkLE_Settings_BookFilterHelp>Вміст буде створено або переписано лише для вибраних визначень книг.</RimTalkLE_Settings_BookFilterHelp>
+  <RimTalkLE_Settings_BookFilterNone>Придатних визначень книг не знайдено.</RimTalkLE_Settings_BookFilterNone>
+  <RimTalkLE_Settings_ArtFilter>Фільтр типів творів мистецтва</RimTalkLE_Settings_ArtFilter>
+  <RimTalkLE_Settings_ArtFilterHelp>Назви або описи буде переписано лише для вибраних визначень творів мистецтва.</RimTalkLE_Settings_ArtFilterHelp>
+  <RimTalkLE_Settings_ArtFilterNone>Придатних визначень творів мистецтва не знайдено.</RimTalkLE_Settings_ArtFilterNone>
+  <RimTalkLE_Settings_QuestFilter>Фільтр описів завдань</RimTalkLE_Settings_QuestFilter>
+  <RimTalkLE_Settings_QuestFilterHelp>Лише для вибраних типів завдань буде переписано описи.</RimTalkLE_Settings_QuestFilterHelp>
+  <RimTalkLE_Settings_QuestFilterExistingNote>Переписуються лише щойно згенеровані завдання.</RimTalkLE_Settings_QuestFilterExistingNote>
+  <RimTalkLE_Settings_QuestFilterNone>Типів завдань не знайдено.</RimTalkLE_Settings_QuestFilterNone>
+  <RimTalkLE_Settings_LetterFilter>Фільтр листів</RimTalkLE_Settings_LetterFilter>
+  <RimTalkLE_Settings_LetterFilterHelp>Лише для вибраних типів листів буде переписано текст.</RimTalkLE_Settings_LetterFilterHelp>
+  <RimTalkLE_Settings_LetterFilterNone>Типів листів не знайдено.</RimTalkLE_Settings_LetterFilterNone>
+  <RimTalkLE_Settings_SelectAll>Вибрати все</RimTalkLE_Settings_SelectAll>
+  <RimTalkLE_Settings_ClearAll>Очистити все</RimTalkLE_Settings_ClearAll>
+  <RimTalkLE_Settings_Show>Показати</RimTalkLE_Settings_Show>
+  <RimTalkLE_Settings_Hide>Сховати</RimTalkLE_Settings_Hide>
+  <RimTalkLE_Settings_Empty>(порожньо)</RimTalkLE_Settings_Empty>
+  <RimTalkLE_Settings_Error_BaseUrlEmpty>Базова URL-адреса порожня.</RimTalkLE_Settings_Error_BaseUrlEmpty>
+  <RimTalkLE_Settings_Error_BaseUrlAbsolute>Базова URL-адреса має бути абсолютним URI.</RimTalkLE_Settings_Error_BaseUrlAbsolute>
+  <RimTalkLE_Settings_Error_BaseUrlScheme>Базова URL-адреса має починатися з http або https.</RimTalkLE_Settings_Error_BaseUrlScheme>
+  <RimTalkLE_Settings_Error_ApiKeyEmpty>Ключ API порожній.</RimTalkLE_Settings_Error_ApiKeyEmpty>
+  <RimTalkLE_Settings_Error_ModelEmpty>Модель порожня.</RimTalkLE_Settings_Error_ModelEmpty>
+  <RimTalkLE_FloatMenu_WriteJournal>Написати щоденник</RimTalkLE_FloatMenu_WriteJournal>
+  <RimTalkLE_FloatMenu_WriteJournalMissingLogs>Написати щоденник (потрібна 1 колода деревини)</RimTalkLE_FloatMenu_WriteJournalMissingLogs>
+  <RimTalkLE_FloatMenu_WriteJournalNoPath>Написати щоденник (немає шляху)</RimTalkLE_FloatMenu_WriteJournalNoPath>
+  <RimTalkLE_JournalPlaceholderTitle>Щоденник {0}</RimTalkLE_JournalPlaceholderTitle>
+  <RimTalkLE_JournalPlaceholderText>Запис у щоденнику {0}. Чорнило ще сохне.</RimTalkLE_JournalPlaceholderText>
+  <RimTalkLE_JournalAuthorLine>Автор: {0}</RimTalkLE_JournalAuthorLine>
+  <RimTalkLE_Letter_AllyDiplomacy_Label>Дипломатичне послання</RimTalkLE_Letter_AllyDiplomacy_Label>
+  <RimTalkLE_Letter_AllyDiplomacy_Fallback>{0} надсилає вашій колонії дружню дипломатичну записку.</RimTalkLE_Letter_AllyDiplomacy_Fallback>
+  <RimTalkLE_Letter_AllyDiplomacy_GoodwillLine>Відносини покращено: +{0} прихильності.</RimTalkLE_Letter_AllyDiplomacy_GoodwillLine>
+  <RimTalkLE_Letter_Family_Label>Лист від родини</RimTalkLE_Letter_Family_Label>
+  <RimTalkLE_Letter_Family_Fallback>Родич {0} пише здалеку й передає теплі побажання.</RimTalkLE_Letter_Family_Fallback>
+  <RimTalkLE_Letter_Family_GiftNoteFallback>До листа додано невеликий подарунок.</RimTalkLE_Letter_Family_GiftNoteFallback>
+  <RimTalkLE_Letter_GiftLine>Подарунок: {0} x{1}.</RimTalkLE_Letter_GiftLine>
+  <RimTalkLE_Letter_RelationFriend>друг</RimTalkLE_Letter_RelationFriend>
+  <RimTalkLE_Quest_Advert_TitleFallback>Торгова пропозиція від {0}</RimTalkLE_Quest_Advert_TitleFallback>
+  <RimTalkLE_Quest_Advert_DescIntro>Торговець із {0} у {1} надіслав торгову пропозицію.</RimTalkLE_Quest_Advert_DescIntro>
+  <RimTalkLE_Quest_Advert_DescInstructions>Оберіть одну пропозицію та надішліть срібло, щоб завершити угоду.</RimTalkLE_Quest_Advert_DescInstructions>
+  <RimTalkLE_Quest_Advert_DescOptionLine>{0}: заплатіть {1} срібла за {2}.</RimTalkLE_Quest_Advert_DescOptionLine>
+  <RimTalkLE_Quest_Advert_DescTiming>У вас є {0} дн., щоб прийняти пропозицію, а потім {1} дн., щоб надіслати оплату.</RimTalkLE_Quest_Advert_DescTiming>
+  <RimTalkLE_Quest_Advert_Expiry>Термін дії пропозиції минув.</RimTalkLE_Quest_Advert_Expiry>
+  <RimTalkLE_Quest_Warning_TitleFallback>Попередження від {0}</RimTalkLE_Quest_Warning_TitleFallback>
+  <RimTalkLE_Quest_Warning_DescIntro>{0} у {1} надсилає попередження.</RimTalkLE_Quest_Warning_DescIntro>
+  <RimTalkLE_Quest_Warning_DescDemand>Вимога: заплатіть {0} срібла.</RimTalkLE_Quest_Warning_DescDemand>
+  <RimTalkLE_Quest_Warning_DescMethod>Надішліть оплату транспортною капсулою.</RimTalkLE_Quest_Warning_DescMethod>
+  <RimTalkLE_Quest_Warning_DescThreat>Несплата спричинить помсту.</RimTalkLE_Quest_Warning_DescThreat>
+  <RimTalkLE_Quest_Warning_DescTiming>У вас є {0} дн., щоб прийняти вимогу, а потім {1} дн., щоб надіслати оплату.</RimTalkLE_Quest_Warning_DescTiming>
+  <RimTalkLE_Quest_Warning_Expiry>Термін дії вимоги минув.</RimTalkLE_Quest_Warning_Expiry>
+</LanguageData>

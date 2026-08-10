@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <RimTalkLE_Settings_ManualEdits>Редагування тексту вручну</RimTalkLE_Settings_ManualEdits>
+  <RimTalkLE_Settings_AllowManualBookEdits>Увімкнути gizmo ручного редагування книжок</RimTalkLE_Settings_AllowManualBookEdits>
+  <RimTalkLE_Settings_AllowManualArtEdits>Увімкнути gizmo ручного редагування мистецтва</RimTalkLE_Settings_AllowManualArtEdits>
+  <RimTalkLE_Settings_ManualEditNote>Наразі ручне редагування охоплює книжки та мистецтво. Пізніше цю саму систему записів можна буде розширити для роботи, гедефів, думок та іншого ігрового тексту.</RimTalkLE_Settings_ManualEditNote>
+  <RimTalkLE_ManualEditor_OpenLabel>Редагувати текст</RimTalkLE_ManualEditor_OpenLabel>
+  <RimTalkLE_ManualEditor_OpenDesc>Відкрити редактор для ручного редагування цієї книжки чи витвору мистецтва та зберегти зміни в кеші мода.</RimTalkLE_ManualEditor_OpenDesc>
+  <RimTalkLE_ManualEditor_TargetUnavailable>Ціль більше недоступна для ручного редагування.</RimTalkLE_ManualEditor_TargetUnavailable>
+  <RimTalkLE_ManualEditor_Title>Редактор {0} вручну</RimTalkLE_ManualEditor_Title>
+  <RimTalkLE_ManualEditor_KindBook>книжка</RimTalkLE_ManualEditor_KindBook>
+  <RimTalkLE_ManualEditor_KindArt>мистецтво</RimTalkLE_ManualEditor_KindArt>
+  <RimTalkLE_ManualEditor_KindTv>телепрограма</RimTalkLE_ManualEditor_KindTv>
+  <RimTalkLE_ManualEditor_Target>Ціль: {0}</RimTalkLE_ManualEditor_Target>
+  <RimTalkLE_ManualEditor_DefName>Def: {0}</RimTalkLE_ManualEditor_DefName>
+  <RimTalkLE_ManualEditor_FutureNote>Зміни записуються в кеш збереження. Цю систему задумано для подальшого повторного використання з іншими типами тексту.</RimTalkLE_ManualEditor_FutureNote>
+  <RimTalkLE_ManualEditor_FieldTitle>Заголовок</RimTalkLE_ManualEditor_FieldTitle>
+  <RimTalkLE_ManualEditor_FieldBody>Основний текст</RimTalkLE_ManualEditor_FieldBody>
+  <RimTalkLE_ManualEditor_History>Історія</RimTalkLE_ManualEditor_History>
+  <RimTalkLE_ManualEditor_HistoryEmpty>Записаних змін ще немає.</RimTalkLE_ManualEditor_HistoryEmpty>
+  <RimTalkLE_ManualEditor_HistoryLine>[{0}] Тик {1} | {2}
+{3}</RimTalkLE_ManualEditor_HistoryLine>
+  <RimTalkLE_ManualEditor_SourceGenerated>Згенеровано</RimTalkLE_ManualEditor_SourceGenerated>
+  <RimTalkLE_ManualEditor_SourceManual>Вручну</RimTalkLE_ManualEditor_SourceManual>
+  <RimTalkLE_ManualEditor_EmptyValue>(порожньо)</RimTalkLE_ManualEditor_EmptyValue>
+  <RimTalkLE_ManualEditor_Restore>Відновити автоматичну версію</RimTalkLE_ManualEditor_Restore>
+  <RimTalkLE_ManualEditor_Save>Зберегти заміну</RimTalkLE_ManualEditor_Save>
+  <RimTalkLE_ManualEditor_SaveSuccess>Заміну тексту, введену вручну, збережено.</RimTalkLE_ManualEditor_SaveSuccess>
+  <RimTalkLE_ManualEditor_SaveFailed>Не вдалося зберегти заміну тексту, введену вручну.</RimTalkLE_ManualEditor_SaveFailed>
+  <RimTalkLE_ManualEditor_RestoreSuccess>Останню автоматичну версію відновлено.</RimTalkLE_ManualEditor_RestoreSuccess>
+  <RimTalkLE_ManualEditor_RestoreFailed>Немає доступної автоматичної версії для відновлення.</RimTalkLE_ManualEditor_RestoreFailed>
+</LanguageData>
