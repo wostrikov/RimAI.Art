@@ -109,13 +109,13 @@ namespace RimTalk_LiteratureExpansion.authoring.llm
         private static string DefaultTemplate()
         {
             return
-                "Summarize the pawn's recent memories based on the provided context.\n" +
-                "Write in {{LANG}}. Return JSON only.\n\n" +
-                "Required JSON fields:\n" +
-                "- \"summary\": <= {{SUMMARY_MAX_CHARS}} chars and {{SUMMARY_MAX_SENTENCES}} sentences\n" +
-                "- \"keywords\": 3-6 short keywords\n" +
-                "- \"tone\": 1-2 words\n\n" +
-                "Use only the provided context; do not invent new events.";
+                "Підсумуй нещодавні спогади pawn на основі наданого контексту.\n" +
+                "Пиши мовою {{LANG}}. Виведи лише JSON.\n\n" +
+                "Обов'язкові поля JSON:\n" +
+                "- \"summary\": <= {{SUMMARY_MAX_CHARS}} символів і {{SUMMARY_MAX_SENTENCES}} речень\n" +
+                "- \"keywords\": 3–6 коротких ключових слів\n" +
+                "- \"tone\": 1–2 слова\n\n" +
+                "Використовуй лише наданий контекст; не вигадуй нових подій.";
         }
     }
 }

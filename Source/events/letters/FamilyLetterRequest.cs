@@ -42,25 +42,25 @@ namespace RimTalk_LiteratureExpansion.events.letters
         private static string BuildPrompt()
         {
             return
-$@"Write a personal letter from a colonist's relative who lives outside the colony.
-Write in {RimTalkConstantShim.Lang}. Return JSON only.
+$@"Напиши особистого листа від родича колоніста, який живе поза колонією.
+Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
 
-Required JSON fields:
+Обов'язкові поля JSON:
 - ""title""
 - ""body""
-- ""giftKind"" (ThingDef.defName of the gift's base item; NEVER use `MinifiedThing`. If the gift is a Building, use the building's defName — it will be delivered in minified form automatically)
-- ""giftNote"" (1 sentence about the gift)
+- ""giftKind"" (ThingDef.defName базового предмета подарунка; НІКОЛИ не використовуй `MinifiedThing`. Якщо подарунок є Building, використовуй defName будівлі — її автоматично доставлять у згорнутому вигляді)
+- ""giftNote"" (1 речення про подарунок)
 
-Constraints:
-- title <= {TitleMaxChars} chars.
-- body <= {BodyMaxChars} chars, about {TargetTokens} tokens.
-- SenderName is always the writer and RecipientName is always the addressee.
-- SenderRelationToRecipient describes who the sender is to the recipient.
-- RecipientRelationToSender describes who the recipient is to the sender.
-- Write in the sender's first-person voice and address the recipient as ""you"". Never swap either relationship.
-- The gift mentioned in body/giftNote MUST match giftKind exactly.
-- giftKind MUST equal GiftDefName from context.
-- No markdown, no extra keys.";
+Обмеження:
+- Довжина title <= {TitleMaxChars} символів.
+- Довжина body <= {BodyMaxChars} символів, близько {TargetTokens} токенів.
+- SenderName завжди є автором, а RecipientName — адресатом.
+- SenderRelationToRecipient описує спорідненість відправника з адресатом.
+- RecipientRelationToSender описує спорідненість адресата з відправником.
+- Пиши від першої особи відправника й звертайся до адресата як ""ти"". Ніколи не міняй ці зв'язки місцями.
+- Подарунок у body/giftNote МУСИТЬ точно відповідати giftKind.
+- giftKind МУСИТЬ дорівнювати GiftDefName з контексту.
+- Без markdown і додаткових ключів.";
         }
 
         private static string BuildContext(

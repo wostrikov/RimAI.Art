@@ -193,29 +193,29 @@ namespace RimTalk_LiteratureExpansion.events
         {
             int charLimit = Mathf.Clamp(originalDescription?.Length ?? 0, 240, 520);
             string voiceRule = hasKnownIssuer
-                ? "IssuerFaction is the speaker. Write in that faction's voice and never speak as RecipientFaction."
-                : "The issuer could not be identified reliably. Use neutral third-person quest prose; do not claim to speak for any faction.";
+                ? "IssuerFaction є мовцем. Пиши голосом цієї фракції й ніколи не говори від імені RecipientFaction."
+                : "Надійно визначити замовника не вдалося. Використовуй нейтральну оповідь про завдання від третьої особи; не говори від імені жодної фракції.";
             string motiveRule = hasKnownIssuer
-                ? "Explain the issuer's motive only when it is supported by QuestData or OriginalText."
-                : "Describe background only when supported by QuestData or OriginalText; do not invent an issuer or a motive.";
+                ? "Пояснюй мотив замовника лише тоді, коли його підтверджують QuestData або OriginalText."
+                : "Описуй передумови лише тоді, коли їх підтверджують QuestData або OriginalText; не вигадуй замовника чи мотив.";
             return
-$@"Write an addendum for a RimWorld quest description.
-Write in {RimTalkConstantShim.Lang}. Return JSON only.
+$@"Напиши доповнення до опису завдання RimWorld.
+Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
 
-Required JSON fields:
+Обов'язкові поля JSON:
 - ""flavor""
 
-Constraints:
+Обмеження:
 - {voiceRule}
 - {motiveRule}
-- The text must read like a quest description and background supplement, not detached atmosphere prose.
-- Keep the original quest objective, stakes, and tone clear, but do not duplicate the full original text.
-- Use only facts from QuestData and OriginalText; do not invent new rewards, deadlines, counts, locations, or named entities.
-- You may mention required tokens and numbers only when they already appear in QuestData.
-- Avoid generic scenery-only writing; every sentence should support the request, issuer motive, or quest background.
-- Minimum length: at least about 100 tokens.
-- Keep length <= {charLimit} characters (about {TargetTokens} tokens).
-- No markdown, no extra keys.";
+- Текст має читатися як опис завдання й доповнення передумов, а не як відірвана атмосферна проза.
+- Чітко збережи початкову мету, ставки й тон завдання, але не дублюй увесь оригінал.
+- Використовуй лише факти з QuestData та OriginalText; не вигадуй винагород, строків, кількостей, місць або іменованих сутностей.
+- Згадуй потрібні токени й числа лише тоді, коли вони вже є в QuestData.
+- Уникай загального опису краєвидів; кожне речення має підтримувати прохання, мотив замовника або передумови завдання.
+- Мінімальна довжина: близько 100 токенів.
+- Довжина <= {charLimit} символів (близько {TargetTokens} токенів).
+- Без markdown і додаткових ключів.";
         }
 
         private static string BuildContext(PendingQuestRewrite record)

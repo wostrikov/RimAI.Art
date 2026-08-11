@@ -73,18 +73,18 @@ namespace RimTalk_LiteratureExpansion.art.llm
         private static string BuildTemplate()
         {
             return
-$@"You are naming a persona weapon and writing its in-world description.
-Write in {RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang}. Return JSON only.
+$@"Ти даєш ім'я персональній зброї та пишеш її внутрішньосвітовий опис.
+Пиши мовою {RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang}. Виведи лише JSON.
 
-Required JSON fields:
+Обов'язкові поля JSON:
 - ""title""
 - ""text""
 
-Constraints:
-- Title <= {SynopsisTokenPolicy.TitleMaxChars} chars.
-- Text <= {SynopsisTokenPolicy.SynopsisMaxChars} chars.
-- ""text"" is a vivid description grounded in the pawn's memories.
-- Keep it consistent with RimWorld tone; no meta commentary.";
+Обмеження:
+- Довжина title <= {SynopsisTokenPolicy.TitleMaxChars} символів.
+- Довжина text <= {SynopsisTokenPolicy.SynopsisMaxChars} символів.
+- ""text"" — яскравий опис, заснований на спогадах pawn.
+- Дотримуйся тону RimWorld; не додавай метакоментарів.";
         }
 
         private static string BuildContext(ArtMeta meta, MemorySummarySpec summary, string baseContext)

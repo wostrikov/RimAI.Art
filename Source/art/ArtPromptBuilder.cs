@@ -38,19 +38,19 @@ namespace RimTalk_LiteratureExpansion.art
         private static string BuildTemplate(int tokenTarget)
         {
             return
-$@"You write in-world art descriptions for RimWorld objects.
-Write in {RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang}. Return JSON only.
+$@"Ти пишеш внутрішньосвітові описи мистецьких об'єктів RimWorld.
+Пиши мовою {RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang}. Виведи лише JSON.
 
-Required JSON fields:
+Обов'язкові поля JSON:
 - ""title""
 - ""text""
 
-Constraints:
-- Title <= {SynopsisTokenPolicy.TitleMaxChars} chars.
-- Text <= {SynopsisTokenPolicy.SynopsisMaxChars} chars.
-- ""text"" is the full art description (about {tokenTarget} tokens), not a summary.
-- Use only provided hints (original title, author, original description, quality).
-- Do not invent unrelated lore. Keep it vivid and concrete.";
+Обмеження:
+- Довжина title <= {SynopsisTokenPolicy.TitleMaxChars} символів.
+- Довжина text <= {SynopsisTokenPolicy.SynopsisMaxChars} символів.
+- ""text"" — повний опис твору (близько {tokenTarget} токенів), а не підсумок.
+- Використовуй лише надані підказки (оригінальна назва, автор, оригінальний опис, якість).
+- Не вигадуй стороннього лору. Пиши яскраво й конкретно.";
         }
 
         public static string BuildContext(ArtMeta meta)

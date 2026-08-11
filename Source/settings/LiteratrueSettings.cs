@@ -114,6 +114,11 @@ namespace RimTalk_LiteratureExpansion.settings
                 letterRewriteAllowList = new List<string>();
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
+                // In inherited mode RimTalk owns the OpenAI credential. Do not retain
+                // a duplicate legacy key in this add-on's mutable settings.
+                if (useRimTalkApi && api != null)
+                    api.apiKey = string.Empty;
+
                 bool anyCategory = allowArtBuildingEdits || allowArtWeaponEdits || allowArtApparelEdits;
                 if (allowArtEdits && !anyCategory)
                 {

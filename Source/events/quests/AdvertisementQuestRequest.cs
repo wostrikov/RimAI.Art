@@ -87,33 +87,33 @@ namespace RimTalk_LiteratureExpansion.events.quests
 $@"{prompt.TrimEnd()}
 
 {marker}
-- IssuerFaction is the speaker.
-- RecipientFaction and RecipientColony are the addressee.
-- Never swap issuer and recipient identities.";
+- IssuerFaction є мовцем.
+- RecipientFaction і RecipientColony є адресатами.
+- Ніколи не міняй місцями замовника й адресата.";
         }
 
         private static string BuildTemplate(int offerDays, int deliveryDays)
         {
             return
-$@"Write a merchant advertisement quest description from the issuing faction's point of view.
-Write in {RimTalkConstantShim.Lang}. Return JSON only.
+$@"Напиши опис торговельного рекламного завдання від імені фракції-замовника.
+Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
 
-Required JSON fields:
+Обов'язкові поля JSON:
 - ""title""
 - ""description""
 
-Constraints:
-- title <= {TitleMaxChars} chars.
-- description <= {BodyMaxChars} chars, about {TargetTokens} tokens.
-- IssuerFaction is the speaker. RecipientFaction and RecipientColony receive the offer.
-- Write in IssuerFaction's first-person plural voice. Never speak as RecipientFaction.
-- Use the issuer's voice and keep it grounded; the description should read like a posted task request, not generic flavor prose.
-- Include a short background reason for why the faction is making this offer.
-- Include all three options with their silver amounts and item names exactly as provided in QuestData.
-- Mention payment can be delivered by caravan or transport pods.
-- Mention the offer window ({offerDays} days) and delivery window ({deliveryDays} days) without changing numbers.
-- Do not add new items, options, or numbers.
-- No markdown, no extra keys.";
+Обмеження:
+- Довжина title <= {TitleMaxChars} символів.
+- Довжина description <= {BodyMaxChars} символів, близько {TargetTokens} токенів.
+- IssuerFaction є мовцем. RecipientFaction і RecipientColony отримують пропозицію.
+- Пиши від першої особи множини IssuerFaction. Ніколи не говори від імені RecipientFaction.
+- Використовуй голос замовника й приземлений тон; опис має читатися як опубліковане прохання виконати завдання, а не загальна атмосферна проза.
+- Додай коротку передумову, чому фракція робить цю пропозицію.
+- Додай усі три варіанти з точно наданими в QuestData сумами срібла й назвами предметів.
+- Згадай, що платіж можна доставити караваном або транспортними капсулами.
+- Згадай строк пропозиції ({offerDays} днів) і строк доставлення ({deliveryDays} днів), не змінюючи чисел.
+- Не додавай нових предметів, варіантів або чисел.
+- Без markdown і додаткових ключів.";
         }
 
         private static string BuildContext(

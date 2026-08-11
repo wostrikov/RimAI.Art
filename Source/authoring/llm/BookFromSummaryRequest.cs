@@ -88,19 +88,19 @@ namespace RimTalk_LiteratureExpansion.authoring.llm
         private static string BuildTemplate(int tokenTarget, int storyTarget)
         {
             return
-$@"Write in {RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang}. Return JSON only.
+$@"Пиши мовою {RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang}. Виведи лише JSON.
 
-Required JSON fields:
+Обов'язкові поля JSON:
 - ""title""
 - ""synopsis""
 
-Constraints:
-- Title <= {SynopsisTokenPolicy.TitleMaxChars} chars.
-- Synopsis <= {SynopsisTokenPolicy.SynopsisMaxChars} chars and {SynopsisTokenPolicy.SynopsisMaxSentences} sentences.
-- Invent a NEW title; do not reuse OriginalTitle text.
-- ""synopsis"" is the book's actual content text (about {tokenTarget} tokens), not a summary.
-- If the memory summary reads like a story, you may extend to ~{storyTarget} tokens.
-- Preserve proper names. Do not mention that this is a summary.";
+Обмеження:
+- Довжина title <= {SynopsisTokenPolicy.TitleMaxChars} символів.
+- Довжина synopsis <= {SynopsisTokenPolicy.SynopsisMaxChars} символів і {SynopsisTokenPolicy.SynopsisMaxSentences} речень.
+- Вигадай НОВУ назву; не повторюй текст OriginalTitle.
+- ""synopsis"" — фактичний текст книги (близько {tokenTarget} токенів), а не підсумок.
+- Якщо підсумок спогадів читається як історія, можна розширити текст приблизно до {storyTarget} токенів.
+- Зберігай власні назви. Не згадуй, що це підсумок.";
         }
 
         private static string BuildContext(BookMeta meta, MemorySummarySpec summary, string baseContext)

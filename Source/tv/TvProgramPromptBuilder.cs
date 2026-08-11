@@ -33,19 +33,19 @@ namespace RimTalk_LiteratureExpansion.tv
         private static string BuildTemplate()
         {
             return
-$@"You write the in-world television program content that a character in RimWorld is watching right now.
-Write in {RimTalkConstantShim.Lang}. Return JSON only.
+$@"Ти пишеш внутрішньосвітовий вміст телепрограми, яку персонаж RimWorld дивиться просто зараз.
+Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
 
-Required JSON fields:
-- ""title"" (the program name, <= {LiteratureSettingsDef.TvTitleMaxChars} chars)
-- ""content"" (what is happening in the program right now, <= {LiteratureSettingsDef.TvContentMaxChars} chars)
+Обов'язкові поля JSON:
+- ""title"" (назва програми, <= {LiteratureSettingsDef.TvTitleMaxChars} символів)
+- ""content"" (що відбувається в програмі зараз, <= {LiteratureSettingsDef.TvContentMaxChars} символів)
 
-Constraints:
-- The content should reflect the game world context (colony events, faction politics, animal life, raid aftermath, trade, etc.).
-- Keep the tone varied: news broadcast, documentary, drama, comedy show, survival tips, or ancient Roman-style arena — whichever fits.
-- Do NOT reference real-world Earth TV shows, brands, or celebrities.
-- Use the provided game context (season, weather, time of day) as creative inspiration.
-- Write as if the pawn is passively absorbing this content while watching.";
+Обмеження:
+- Вміст має відображати контекст ігрового світу (події колонії, політику фракцій, життя тварин, наслідки рейдів, торгівлю тощо).
+- Варіюй тон: випуск новин, документальна програма, драма, комедія, поради з виживання або арена в давньоримському стилі — що доречніше.
+- НЕ згадуй реальні земні телешоу, бренди чи знаменитостей.
+- Використовуй наданий ігровий контекст (пора року, погода, час доби) як творче натхнення.
+- Пиши так, ніби pawn пасивно сприймає цей вміст під час перегляду.";
         }
 
         public static string BuildContext(Thing tvBuilding)

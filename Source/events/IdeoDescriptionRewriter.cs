@@ -218,20 +218,20 @@ namespace RimTalk_LiteratureExpansion.events
         private static string BuildTemplate(int charLimit)
         {
             return
-$@"Write 3-5 sentences of in-universe flavor to append to an ideology description.
-Write in {RimTalkConstantShim.Lang}. Return JSON only.
+$@"Напиши 3–5 внутрішньосвітових речень для доповнення опису ідеології.
+Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
 
-Required JSON fields:
+Обов'язкові поля JSON:
 - ""flavor""
 
-Constraints:
-- Keep it relevant to the ideology's themes; avoid unrelated filler.
-- Do NOT include any names, titles, factions, places, rewards, requirements, or time limits.
-- Do NOT include any numbers or percentages.
-- Keep it generic and evocative; add atmosphere without new facts.
-- Keep length <= {charLimit} characters (about {TargetTokens} tokens).
-- If unsure, return an empty string.
-- No markdown, no extra keys.";
+Обмеження:
+- Дотримуйся тем ідеології; уникай стороннього наповнення.
+- НЕ додавай імен, титулів, фракцій, місць, винагород, вимог або строків.
+- НЕ додавай чисел чи відсотків.
+- Пиши узагальнено й виразно; додавай атмосферу без нових фактів.
+- Довжина <= {charLimit} символів (близько {TargetTokens} токенів).
+- Якщо не впевнений, поверни порожній рядок.
+- Без markdown і додаткових ключів.";
         }
 
         private static string BuildContext(PendingIdeoRewrite record)

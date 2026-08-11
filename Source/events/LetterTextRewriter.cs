@@ -175,24 +175,24 @@ namespace RimTalk_LiteratureExpansion.events
         private static string BuildTemplate(int charLimit)
         {
             return
-$@"Write short arrival-notice text for a RimWorld letter.
-Write in {RimTalkConstantShim.Lang}. Return JSON only.
+$@"Напиши коротке сповіщення про надходження листа RimWorld.
+Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
 
-Required JSON fields:
+Обов'язкові поля JSON:
 - ""flavor""
 
-Constraints:
-- This is the text shown when the letter arrives, not the letter body itself.
-- Write like markings on an envelope, delivery slip, or brief clerk's note: for example ""To the colony"" plus a compact description of what the letter concerns.
-- Keep it concise: 1-3 short sentences or lines, not a full letter and not a narrative scene.
-- Use the original letter only to infer the arrival notice topic, urgency, and tone.
-- Do NOT rewrite, summarize, or continue the letter body.
-- Do NOT include names, factions, places, rewards, requirements, or time limits unless they are already in the original letter and necessary for the notice.
-- Do NOT include any numbers or percentages.
-- Do not invent new facts; summarize the letter's purpose and tone.
-- Keep length <= {charLimit} characters (about {TargetTokens} tokens).
-- If unsure, return an empty string.
-- No markdown, no extra keys.";
+Обмеження:
+- Це текст, показаний під час надходження листа, а не сам лист.
+- Пиши як напис на конверті, квитанцію про доставлення або коротку нотатку писаря: наприклад, ""До колонії"" та стислий опис теми листа.
+- Стисло: 1–3 короткі речення чи рядки, не повний лист і не оповідна сцена.
+- Використовуй оригінальний лист лише для визначення теми, терміновості й тону сповіщення.
+- НЕ переписуй, не підсумовуй і не продовжуй тіло листа.
+- НЕ додавай імен, фракцій, місць, винагород, вимог або строків, якщо вони відсутні в оригіналі чи не потрібні сповіщенню.
+- НЕ додавай чисел чи відсотків.
+- Не вигадуй фактів; стисло передай призначення й тон листа.
+- Довжина <= {charLimit} символів (близько {TargetTokens} токенів).
+- Якщо не впевнений, поверни порожній рядок.
+- Без markdown і додаткових ключів.";
         }
 
         private static string BuildContext(PendingLetterRewrite record)

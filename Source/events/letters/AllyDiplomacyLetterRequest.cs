@@ -30,22 +30,22 @@ namespace RimTalk_LiteratureExpansion.events.letters
         private static string BuildPrompt(int goodwillDelta)
         {
             return
-$@"Write a friendly diplomatic letter from an allied faction to the player colony.
-Write in {RimTalkConstantShim.Lang}. Return JSON only.
+$@"Напиши дружнього дипломатичного листа від союзної фракції до колонії гравця.
+Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
 
-Required JSON fields:
+Обов'язкові поля JSON:
 - ""title""
 - ""body""
 
-Constraints:
-- title <= {TitleMaxChars} chars.
-- body <= {BodyMaxChars} chars, about {TargetTokens} tokens.
-- SenderFaction is the letter writer. RecipientFaction and RecipientColony are the addressee.
-- Write in SenderFaction's first-person plural voice. Never claim that SenderFaction is RecipientFaction.
-- Mention the alliance and that relations improve by {goodwillDelta}.
-- Use at least one concrete detail from the provided colony or ideology context when available.
-- Keep the tone coherent and grounded; avoid surreal or random content.
-- No markdown, no extra keys.";
+Обмеження:
+- Довжина title <= {TitleMaxChars} символів.
+- Довжина body <= {BodyMaxChars} символів, близько {TargetTokens} токенів.
+- SenderFaction є автором листа. RecipientFaction і RecipientColony є адресатами.
+- Пиши від першої особи множини SenderFaction. Ніколи не стверджуй, що SenderFaction — це RecipientFaction.
+- Згадай союз і поліпшення відносин на {goodwillDelta}.
+- За наявності використай принаймні одну конкретну деталь із контексту колонії чи ідеології.
+- Дотримуйся зв'язного, приземленого тону; уникай сюрреалістичного чи випадкового вмісту.
+- Без markdown і додаткових ключів.";
         }
 
         private static string BuildContext(Faction faction, Map map, string colonyName, int goodwillDelta)

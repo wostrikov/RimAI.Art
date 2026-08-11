@@ -94,21 +94,21 @@ $@"{prompt.TrimEnd()}
         private static string BuildTemplate(int tokenTarget)
         {
             return
-$@"Write a personal diary entry from the pawn's point of view.
-Write in {RimTalkConstantShim.Lang}. Return JSON only.
+$@"Напиши особистий щоденниковий запис від імені pawn.
+Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
 
-Required JSON fields:
+Обов'язкові поля JSON:
 - ""title""
 - ""synopsis""
 
-Constraints:
-- Title <= {SynopsisTokenPolicy.TitleMaxChars} chars.
-- Synopsis <= {SynopsisTokenPolicy.SynopsisMaxChars} chars and {SynopsisTokenPolicy.SynopsisMaxSentences} sentences.
-- ""synopsis"" is the diary entry text (about {tokenTarget} tokens), not a summary.
-- Use first-person voice and concrete details from the memory summary.
-- The author is the diarist. Do not write a novel, guide, report, or unrelated fictional story.
-- Every event in the entry must be grounded in the provided pawn context or MemorySummary.
-- Keep it grounded in RimWorld setting; no meta commentary.";
+Обмеження:
+- Довжина title <= {SynopsisTokenPolicy.TitleMaxChars} символів.
+- Довжина synopsis <= {SynopsisTokenPolicy.SynopsisMaxChars} символів і {SynopsisTokenPolicy.SynopsisMaxSentences} речень.
+- ""synopsis"" — текст щоденникового запису (близько {tokenTarget} токенів), а не підсумок.
+- Пиши від першої особи й використовуй конкретні подробиці з підсумку спогадів.
+- Автор є оповідачем щоденника. Не пиши роман, посібник, звіт або сторонню вигадану історію.
+- Кожна подія має спиратися на наданий контекст pawn або MemorySummary.
+- Дотримуйся приземленого світу RimWorld; без метакоментарів.";
         }
 
         private static string BuildContext(BookMeta meta, MemorySummarySpec summary, string baseContext)

@@ -57,25 +57,25 @@ namespace RimTalk_LiteratureExpansion.synopsis
         private static string BuildTemplate(int tokenTarget)
         {
             return
-$@"You write the in-world text content of a RimWorld book.
-Write in {RimTalkConstantShim.Lang}. Return JSON only.
+$@"Ти пишеш внутрішньосвітовий текст книги RimWorld.
+Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
 
-Required JSON fields:
+Обов'язкові поля JSON:
 - ""title""
 - ""synopsis""
 
-Constraints:
-- Title <= {SynopsisTokenPolicy.TitleMaxChars} chars.
-- Synopsis <= {SynopsisTokenPolicy.SynopsisMaxChars} chars and {SynopsisTokenPolicy.SynopsisMaxSentences} sentences.
-- Invent a NEW title; do not reuse OriginalTitle text or translation-key fragments.
-- ""synopsis"" is the book's actual content text (about {tokenTarget} tokens), not a summary.
-- Use only the provided hints (type, benefits, skill, original description); do not add unrelated lore.
-- If benefits imply training, write practical task-style instructions and examples.
-- If type is CB_ChildrensBook or CB_ColoringBook: gentle, simple story/activity.
-- If type is VBE_Newspaper: brief news bulletin using any provided time fields.
-- If type is VBE_SkillBook or benefits imply training: practical guide tone.
-- If type is Journal: write a first-person personal journal entry, with the pawn as diarist.
-- For Journal content, use only supplied journal or pawn-context facts; never turn it into a guide, novel, report, or unrelated story.";
+Обмеження:
+- Довжина title <= {SynopsisTokenPolicy.TitleMaxChars} символів.
+- Довжина synopsis <= {SynopsisTokenPolicy.SynopsisMaxChars} символів і {SynopsisTokenPolicy.SynopsisMaxSentences} речень.
+- Вигадай НОВУ назву; не повторюй OriginalTitle або фрагменти ключів перекладу.
+- ""synopsis"" — фактичний текст книги (близько {tokenTarget} токенів), а не підсумок.
+- Використовуй лише надані підказки (тип, переваги, навичка, оригінальний опис); не додавай стороннього лору.
+- Якщо переваги передбачають навчання, пиши практичні покрокові вказівки й приклади.
+- Якщо type — CB_ChildrensBook або CB_ColoringBook: лагідна проста історія чи заняття.
+- Якщо type — VBE_Newspaper: короткий випуск новин із наданими часовими полями.
+- Якщо type — VBE_SkillBook або переваги передбачають навчання: тон практичного посібника.
+- Якщо type — Journal: особистий щоденниковий запис від першої особи, де pawn — автор щоденника.
+- Для Journal використовуй лише надані факти зі щоденника або контексту pawn; не перетворюй його на посібник, роман, звіт чи сторонню історію.";
         }
 
         public static string BuildContext(BookMeta meta)

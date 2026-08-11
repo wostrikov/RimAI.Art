@@ -22,8 +22,6 @@ namespace RimTalk_LiteratureExpansion.settings.util
 {
     public static class SettingsUIHelpers
     {
-        private const float ToggleWidth = 52f;
-        private static bool _showApiKey;
 
         public static string TextFieldLabeled(Listing_Standard listing, string label, string value, int maxLength)
         {
@@ -79,8 +77,7 @@ namespace RimTalk_LiteratureExpansion.settings.util
             float labelWidth = Mathf.Max(120f, rowRect.width * 0.35f);
             Rect labelRect = new Rect(rowRect.x, rowRect.y, labelWidth, rowRect.height);
             Rect fieldRect = new Rect(labelRect.xMax + LiteratureSettingsDef.FieldGap, rowRect.y,
-                rowRect.width - labelWidth - LiteratureSettingsDef.FieldGap - ToggleWidth, rowRect.height);
-            Rect toggleRect = new Rect(fieldRect.xMax + LiteratureSettingsDef.FieldGap, rowRect.y, ToggleWidth, rowRect.height);
+                rowRect.width - labelWidth - LiteratureSettingsDef.FieldGap, rowRect.height);
 
             var anchor = Text.Anchor;
             Text.Anchor = TextAnchor.MiddleLeft;
@@ -89,17 +86,7 @@ namespace RimTalk_LiteratureExpansion.settings.util
 
             value ??= string.Empty;
 
-            if (_showApiKey)
-            {
-                value = Widgets.TextField(fieldRect, value);
-            }
-            else
-            {
-                Widgets.Label(fieldRect, Mask(value));
-            }
-
-            if (Widgets.ButtonText(toggleRect, _showApiKey ? "RimTalkLE_Settings_Hide".Translate() : "RimTalkLE_Settings_Show".Translate()))
-                _showApiKey = !_showApiKey;
+            value = GUI.PasswordField(fieldRect, value, '•');
 
             return Clamp(value, maxLength);
         }

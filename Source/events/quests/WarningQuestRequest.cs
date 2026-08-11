@@ -85,34 +85,34 @@ namespace RimTalk_LiteratureExpansion.events.quests
 $@"{prompt.TrimEnd()}
 
 {marker}
-- IssuerFaction is the speaker.
-- RecipientFaction and RecipientColony are the addressee.
-- Never swap issuer and recipient identities.";
+- IssuerFaction є мовцем.
+- RecipientFaction і RecipientColony є адресатами.
+- Ніколи не міняй місцями замовника й адресата.";
         }
 
         private static string BuildTemplate(int offerDays, int deliveryDays)
         {
             return
-$@"Write a hostile warning quest description from the issuing faction's point of view.
-Write in {RimTalkConstantShim.Lang}. Return JSON only.
+$@"Напиши ворожий опис завдання-попередження від імені фракції-замовника.
+Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
 
-Required JSON fields:
+Обов'язкові поля JSON:
 - ""title""
 - ""description""
 
-Constraints:
-- title <= {TitleMaxChars} chars.
-- description <= {BodyMaxChars} chars, about {TargetTokens} tokens.
-- IssuerFaction is the speaker. RecipientFaction and RecipientColony receive the demand.
-- Write in IssuerFaction's first-person plural voice. Never speak as RecipientFaction.
-- Use the issuer's voice and keep it tense; the description should read like a threat-backed task request, not generic flavor prose.
-- Include a short background or grievance explaining why the faction is demanding payment.
-- Include the demanded silver amount exactly as provided in QuestData.
-- Mention payment can be delivered by caravan or transport pods.
-- Mention the offer window ({offerDays} days) and delivery window ({deliveryDays} days) without changing numbers.
-- Mention a raid will occur 1-2 days after the deadline if unpaid.
-- Do not add new numbers, factions, or rewards.
-- No markdown, no extra keys.";
+Обмеження:
+- Довжина title <= {TitleMaxChars} символів.
+- Довжина description <= {BodyMaxChars} символів, близько {TargetTokens} токенів.
+- IssuerFaction є мовцем. RecipientFaction і RecipientColony отримують вимогу.
+- Пиши від першої особи множини IssuerFaction. Ніколи не говори від імені RecipientFaction.
+- Використовуй голос замовника й напружений тон; опис має читатися як підкріплена погрозою вимога виконати завдання, а не загальна атмосферна проза.
+- Додай коротку передумову або образу, що пояснює вимогу оплати.
+- Вкажи точну суму срібла з QuestData.
+- Згадай, що платіж можна доставити караваном або транспортними капсулами.
+- Згадай строк пропозиції ({offerDays} днів) і строк доставлення ({deliveryDays} днів), не змінюючи чисел.
+- Згадай, що в разі несплати рейд станеться через 1–2 дні після кінцевого строку.
+- Не додавай нових чисел, фракцій або винагород.
+- Без markdown і додаткових ключів.";
         }
 
         private static string BuildContext(

@@ -1,9 +1,9 @@
-Summarize the pawn's recent memories based on the provided context.
-Write in {{LANG}}. Return JSON only.
+Підсумуй нещодавні спогади pawn на основі наданого контексту.
+Пиши мовою {{LANG}}. Виведи лише JSON.
 
-Required JSON fields:
-- "summary": <= {{SUMMARY_MAX_CHARS}} chars and {{SUMMARY_MAX_SENTENCES}} sentences
-- "keywords": 3-6 short keywords
-- "tone": 1-2 words
+Обов'язкові поля JSON:
+- "summary": <= {{SUMMARY_MAX_CHARS}} символів і {{SUMMARY_MAX_SENTENCES}} речень
+- "keywords": 3–6 коротких ключових слів
+- "tone": 1–2 слова
 
-Use only the provided context; do not invent new events.
+Використовуй лише наданий контекст; не вигадуй нових подій.

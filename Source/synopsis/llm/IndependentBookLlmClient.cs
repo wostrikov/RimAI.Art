@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using RimTalk;
+using RimTalk.Client;
 using RimTalk.Data;
 using RimTalk.Util;
 using RimTalk_LiteratureExpansion.llm;
@@ -59,6 +60,9 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
 
             int requestId = Interlocked.Increment(ref _requestId);
 
+            if (LiteratureMod.Settings?.useRimTalkApi != false)
+                return await QueryViaRimTalkAsync<T>(request, requestId);
+
             if (!TryGetActiveConfig(out var config))
             {
                 Log.Warning($"[RimTalk LE] [Req {requestId}] No active RimTalk API config for independent literature request.");
@@ -100,7 +104,7 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
                 Log.Message($"[RimTalk LE] [Req {requestId}] Independent LLM request start.");
                 Log.Message($"[RimTalk LE] [Req {requestId}] Provider: {config.Provider}, Model: {model}");
                 Log.Message($"[RimTalk LE] [Req {requestId}] Endpoint: {SanitizeEndpoint(config.Provider, endpoint)}");
-                Log.Message($"[RimTalk LE] [Req {requestId}] API key: {SanitizeApiKey(apiKey)}");
+                Log.Message($"[RimTalk LE] [Req {requestId}] Credential source: independent provider setting");
                 if (string.IsNullOrWhiteSpace(apiKey) && config.Provider != AIProvider.Google)
                     Log.Warning($"[RimTalk LE] [Req {requestId}] API key is empty.");
 
@@ -143,11 +147,36 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
             Log.Message($"[RimTalk LE] [Req {requestId}] JSON deserialization {(result == null ? "failed" : "succeeded")}.");
             return result;
         }
+
             catch (Exception ex)
             {
                 Log.Warning($"[RimTalk LE] [Req {requestId}] Independent literature request failed: {ex.GetType().Name} - {ex.Message}");
                 return null;
             }
+        }
+
+        private static async Task<T> QueryViaRimTalkAsync<T>(LiteratureLlmRequest request, int requestId)
+            where T : class, IJsonData
+        {
+            IAIClient client = await AIClientFactory.GetAIClientAsync();
+            if (client == null)
+            {
+                Log.Warning($"[RimTalk LE] [Req {requestId}] Конфігурацію AI RimTalk не налаштовано.");
+                return null;
+            }
+
+            Payload payload = await client.GetChatCompletionAsync(
+                new System.Collections.Generic.List<(Role role, string message)>
+                {
+                    (Role.System, request.Instruction ?? string.Empty)
+                },
+                new System.Collections.Generic.List<(Role role, string message)>
+                {
+                    (Role.User, request.Context ?? string.Empty)
+                });
+            if (payload == null || !string.IsNullOrEmpty(payload.ErrorMessage)) return null;
+            string json = ExtractJsonPayload(payload.Response);
+            return string.IsNullOrWhiteSpace(json) ? null : JsonUtil.DeserializeFromJson<T>(json);
         }
 
         private static bool TryGetActiveConfig(out ApiConfig config)
@@ -570,13 +599,6 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
                 sb.Append("...");
 
             return sb.ToString();
-        }
-
-        private static string SanitizeApiKey(string apiKey)
-        {
-            if (string.IsNullOrWhiteSpace(apiKey)) return "(empty)";
-            if (apiKey.Length <= 8) return $"{apiKey.Substring(0, 2)}...";
-            return $"{apiKey.Substring(0, 4)}...{apiKey.Substring(apiKey.Length - 4)}";
         }
 
         private static string SanitizeEndpoint(AIProvider provider, string endpoint)

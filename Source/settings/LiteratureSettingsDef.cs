@@ -4,7 +4,7 @@
  *
  * Examples:
  * - defaultBaseUrl = "https://api.openai.com/v1"
- * - defaultModel = "gpt-4o-mini" (or leave blank)
+ * - defaultModel is blank until the user explicitly configures an independent provider
  * - max input lengths
  *
  * Do NOT:
