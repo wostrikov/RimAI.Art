@@ -33,7 +33,7 @@ namespace RimTalk_LiteratureExpansion.settings
 
         public override string SettingsCategory()
         {
-            return "RimTalkLE_Settings_Category".Translate();
+            return Content?.Name ?? "RimTalk - Expand Literature";
         }
 
         public override void DoSettingsWindowContents(Rect inRect)
