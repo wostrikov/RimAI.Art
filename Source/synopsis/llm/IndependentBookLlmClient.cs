@@ -17,6 +17,7 @@ using Ustas.RimAI.Art.settings;
 using UnityEngine.Networking;
 using Ustas.RimAI.Core.AI;
 using Ustas.RimAI.Core.Configuration;
+using Ustas.RimAI.Core.Player2;
 using Verse;
 
 namespace Ustas.RimAI.Art.synopsis.llm
@@ -27,15 +28,6 @@ namespace Ustas.RimAI.Art.synopsis.llm
         private const int MinOutputTokens = 256;
         private const int MaxOutputTokensCap = 2048;
         private const int OutputTokenOverhead = 120;
-        private const string Player2GameClientId = "019a8368-b00b-72bc-b367-2825079dc6fb";
-        private const string Player2LocalBaseUrl = "http://localhost:4315";
-        private const string Player2LocalHealthUrl = Player2LocalBaseUrl + "/v1/health";
-        private const string Player2LocalLoginUrl = Player2LocalBaseUrl + "/v1/login/web/" + Player2GameClientId;
-        private const int Player2LocalHealthTimeoutSeconds = 2;
-        private const int Player2LocalLoginTimeoutSeconds = 3;
-        private static string _player2LocalKey;
-        private static DateTime _player2LocalKeyCheckedAt = DateTime.MinValue;
-        private static readonly TimeSpan Player2LocalCheckInterval = TimeSpan.FromSeconds(30);
         private static int _requestId;
         private static readonly Regex OpenAIResponseRegex = new Regex(
             @"""content""\s*:\s*""((?:\\.|[^""])*)""",
@@ -83,9 +75,10 @@ namespace Ustas.RimAI.Art.synopsis.llm
 
             if (config.Provider == AIProvider.Player2 && string.IsNullOrWhiteSpace(apiKey))
             {
-                apiKey = await TryResolvePlayer2LocalKeyAsync(requestId);
-                usePlayer2Local = !string.IsNullOrWhiteSpace(apiKey);
-                if (!usePlayer2Local)
+                var session = await Player2Session.Current.EnsureAuthenticatedAsync();
+                apiKey = session.ApiKey;
+                usePlayer2Local = session.Succeeded && session.IsLocal;
+                if (!session.Succeeded)
                 {
                     Log.Warning($"[RimAI.Art] [Req {requestId}] Player2 API key is empty and no local app detected.");
                     return null;
@@ -94,7 +87,7 @@ namespace Ustas.RimAI.Art.synopsis.llm
 
             string endpoint = ResolveEndpoint(config, model);
             if (config.Provider == AIProvider.Player2 && usePlayer2Local)
-                endpoint = $"{Player2LocalBaseUrl}/v1/chat/completions";
+                endpoint = Player2Endpoints.ChatCompletions(Player2EndpointKind.LocalApp);
             if (string.IsNullOrWhiteSpace(endpoint))
             {
                 Log.Warning($"[RimAI.Art] [Req {requestId}] Missing endpoint for independent literature request.");
@@ -369,12 +362,7 @@ namespace Ustas.RimAI.Art.synopsis.llm
         private static string NormalizePlayer2Endpoint(string baseUrl)
         {
             if (string.IsNullOrWhiteSpace(baseUrl)) return string.Empty;
-            var trimmed = baseUrl.Trim().TrimEnd('/');
-            if (trimmed.EndsWith("/chat/completions", StringComparison.OrdinalIgnoreCase))
-                return trimmed;
-            if (trimmed.EndsWith("/v1", StringComparison.OrdinalIgnoreCase))
-                return trimmed + "/chat/completions";
-            return trimmed + "/v1/chat/completions";
+            return Player2Endpoints.ChatCompletions(baseUrl);
         }
 
         private static string NormalizeEndpoint(string baseUrl)
@@ -502,7 +490,7 @@ namespace Ustas.RimAI.Art.synopsis.llm
             if (provider != AIProvider.Google && !string.IsNullOrWhiteSpace(apiKey))
                 webRequest.SetRequestHeader("Authorization", $"Bearer {apiKey}");
             if (provider == AIProvider.Player2)
-                webRequest.SetRequestHeader("X-Game-Client-Id", Player2GameClientId);
+                webRequest.SetRequestHeader(Player2GameKeys.HeaderName, Player2GameKeys.Canonical);
             webRequest.timeout = Math.Max(5, TimeoutMs / 1000);
 
             var sw = Stopwatch.StartNew();
@@ -628,82 +616,6 @@ namespace Ustas.RimAI.Art.synopsis.llm
             return endpoint.Substring(0, keyIndex + 4) + "***";
         }
 
-        private static async Task<string> TryResolvePlayer2LocalKeyAsync(int requestId)
-        {
-            if (!string.IsNullOrWhiteSpace(_player2LocalKey))
-                return _player2LocalKey;
-
-            var now = DateTime.UtcNow;
-            if (now - _player2LocalKeyCheckedAt < Player2LocalCheckInterval)
-                return null;
-
-            _player2LocalKeyCheckedAt = now;
-
-            if (!await IsPlayer2LocalHealthyAsync(requestId))
-                return null;
-
-            var localKey = await RequestPlayer2LocalKeyAsync(requestId);
-            if (!string.IsNullOrWhiteSpace(localKey))
-            {
-                _player2LocalKey = localKey;
-                Log.Message($"[RimAI.Art] [Req {requestId}] Player2 local app authenticated.");
-            }
-
-            return _player2LocalKey;
-        }
-
-        private static async Task<bool> IsPlayer2LocalHealthyAsync(int requestId)
-        {
-            try
-            {
-                using var healthRequest = UnityWebRequest.Get(Player2LocalHealthUrl);
-                healthRequest.timeout = Player2LocalHealthTimeoutSeconds;
-                await SendUnityWebRequestAsync(healthRequest);
-                if (healthRequest.isNetworkError || healthRequest.isHttpError)
-                {
-                    Log.Message($"[RimAI.Art] [Req {requestId}] Player2 local health check failed: {healthRequest.responseCode} - {healthRequest.error}");
-                    return false;
-                }
-                return healthRequest.responseCode == (long)HttpStatusCode.OK;
-            }
-            catch (Exception ex)
-            {
-                Log.Message($"[RimAI.Art] [Req {requestId}] Player2 local health check exception: {ex.Message}");
-                return false;
-            }
-        }
-
-        private static async Task<string> RequestPlayer2LocalKeyAsync(int requestId)
-        {
-            try
-            {
-                using var loginRequest = new UnityWebRequest(Player2LocalLoginUrl, "POST");
-                loginRequest.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes("{}"));
-                loginRequest.downloadHandler = new DownloadHandlerBuffer();
-                loginRequest.SetRequestHeader("Content-Type", "application/json");
-                loginRequest.timeout = Player2LocalLoginTimeoutSeconds;
-
-                await SendUnityWebRequestAsync(loginRequest);
-                if (loginRequest.isNetworkError || loginRequest.isHttpError)
-                {
-                    Log.Message($"[RimAI.Art] [Req {requestId}] Player2 local login failed: {loginRequest.responseCode} - {loginRequest.error}");
-                    return null;
-                }
-
-                var auth = JsonUtil.DeserializeFromJson<Player2LocalAuthResponse>(loginRequest.downloadHandler.text);
-                if (!string.IsNullOrWhiteSpace(auth?.ApiKey))
-                    return auth.ApiKey;
-
-                Log.Warning($"[RimAI.Art] [Req {requestId}] Player2 local app responded but no API key in response.");
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Log.Message($"[RimAI.Art] [Req {requestId}] Player2 local login exception: {ex.Message}");
-                return null;
-            }
-        }
-
         private static Task SendUnityWebRequestAsync(UnityWebRequest request)
         {
             var tcs = new TaskCompletionSource<bool>();
@@ -757,13 +669,6 @@ namespace Ustas.RimAI.Art.synopsis.llm
             [DataMember(Name = "temperature")] public float Temperature;
             [DataMember(Name = "maxOutputTokens")] public int MaxOutputTokens;
         }
-
-        [DataContract]
-        private sealed class Player2LocalAuthResponse
-        {
-            [DataMember(Name = "p2Key")] public string ApiKey = string.Empty;
-        }
-
 
         private static int ResolveMaxOutputTokens()
         {
