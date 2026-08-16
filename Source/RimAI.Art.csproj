@@ -63,7 +63,7 @@
     <ProjectReference Include="..\..\RimAI.Core\src\RimAI.Core\RimAI.Core.csproj">
       <Private>false</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\RimAI.Communication\RimTalk.csproj">
+    <ProjectReference Include="..\..\RimAI.Communication\RimAI.Communication.csproj">
       <Private>false</Private>
     </ProjectReference>
   </ItemGroup>
