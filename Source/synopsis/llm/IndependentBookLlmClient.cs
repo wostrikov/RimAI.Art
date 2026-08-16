@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -14,9 +15,9 @@ using Ustas.RimAI.Communication.Data;
 using Ustas.RimAI.Communication.Util;
 using Ustas.RimAI.Art.llm;
 using Ustas.RimAI.Art.settings;
-using UnityEngine.Networking;
 using Ustas.RimAI.Core.AI;
 using Ustas.RimAI.Core.Configuration;
+using Ustas.RimAI.Core.Net;
 using Ustas.RimAI.Core.Player2;
 using Verse;
 
@@ -481,31 +482,36 @@ namespace Ustas.RimAI.Art.synopsis.llm
                 return shared.RawPayload;
             }
 
-            Log.Message($"[RimAI.Art] [Req {requestId}] HTTP request via UnityWebRequest: provider={provider}, url={SanitizeEndpoint(provider, url)}, bodyBytes={bodyRaw.Length}");
+            Log.Message($"[RimAI.Art] [Req {requestId}] HTTP request via shared transport: provider={provider}, url={SanitizeEndpoint(provider, url)}, bodyBytes={bodyRaw.Length}");
 
-            using var webRequest = new UnityWebRequest(url, "POST");
-            webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            webRequest.downloadHandler = new DownloadHandlerBuffer();
-            webRequest.SetRequestHeader("Content-Type", "application/json");
+            var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             if (provider != AIProvider.Google && !string.IsNullOrWhiteSpace(apiKey))
-                webRequest.SetRequestHeader("Authorization", $"Bearer {apiKey}");
+                headers["Authorization"] = $"Bearer {apiKey}";
             if (provider == AIProvider.Player2)
-                webRequest.SetRequestHeader(Player2GameKeys.HeaderName, Player2GameKeys.Canonical);
-            webRequest.timeout = Math.Max(5, TimeoutMs / 1000);
+                headers[Player2GameKeys.HeaderName] = Player2GameKeys.Canonical;
 
             var sw = Stopwatch.StartNew();
-            await SendUnityWebRequestAsync(webRequest);
+            var http = await SharedHttpTransport.Current.SendAsync(new HttpTransportRequest
+            {
+                Method = "POST",
+                Url = url,
+                Headers = headers,
+                BodyBytes = bodyRaw,
+                ContentType = "application/json",
+                TimeoutMilliseconds = TimeoutMs,
+                CorrelationId = "art-literature-" + requestId
+            });
 
-            string responseText = webRequest.downloadHandler?.text;
-            if (webRequest.responseCode >= 400 || webRequest.isNetworkError || webRequest.isHttpError)
+            string responseText = http.BodyText;
+            if (http.StatusCode >= 400 || !http.Succeeded)
             {
                 string detail = BuildSafePreview(responseText, 300);
-                Log.Warning($"[RimAI.Art] [Req {requestId}] HTTP {(int)webRequest.responseCode}: {webRequest.error ?? "(no error)"} body={detail}");
+                Log.Warning($"[RimAI.Art] [Req {requestId}] HTTP {http.StatusCode}: {http.ErrorMessage ?? "(no error)"} body={detail}");
                 return null;
             }
 
-            Log.Message($"[RimAI.Art] [Req {requestId}] Response status: {webRequest.responseCode} in {sw.ElapsedMilliseconds} ms.");
-            return responseText;
+            Log.Message($"[RimAI.Art] [Req {requestId}] Response status: {http.StatusCode} in {sw.ElapsedMilliseconds} ms.");
+            return http.BodyText;
         }
 
         private static string ExtractContent(AIProvider provider, string responseText, int requestId)
@@ -614,13 +620,6 @@ namespace Ustas.RimAI.Art.synopsis.llm
             int keyIndex = endpoint.IndexOf("key=", StringComparison.OrdinalIgnoreCase);
             if (keyIndex < 0) return endpoint;
             return endpoint.Substring(0, keyIndex + 4) + "***";
-        }
-
-        private static Task SendUnityWebRequestAsync(UnityWebRequest request)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-            request.SendWebRequest().completed += _ => tcs.SetResult(true);
-            return tcs.Task;
         }
 
         [DataContract]
