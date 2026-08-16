@@ -34,7 +34,7 @@ namespace Ustas.RimAI.Art.synopsis
             return PromptTemplateUtil.Resolve(
                 settings?.promptSynopsis,
                 template,
-                ("LANG", RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
                 ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()),
                 ("SYNOPSIS_MAX_SENTENCES", SynopsisTokenPolicy.SynopsisMaxSentences.ToString()),
@@ -47,7 +47,7 @@ namespace Ustas.RimAI.Art.synopsis
             string template = BuildTemplate(tokenTarget);
             return PromptTemplateUtil.ApplyTokens(
                 template,
-                ("LANG", RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
                 ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()),
                 ("SYNOPSIS_MAX_SENTENCES", SynopsisTokenPolicy.SynopsisMaxSentences.ToString()),
@@ -58,7 +58,7 @@ namespace Ustas.RimAI.Art.synopsis
         {
             return
 $@"Ти пишеш внутрішньосвітовий текст книги RimWorld.
-Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
+Пиши мовою {Constant.Lang}. Виведи лише JSON.
 
 Обов'язкові поля JSON:
 - ""title""

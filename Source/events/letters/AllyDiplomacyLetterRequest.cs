@@ -5,6 +5,7 @@ using Ustas.RimAI.Art.settings;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Ustas.RimAI.Communication.Data;
 
 namespace Ustas.RimAI.Art.events.letters
 {
@@ -31,7 +32,7 @@ namespace Ustas.RimAI.Art.events.letters
         {
             return
 $@"Напиши дружнього дипломатичного листа від союзної фракції до колонії гравця.
-Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
+Пиши мовою {Constant.Lang}. Виведи лише JSON.
 
 Обов'язкові поля JSON:
 - ""title""

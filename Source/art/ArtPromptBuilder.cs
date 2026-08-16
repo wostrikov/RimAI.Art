@@ -17,7 +17,7 @@ namespace Ustas.RimAI.Art.art
             return PromptTemplateUtil.Resolve(
                 settings?.promptArt,
                 template,
-                ("LANG", Ustas.RimAI.Art.RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
                 ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()),
                 ("TOKEN_TARGET", tokenTarget.ToString()));
@@ -29,7 +29,7 @@ namespace Ustas.RimAI.Art.art
             string template = BuildTemplate(tokenTarget);
             return PromptTemplateUtil.ApplyTokens(
                 template,
-                ("LANG", Ustas.RimAI.Art.RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
                 ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()),
                 ("TOKEN_TARGET", tokenTarget.ToString()));
@@ -39,7 +39,7 @@ namespace Ustas.RimAI.Art.art
         {
             return
 $@"Ти пишеш внутрішньосвітові описи мистецьких об'єктів RimWorld.
-Пиши мовою {Ustas.RimAI.Art.RimTalkConstantShim.Lang}. Виведи лише JSON.
+Пиши мовою {Constant.Lang}. Виведи лише JSON.
 
 Обов'язкові поля JSON:
 - ""title""

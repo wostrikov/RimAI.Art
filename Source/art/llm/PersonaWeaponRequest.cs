@@ -15,6 +15,7 @@ using Ustas.RimAI.Art.settings.util;
 using Ustas.RimAI.Art.synopsis;
 using Ustas.RimAI.Art.synopsis.llm;
 using Verse;
+using Ustas.RimAI.Communication.Data;
 
 namespace Ustas.RimAI.Art.art.llm
 {
@@ -55,7 +56,7 @@ namespace Ustas.RimAI.Art.art.llm
             return PromptTemplateUtil.Resolve(
                 settings?.promptPersonaWeapon,
                 template,
-                ("LANG", Ustas.RimAI.Art.RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
                 ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()));
         }
@@ -65,7 +66,7 @@ namespace Ustas.RimAI.Art.art.llm
             string template = BuildTemplate();
             return PromptTemplateUtil.ApplyTokens(
                 template,
-                ("LANG", Ustas.RimAI.Art.RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
                 ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()));
         }
@@ -74,7 +75,7 @@ namespace Ustas.RimAI.Art.art.llm
         {
             return
 $@"Ти даєш ім'я персональній зброї та пишеш її внутрішньосвітовий опис.
-Пиши мовою {Ustas.RimAI.Art.RimTalkConstantShim.Lang}. Виведи лише JSON.
+Пиши мовою {Constant.Lang}. Виведи лише JSON.
 
 Обов'язкові поля JSON:
 - ""title""

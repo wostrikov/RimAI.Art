@@ -200,7 +200,7 @@ namespace Ustas.RimAI.Art.events
                 : "Описуй передумови лише тоді, коли їх підтверджують QuestData або OriginalText; не вигадуй замовника чи мотив.";
             return
 $@"Напиши доповнення до опису завдання RimWorld.
-Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
+Пиши мовою {Constant.Lang}. Виведи лише JSON.
 
 Обов'язкові поля JSON:
 - ""flavor""

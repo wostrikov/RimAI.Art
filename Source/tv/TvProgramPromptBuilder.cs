@@ -3,6 +3,7 @@ using Ustas.RimAI.Art.settings;
 using Ustas.RimAI.Art.settings.util;
 using RimWorld;
 using Verse;
+using Ustas.RimAI.Communication.Data;
 
 namespace Ustas.RimAI.Art.tv
 {
@@ -15,7 +16,7 @@ namespace Ustas.RimAI.Art.tv
             return PromptTemplateUtil.Resolve(
                 settings?.promptTvProgram,
                 template,
-                ("LANG", RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("TITLE_MAX_CHARS", LiteratureSettingsDef.TvTitleMaxChars.ToString()),
                 ("CONTENT_MAX_CHARS", LiteratureSettingsDef.TvContentMaxChars.ToString()));
         }
@@ -25,7 +26,7 @@ namespace Ustas.RimAI.Art.tv
             string template = BuildTemplate();
             return PromptTemplateUtil.ApplyTokens(
                 template,
-                ("LANG", RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("TITLE_MAX_CHARS", LiteratureSettingsDef.TvTitleMaxChars.ToString()),
                 ("CONTENT_MAX_CHARS", LiteratureSettingsDef.TvContentMaxChars.ToString()));
         }
@@ -34,7 +35,7 @@ namespace Ustas.RimAI.Art.tv
         {
             return
 $@"Ти пишеш внутрішньосвітовий вміст телепрограми, яку персонаж RimWorld дивиться просто зараз.
-Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
+Пиши мовою {Constant.Lang}. Виведи лише JSON.
 
 Обов'язкові поля JSON:
 - ""title"" (назва програми, <= {LiteratureSettingsDef.TvTitleMaxChars} символів)

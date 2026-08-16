@@ -30,6 +30,7 @@ using Ustas.RimAI.Art.synopsis;
 using Ustas.RimAI.Art.synopsis.llm;
 using Verse;
 using RimWorld;
+using Ustas.RimAI.Communication.Data;
 
 namespace Ustas.RimAI.Art.authoring.llm
 {
@@ -80,7 +81,7 @@ namespace Ustas.RimAI.Art.authoring.llm
             return PromptTemplateUtil.Resolve(
                 settings?.promptMemorySummary,
                 template,
-                ("LANG", Ustas.RimAI.Art.RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("SUMMARY_MAX_CHARS", SynopsisTokenPolicy.PromptSynopsisMaxChars.ToString()),
                 ("SUMMARY_MAX_SENTENCES", SynopsisTokenPolicy.SynopsisMaxSentences.ToString()));
         }
@@ -90,7 +91,7 @@ namespace Ustas.RimAI.Art.authoring.llm
             var template = LoadTemplate();
             return PromptTemplateUtil.ApplyTokens(
                 template,
-                ("LANG", Ustas.RimAI.Art.RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("SUMMARY_MAX_CHARS", SynopsisTokenPolicy.PromptSynopsisMaxChars.ToString()),
                 ("SUMMARY_MAX_SENTENCES", SynopsisTokenPolicy.SynopsisMaxSentences.ToString()));
         }

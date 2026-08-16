@@ -17,6 +17,7 @@ using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse;
+using Ustas.RimAI.Communication.Data;
 
 namespace Ustas.RimAI.Art.events.quests
 {
@@ -55,7 +56,7 @@ namespace Ustas.RimAI.Art.events.quests
             var prompt = PromptTemplateUtil.Resolve(
                 settings?.promptQuestAdvert,
                 template,
-                ("LANG", RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("TITLE_MAX_CHARS", TitleMaxChars.ToString()),
                 ("BODY_MAX_CHARS", BodyMaxChars.ToString()),
                 ("TARGET_TOKENS", TargetTokens.ToString()),
@@ -69,7 +70,7 @@ namespace Ustas.RimAI.Art.events.quests
             string template = BuildTemplate(DefaultOfferDays, DefaultDeliveryDays);
             var prompt = PromptTemplateUtil.ApplyTokens(
                 template,
-                ("LANG", RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("TITLE_MAX_CHARS", TitleMaxChars.ToString()),
                 ("BODY_MAX_CHARS", BodyMaxChars.ToString()),
                 ("TARGET_TOKENS", TargetTokens.ToString()),
@@ -96,7 +97,7 @@ $@"{prompt.TrimEnd()}
         {
             return
 $@"Напиши опис торговельного рекламного завдання від імені фракції-замовника.
-Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
+Пиши мовою {Constant.Lang}. Виведи лише JSON.
 
 Обов'язкові поля JSON:
 - ""title""

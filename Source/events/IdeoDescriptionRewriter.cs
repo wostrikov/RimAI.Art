@@ -199,7 +199,7 @@ namespace Ustas.RimAI.Art.events
             return PromptTemplateUtil.Resolve(
                 settings?.promptIdeoRewrite,
                 template,
-                ("LANG", RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("CHAR_LIMIT", charLimit.ToString()),
                 ("TARGET_TOKENS", TargetTokens.ToString()));
         }
@@ -210,7 +210,7 @@ namespace Ustas.RimAI.Art.events
             string template = BuildTemplate(charLimit);
             return PromptTemplateUtil.ApplyTokens(
                 template,
-                ("LANG", RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("CHAR_LIMIT", charLimit.ToString()),
                 ("TARGET_TOKENS", TargetTokens.ToString()));
         }
@@ -219,7 +219,7 @@ namespace Ustas.RimAI.Art.events
         {
             return
 $@"Напиши 3–5 внутрішньосвітових речень для доповнення опису ідеології.
-Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
+Пиши мовою {Constant.Lang}. Виведи лише JSON.
 
 Обов'язкові поля JSON:
 - ""flavor""

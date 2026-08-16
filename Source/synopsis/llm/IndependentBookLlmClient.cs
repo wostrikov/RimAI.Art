@@ -231,7 +231,7 @@ namespace Ustas.RimAI.Art.synopsis.llm
                     {
                         ApiKey = settings.SimpleApiKey,
                         Provider = AIProvider.Google,
-                        SelectedModel = settings.IsUsingFallbackModel ? RimTalkConstantShim.FallbackCloudModel : RimTalkConstantShim.DefaultCloudModel,
+                        SelectedModel = settings.IsUsingFallbackModel ? Constant.FallbackCloudModel : Constant.DefaultCloudModel,
                         IsEnabled = true
                     };
                 }
@@ -302,10 +302,10 @@ namespace Ustas.RimAI.Art.synopsis.llm
                 return config.CustomModelName;
 
             if (!string.IsNullOrWhiteSpace(config.SelectedModel) &&
-                !string.Equals(config.SelectedModel, RimTalkConstantShim.ChooseModel, StringComparison.OrdinalIgnoreCase))
+                !string.Equals(config.SelectedModel, Constant.ChooseModel, StringComparison.OrdinalIgnoreCase))
                 return config.SelectedModel;
 
-            return RimTalkConstantShim.DefaultCloudModel;
+            return Constant.DefaultCloudModel;
         }
 
         private static string ResolveEndpoint(ApiConfig config, string model)
@@ -359,12 +359,7 @@ namespace Ustas.RimAI.Art.synopsis.llm
         {
             try
             {
-                var registryType = typeof(AIProvider).Assembly.GetType("Ustas.RimAI.Communication.AIProviderRegistry");
-                if (registryType == null) return null;
-                var method = registryType.GetMethod("GetEndpointUrl",
-                    BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(AIProvider) }, null);
-                if (method == null) return null;
-                return method.Invoke(null, new object[] { provider }) as string;
+                return provider.GetEndpointUrl();
             }
             catch
             {

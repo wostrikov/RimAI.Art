@@ -24,6 +24,7 @@ using Ustas.RimAI.Art.settings.util;
 using Ustas.RimAI.Art.synopsis;
 using Ustas.RimAI.Art.synopsis.llm;
 using Verse;
+using Ustas.RimAI.Communication.Data;
 
 namespace Ustas.RimAI.Art.authoring.llm
 {
@@ -62,7 +63,7 @@ namespace Ustas.RimAI.Art.authoring.llm
             return PromptTemplateUtil.Resolve(
                 settings?.promptBookFromSummary,
                 template,
-                ("LANG", Ustas.RimAI.Art.RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
                 ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()),
                 ("SYNOPSIS_MAX_SENTENCES", SynopsisTokenPolicy.SynopsisMaxSentences.ToString()),
@@ -77,7 +78,7 @@ namespace Ustas.RimAI.Art.authoring.llm
             string template = BuildTemplate(tokenTarget, storyTarget);
             return PromptTemplateUtil.ApplyTokens(
                 template,
-                ("LANG", Ustas.RimAI.Art.RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
                 ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()),
                 ("SYNOPSIS_MAX_SENTENCES", SynopsisTokenPolicy.SynopsisMaxSentences.ToString()),
@@ -88,7 +89,7 @@ namespace Ustas.RimAI.Art.authoring.llm
         private static string BuildTemplate(int tokenTarget, int storyTarget)
         {
             return
-$@"Пиши мовою {Ustas.RimAI.Art.RimTalkConstantShim.Lang}. Виведи лише JSON.
+$@"Пиши мовою {Constant.Lang}. Виведи лише JSON.
 
 Обов'язкові поля JSON:
 - ""title""

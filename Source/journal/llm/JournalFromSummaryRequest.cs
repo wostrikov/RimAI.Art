@@ -18,6 +18,7 @@ using Ustas.RimAI.Art.settings.util;
 using Ustas.RimAI.Art.synopsis;
 using Ustas.RimAI.Art.synopsis.llm;
 using Verse;
+using Ustas.RimAI.Communication.Data;
 
 namespace Ustas.RimAI.Art.journal.llm
 {
@@ -55,7 +56,7 @@ namespace Ustas.RimAI.Art.journal.llm
             var prompt = PromptTemplateUtil.Resolve(
                 settings?.promptJournal,
                 template,
-                ("LANG", RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
                 ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()),
                 ("SYNOPSIS_MAX_SENTENCES", SynopsisTokenPolicy.SynopsisMaxSentences.ToString()),
@@ -69,7 +70,7 @@ namespace Ustas.RimAI.Art.journal.llm
             string template = BuildTemplate(tokenTarget);
             var prompt = PromptTemplateUtil.ApplyTokens(
                 template,
-                ("LANG", RimTalkConstantShim.Lang),
+                ("LANG", Constant.Lang),
                 ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
                 ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()),
                 ("SYNOPSIS_MAX_SENTENCES", SynopsisTokenPolicy.SynopsisMaxSentences.ToString()),
@@ -95,7 +96,7 @@ $@"{prompt.TrimEnd()}
         {
             return
 $@"Напиши особистий щоденниковий запис від імені pawn.
-Пиши мовою {RimTalkConstantShim.Lang}. Виведи лише JSON.
+Пиши мовою {Constant.Lang}. Виведи лише JSON.
 
 Обов'язкові поля JSON:
 - ""title""
