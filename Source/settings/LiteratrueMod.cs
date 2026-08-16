@@ -18,6 +18,7 @@
  * - Do not reference RimTalk services directly (only settings integration).
  */
 using UnityEngine;
+using Ustas.RimAI.Core.Modules;
 using Verse;
 
 namespace RimTalk_LiteratureExpansion.settings
@@ -29,15 +30,33 @@ namespace RimTalk_LiteratureExpansion.settings
         public LiteratureMod(ModContentPack content) : base(content)
         {
             Settings = GetSettings<LiteratureSettings>();
+            RimAIModuleRegistry.Current.Register(new RimAIModuleDescriptor(
+                "art",
+                "RimAI.Art",
+                "RimAI.Art",
+                "Art"));
+            RimAISettingsContributionRegistry.Current.Register(new DelegateSettingsContributor(
+                "art-literature",
+                "Literature",
+                RimAISettingsSection.Module,
+                30,
+                listing =>
+                {
+                    var list = (Listing_Standard)listing;
+                    list.Label("RimAI.Settings.OpenModuleEntry".Translate("Art", "Literature"));
+                },
+                "art",
+                "literature"));
         }
 
         public override string SettingsCategory()
         {
-            return Content?.Name ?? "RimAI.Literature";
+            return Content?.Name ?? "RimAI.Art";
         }
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
+            RimAISettingsNavigation.Open("art", "literature");
             LiteratureSettingsWindow.Draw(inRect, Settings);
             Settings?.Write();
         }

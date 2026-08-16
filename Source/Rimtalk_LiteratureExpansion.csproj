@@ -60,6 +60,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\RimAI.Core\src\RimAI.Core\RimAI.Core.csproj" />
     <Reference Include="RimTalk">
       <!-- Expected layout: ..\..\RimTalk\<GameVersion>\Assemblies\RimTalk.dll -->
       <HintPath>$(RimTalkDir)\$(GameVersion)\Assemblies\RimTalk.dll</HintPath>

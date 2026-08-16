@@ -2,13 +2,11 @@
 <ModMetaData>
 
 	<packageId>cj.rimtalk.literature</packageId>
-	<name>RimAI.Literature</name>
+	<name>RimAI.Art</name>
 	<author>changlusss</author>
 
 	<description>
-Bring RimWorld books to life with RimTalk: Literature Expansion!
-
-This expansion enhances in-game books by giving them meaningful titles and readable content, generated dynamically through RimTalk’s AI framework.
+RimAI.Art — artistic artifact generation for RimWorld. Literature is the current built-in implementation.
 
 Key Features:
 • Automatically repairs and normalizes book titles and descriptions
@@ -16,14 +14,9 @@ Key Features:
 • Books written by pawns reflect their personal experiences and memories
 • Reading and storytelling dialogue is based on actual book content
 • Optional compatibility with Vanilla Books Expanded and Children’s Books
-• Fully configurable and lightweight, with no impact on core gameplay
+• Art-object title/description generation for CompArt items
 
-The system works seamlessly in the background:
-Existing books are scanned and improved, while newly written books gain their identity the moment they are finished. When pawns read or tell stories, their conversations finally make sense in context.
-
-You may choose to reuse RimTalk’s API settings or configure a separate API specifically for literature generation.
-
-Designed to be non-intrusive, modular, and fully compatible with RimTalk’s dialogue system.
+Gameplay text AI uses the shared RimAI configuration. Literature-specific prompts and rewrite lists stay in this module.
 	</description>
 
 	<supportedVersions>
@@ -33,7 +26,7 @@ Designed to be non-intrusive, modular, and fully compatible with RimTalk’s dia
 	<modDependencies>
 		<li>
 			<packageId>cj.rimtalk</packageId>
-			<displayName>RimTalk</displayName>
+			<displayName>RimAI.Communication</displayName>
 		</li>
 		<li>
 			<packageId>brrainz.harmony</packageId>
