@@ -480,7 +480,8 @@ namespace Ustas.RimAI.Art.synopsis.llm
                     UseSharedGameplayCredential = provider == AIProvider.OpenAI,
                     ApiShape = provider == AIProvider.OpenAI ? TextAiApiShape.Responses : TextAiApiShape.ChatCompletions,
                     TimeoutMs = TimeoutMs,
-                    Caller = "art-literature"
+                    Caller = "art-literature",
+                    Arbitration = AiRequestMetadata.FromCaller("art-literature")
                 }));
                 if (!shared.Succeeded)
                 {
