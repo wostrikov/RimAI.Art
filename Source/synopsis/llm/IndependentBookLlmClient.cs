@@ -15,6 +15,7 @@ using RimTalk.Util;
 using RimTalk_LiteratureExpansion.llm;
 using RimTalk_LiteratureExpansion.settings;
 using UnityEngine.Networking;
+using Ustas.RimAI.Core.AI;
 using Verse;
 
 namespace RimTalk_LiteratureExpansion.synopsis.llm
@@ -473,6 +474,28 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
             {
                 Log.Warning($"[RimTalk LE] [Req {requestId}] Request payload encode failed: {ex.GetType().Name} - {ex.Message}");
                 throw;
+            }
+
+            if (provider != AIProvider.Google && provider != AIProvider.Player2)
+            {
+                var shared = await Task.Run(() => SharedTextAiOrchestrator.Complete(new TextAiRequest
+                {
+                    PrebuiltJson = json,
+                    BaseUrl = url,
+                    ApiKey = apiKey,
+                    UseSharedGameplayCredential = provider == AIProvider.OpenAI,
+                    ApiShape = provider == AIProvider.OpenAI ? TextAiApiShape.Responses : TextAiApiShape.ChatCompletions,
+                    TimeoutMs = TimeoutMs,
+                    Caller = "art-literature"
+                }));
+                if (!shared.Succeeded)
+                {
+                    Log.Warning($"[RimTalk LE] [Req {requestId}] Shared text-AI failed: {shared.ErrorKind}");
+                    return null;
+                }
+
+                Log.Message($"[RimTalk LE] [Req {requestId}] Shared transport={shared.TransportKind} status={shared.StatusCode}");
+                return shared.RawPayload;
             }
 
             Log.Message($"[RimTalk LE] [Req {requestId}] HTTP request via UnityWebRequest: provider={provider}, url={SanitizeEndpoint(provider, url)}, bodyBytes={bodyRaw.Length}");
