@@ -28,7 +28,7 @@
   <RimTalkLE_Settings_AllowArtWeapons>Allow art edits: weapons</RimTalkLE_Settings_AllowArtWeapons>
   <RimTalkLE_Settings_AllowArtApparel>Allow art edits: apparel/gear</RimTalkLE_Settings_AllowArtApparel>
   <RimTalkLE_Settings_AllowArtLabels>Allow art name/description edits</RimTalkLE_Settings_AllowArtLabels>
-  <RimTalkLE_Settings_UseRimTalkApi>Use same API as RimTalk</RimTalkLE_Settings_UseRimTalkApi>
+  <RimTalkLE_Settings_UseRimTalkApi>Use shared RimAI text AI configuration</RimTalkLE_Settings_UseRimTalkApi>
   <RimTalkLE_Settings_StandaloneApi>Standalone API</RimTalkLE_Settings_StandaloneApi>
   <RimTalkLE_Settings_BaseUrl>Base URL</RimTalkLE_Settings_BaseUrl>
   <RimTalkLE_Settings_ApiKey>API Key</RimTalkLE_Settings_ApiKey>

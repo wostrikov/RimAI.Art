@@ -28,7 +28,7 @@
   <RimTalkLE_Settings_AllowArtWeapons>Дозволити редагування творів мистецтва: зброя</RimTalkLE_Settings_AllowArtWeapons>
   <RimTalkLE_Settings_AllowArtApparel>Дозволити редагування творів мистецтва: одяг/спорядження</RimTalkLE_Settings_AllowArtApparel>
   <RimTalkLE_Settings_AllowArtLabels>Дозволити редагування назв/описів творів мистецтва</RimTalkLE_Settings_AllowArtLabels>
-  <RimTalkLE_Settings_UseRimTalkApi>Використовувати той самий API, що й RimTalk</RimTalkLE_Settings_UseRimTalkApi>
+  <RimTalkLE_Settings_UseRimTalkApi>Використовувати спільну конфігурацію текстового ШІ RimAI</RimTalkLE_Settings_UseRimTalkApi>
   <RimTalkLE_Settings_StandaloneApi>Окремий API</RimTalkLE_Settings_StandaloneApi>
   <RimTalkLE_Settings_BaseUrl>Базова URL-адреса</RimTalkLE_Settings_BaseUrl>
   <RimTalkLE_Settings_ApiKey>Ключ API</RimTalkLE_Settings_ApiKey>
