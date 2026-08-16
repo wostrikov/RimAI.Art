@@ -16,6 +16,7 @@ using Ustas.RimAI.Art.llm;
 using Ustas.RimAI.Art.settings;
 using UnityEngine.Networking;
 using Ustas.RimAI.Core.AI;
+using Ustas.RimAI.Core.Configuration;
 using Verse;
 
 namespace Ustas.RimAI.Art.synopsis.llm
@@ -223,6 +224,24 @@ namespace Ustas.RimAI.Art.synopsis.llm
             var settings = Settings.Get();
             if (settings == null) return false;
 
+            var snapshot = SharedTextAiAccess.Current;
+            if (snapshot is { HasActive: true }
+                && Enum.TryParse(snapshot.Provider, true, out AIProvider sharedProvider)
+                && !string.IsNullOrWhiteSpace(snapshot.EffectiveModel))
+            {
+                config = new ApiConfig
+                {
+                    IsEnabled = true,
+                    Provider = sharedProvider,
+                    SelectedModel = snapshot.Model,
+                    CustomModelName = snapshot.CustomModel,
+                    BaseUrl = snapshot.BaseUrl,
+                    ApiKey = snapshot.ApiKey
+                };
+                if (HasUsableEndpoint(config))
+                    return true;
+            }
+
             if (settings.UseSimpleConfig)
             {
                 if (!string.IsNullOrWhiteSpace(settings.SimpleApiKey))
@@ -328,31 +347,11 @@ namespace Ustas.RimAI.Art.synopsis.llm
 
         private static string GetProviderEndpointUrl(AIProvider provider)
         {
-            var endpoint = TryGetProviderEndpointFromRegistry(provider);
+            var endpoint = GameplayTextAiProviderCatalog.ChatEndpoint(provider.ToString());
             if (!string.IsNullOrWhiteSpace(endpoint))
                 return endpoint;
 
-            switch (provider.ToString())
-            {
-                case "OpenAI":
-                    return "https://api.openai.com/v1/chat/completions";
-                case "DeepSeek":
-                    return "https://api.deepseek.com/v1/chat/completions";
-                case "Grok":
-                    return "https://api.x.ai/v1/chat/completions";
-                case "GLM":
-                    return "https://api.z.ai/api/paas/v4/chat/completions";
-                case "OpenRouter":
-                    return "https://openrouter.ai/api/v1/chat/completions";
-                case "AlibabaIntl":
-                    return "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions";
-                case "AlibabaCN":
-                    return "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions";
-                case "Player2":
-                    return "https://api.player2.game";
-                default:
-                    return string.Empty;
-            }
+            return TryGetProviderEndpointFromRegistry(provider);
         }
 
         private static string TryGetProviderEndpointFromRegistry(AIProvider provider)
