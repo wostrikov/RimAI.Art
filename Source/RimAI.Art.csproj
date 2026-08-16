@@ -52,13 +52,6 @@
     <PackageReference Include="Lib.Harmony.Ref" Version="2.*" PrivateAssets="All" />
   </ItemGroup>
 
-  <!-- RimTalk core reference: configurable location -->
-  <PropertyGroup>
-    <!-- Override on command line: -p:RimTalkDir=... -->
-    <RimWorldWorkshopDir Condition=" '$(RimWorldWorkshopDir)' == '' ">$(RIMWORLD_WORKSHOP_DIR)</RimWorldWorkshopDir>
-    <RimTalkDir Condition=" '$(RimTalkDir)' == '' ">$(RimWorldWorkshopDir)\3551203752</RimTalkDir>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\RimAI.Core\src\RimAI.Core\RimAI.Core.csproj">
       <Private>false</Private>
