@@ -1,7 +1,7 @@
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.book.vanilla
+namespace Ustas.RimAI.Art.book.vanilla
 {
     /// <summary>
     /// Vanilla 可靠识别：

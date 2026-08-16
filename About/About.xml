@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
 
-	<packageId>cj.rimtalk.literature</packageId>
+	<packageId>ustas.rimai.art</packageId>
 	<name>RimAI.Art</name>
 	<author>changlusss</author>
 
@@ -25,7 +25,7 @@ Gameplay text AI uses the shared RimAI configuration. Literature-specific prompt
 
 	<modDependencies>
 		<li>
-			<packageId>cj.rimtalk</packageId>
+			<packageId>ustas.rimai.communication</packageId>
 			<displayName>RimAI.Communication</displayName>
 		</li>
 		<li>
@@ -42,7 +42,7 @@ Gameplay text AI uses the shared RimAI configuration. Literature-specific prompt
 	</modDependencies>
 
 	<loadAfter>
-		<li>cj.rimtalk</li>
+		<li>ustas.rimai.communication</li>
 		<li>brrainz.harmony</li>
 		<li>Jaxe.Bubbles</li>
 	</loadAfter>

@@ -22,16 +22,16 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Globalization;
-using RimTalk.Data;
-using RimTalk.Service;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.synopsis.llm;
+using Ustas.RimAI.Communication.Data;
+using Ustas.RimAI.Communication.Service;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.synopsis.llm;
 using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.events
+namespace Ustas.RimAI.Art.events
 {
     [DataContract]
     public sealed class QuestDescriptionSpec : IJsonData
@@ -52,7 +52,7 @@ namespace RimTalk_LiteratureExpansion.events
     {
         private const int TimeoutSeconds = 60;
         private const int TargetTokens = 140;
-        private const string LogPrefix = "[RimTalk LE] [QuestRewrite]";
+        private const string LogPrefix = "[RimAI.Art] [QuestRewrite]";
         private static readonly Regex NumberTokenRegex = new Regex(@"\d+(?:\.\d+)?%?", RegexOptions.Compiled);
 
         private static readonly Dictionary<int, PendingQuestRewrite> Pending = new Dictionary<int, PendingQuestRewrite>();

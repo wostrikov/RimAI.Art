@@ -20,11 +20,11 @@
  *   (If you must store API key, keep it in LiteratureSettingsApi with clear UI warnings.)
  */
 using System.Collections.Generic;
-using RimTalk_LiteratureExpansion.art;
-using RimTalk_LiteratureExpansion.book;
+using Ustas.RimAI.Art.art;
+using Ustas.RimAI.Art.book;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.settings
+namespace Ustas.RimAI.Art.settings
 {
     public sealed class LiteratureSettings : ModSettings
     {

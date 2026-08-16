@@ -10,10 +10,10 @@
  * - Capture regenerated ideology descriptions for LLM append.
  */
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.events;
+using Ustas.RimAI.Art.events;
 using RimWorld;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(Ideo), nameof(Ideo.RegenerateDescription))]
     public static class Patch_Ideo_RegenerateDescription

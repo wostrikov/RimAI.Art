@@ -10,16 +10,16 @@
  */
 using System.Text;
 using System.Threading.Tasks;
-using RimTalk_LiteratureExpansion.authoring;
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.settings.util;
-using RimTalk_LiteratureExpansion.synopsis;
-using RimTalk_LiteratureExpansion.synopsis.llm;
+using Ustas.RimAI.Art.authoring;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.settings.util;
+using Ustas.RimAI.Art.synopsis;
+using Ustas.RimAI.Art.synopsis.llm;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.journal.llm
+namespace Ustas.RimAI.Art.journal.llm
 {
     public static class JournalFromSummaryRequest
     {

@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
-using RimTalk.Data;
+using Ustas.RimAI.Communication.Data;
 
-namespace RimTalk_LiteratureExpansion.tv
+namespace Ustas.RimAI.Art.tv
 {
     [DataContract]
     public sealed class TvProgramContent : IJsonData

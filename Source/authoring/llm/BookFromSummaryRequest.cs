@@ -17,15 +17,15 @@
  */
 using System.Text;
 using System.Threading.Tasks;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.settings.util;
-using RimTalk_LiteratureExpansion.synopsis;
-using RimTalk_LiteratureExpansion.synopsis.llm;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.settings.util;
+using Ustas.RimAI.Art.synopsis;
+using Ustas.RimAI.Art.synopsis.llm;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.authoring.llm
+namespace Ustas.RimAI.Art.authoring.llm
 {
     public static class BookFromSummaryRequest
     {
@@ -62,7 +62,7 @@ namespace RimTalk_LiteratureExpansion.authoring.llm
             return PromptTemplateUtil.Resolve(
                 settings?.promptBookFromSummary,
                 template,
-                ("LANG", RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang),
+                ("LANG", Ustas.RimAI.Art.RimTalkConstantShim.Lang),
                 ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
                 ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()),
                 ("SYNOPSIS_MAX_SENTENCES", SynopsisTokenPolicy.SynopsisMaxSentences.ToString()),
@@ -77,7 +77,7 @@ namespace RimTalk_LiteratureExpansion.authoring.llm
             string template = BuildTemplate(tokenTarget, storyTarget);
             return PromptTemplateUtil.ApplyTokens(
                 template,
-                ("LANG", RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang),
+                ("LANG", Ustas.RimAI.Art.RimTalkConstantShim.Lang),
                 ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
                 ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()),
                 ("SYNOPSIS_MAX_SENTENCES", SynopsisTokenPolicy.SynopsisMaxSentences.ToString()),
@@ -88,7 +88,7 @@ namespace RimTalk_LiteratureExpansion.authoring.llm
         private static string BuildTemplate(int tokenTarget, int storyTarget)
         {
             return
-$@"Пиши мовою {RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang}. Виведи лише JSON.
+$@"Пиши мовою {Ustas.RimAI.Art.RimTalkConstantShim.Lang}. Виведи лише JSON.
 
 Обов'язкові поля JSON:
 - ""title""

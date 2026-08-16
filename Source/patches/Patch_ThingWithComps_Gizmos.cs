@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.manual;
+using Ustas.RimAI.Art.manual;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(ThingWithComps), nameof(ThingWithComps.GetGizmos))]
     public static class Patch_ThingWithComps_Gizmos

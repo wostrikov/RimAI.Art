@@ -3,7 +3,7 @@ using RimWorld;
 using Verse;
 using Verse.AI;
 
-namespace RimTalk_LiteratureExpansion.journal
+namespace Ustas.RimAI.Art.journal
 {
     public static class JournalUtility
     {

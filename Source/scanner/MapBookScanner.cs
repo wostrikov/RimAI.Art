@@ -20,17 +20,17 @@
  * - Do not write to save data directly.
  * - Do not run LLM calls.
  */
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.scanner.queue;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.storage;
-using RimTalk_LiteratureExpansion.storage.save;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.scanner.queue;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.storage;
+using Ustas.RimAI.Art.storage.save;
 using RimWorld;
 using System.Collections.Generic;
 using System.Text;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.scanner
+namespace Ustas.RimAI.Art.scanner
 {
     public static class MapBookScanner
     {
@@ -137,7 +137,7 @@ namespace RimTalk_LiteratureExpansion.scanner
 
             if (matched > 0)
             {
-                Log.Message($"[RimTalk LE] Scan map {map.uniqueID}: books {matched}, enqueued {enqueued}, cached {cached}.");
+                Log.Message($"[RimAI.Art] Scan map {map.uniqueID}: books {matched}, enqueued {enqueued}, cached {cached}.");
             }
 
             if (detailedLog)
@@ -247,7 +247,7 @@ namespace RimTalk_LiteratureExpansion.scanner
             List<string> invalidKeySamples)
         {
             Log.Message(
-                $"[RimTalk LE] Detailed book scan map {map.uniqueID}: " +
+                $"[RimAI.Art] Detailed book scan map {map.uniqueID}: " +
                 $"allThings={mapThingCount}, candidateBooks={candidateCount}, " +
                 $"bookcases={shelfCount}, heldBooks={shelfHeldBooks}, duplicateCandidates={duplicateCandidates}, " +
                 $"matched={matched}, filtered={filtered}, classifierMiss={classifierMiss}, " +
@@ -266,7 +266,7 @@ namespace RimTalk_LiteratureExpansion.scanner
             if (samples == null || samples.Count == 0) return;
 
             var sb = new StringBuilder();
-            sb.Append("[RimTalk LE] ");
+            sb.Append("[RimAI.Art] ");
             sb.Append(title);
             sb.Append(": ");
             for (int i = 0; i < samples.Count; i++)

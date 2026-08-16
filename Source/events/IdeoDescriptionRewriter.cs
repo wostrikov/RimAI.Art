@@ -18,17 +18,17 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using RimTalk.Data;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.settings.util;
-using RimTalk_LiteratureExpansion.synopsis.llm;
-using RimTalk_LiteratureExpansion.storage.save;
+using Ustas.RimAI.Communication.Data;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.settings.util;
+using Ustas.RimAI.Art.synopsis.llm;
+using Ustas.RimAI.Art.storage.save;
 using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.events
+namespace Ustas.RimAI.Art.events
 {
     [DataContract]
     public sealed class IdeoFlavorSpec : IJsonData
@@ -48,7 +48,7 @@ namespace RimTalk_LiteratureExpansion.events
         private const int TargetTokens = 140;
         private const int DefaultCharLimit = 360;
         private const int ScanIntervalTicks = GenDate.TicksPerHour;
-        private const string LogPrefix = "[RimTalk LE] [IdeoRewrite]";
+        private const string LogPrefix = "[RimAI.Art] [IdeoRewrite]";
 
         private static readonly Dictionary<int, PendingIdeoRewrite> Pending = new Dictionary<int, PendingIdeoRewrite>();
         private static readonly Queue<Action> PendingActions = new Queue<Action>();

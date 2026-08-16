@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Text;
 using RimWorld;
-using RimTalk_LiteratureExpansion.storage;
+using Ustas.RimAI.Art.storage;
 using UnityEngine;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.manual
+namespace Ustas.RimAI.Art.manual
 {
     public sealed class Dialog_ManualTextEditor : Window
     {

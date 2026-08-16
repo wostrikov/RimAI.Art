@@ -20,14 +20,14 @@
  * - Do not write book UI fields here.
  */
 using System.Threading.Tasks;
-using RimTalk_LiteratureExpansion.authoring.llm;
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.synopsis;
-using RimTalk_LiteratureExpansion.synopsis.model;
+using Ustas.RimAI.Art.authoring.llm;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.synopsis;
+using Ustas.RimAI.Art.synopsis.model;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.authoring
+namespace Ustas.RimAI.Art.authoring
 {
     public static class BookAuthoringPipeline
     {

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using RimTalk_LiteratureExpansion.art;
-using RimTalk_LiteratureExpansion.storage;
+using Ustas.RimAI.Art.art;
+using Ustas.RimAI.Art.storage;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.scanner.queue
+namespace Ustas.RimAI.Art.scanner.queue
 {
     public static class PendingArtQueue
     {

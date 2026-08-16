@@ -3,10 +3,10 @@
  * - Enqueue art for LLM description after art is initialized.
  */
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.scanner.production;
+using Ustas.RimAI.Art.scanner.production;
 using RimWorld;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(CompArt), "InitializeArtInternal")]
     public static class Patch_CompArt_Initialize

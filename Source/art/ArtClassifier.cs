@@ -1,7 +1,7 @@
-using RimTalk_LiteratureExpansion.settings;
+using Ustas.RimAI.Art.settings;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.art
+namespace Ustas.RimAI.Art.art
 {
     public static class ArtClassifier
     {

@@ -15,11 +15,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.scanner.production;
+using Ustas.RimAI.Art.scanner.production;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(GenRecipe), nameof(GenRecipe.MakeRecipeProducts))]
     public static class Patch_GenRecipe_MakeRecipeProducts

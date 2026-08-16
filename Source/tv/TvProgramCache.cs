@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.tv
+namespace Ustas.RimAI.Art.tv
 {
     public sealed class TvProgramCache : IExposable
     {

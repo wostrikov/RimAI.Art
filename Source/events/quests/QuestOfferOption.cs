@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.events.quests
+namespace Ustas.RimAI.Art.events.quests
 {
     public sealed class QuestOfferOption
     {

@@ -1,10 +1,10 @@
 using System.Text;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.settings.util;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.settings.util;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.tv
+namespace Ustas.RimAI.Art.tv
 {
     public static class TvProgramPromptBuilder
     {

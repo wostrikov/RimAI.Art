@@ -1,13 +1,13 @@
 using System;
 using System.Text;
 using RimWorld;
-using RimTalk_LiteratureExpansion.art;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.storage;
-using RimTalk_LiteratureExpansion.storage.save;
+using Ustas.RimAI.Art.art;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.storage;
+using Ustas.RimAI.Art.storage.save;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.integration
+namespace Ustas.RimAI.Art.integration
 {
     public static class ArtCacheUtil
     {

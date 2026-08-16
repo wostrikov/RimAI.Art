@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using RimTalk_LiteratureExpansion.storage;
+using Ustas.RimAI.Art.storage;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.tv
+namespace Ustas.RimAI.Art.tv
 {
     public sealed class TvProgramRecord : IExposable
     {

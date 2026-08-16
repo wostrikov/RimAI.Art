@@ -14,13 +14,13 @@
  * Do NOT:
  * - Do not perform logic during ExposeData beyond serialization.
  */
-using RimTalk_LiteratureExpansion.events.quests;
-using RimTalk_LiteratureExpansion.storage;
-using RimTalk_LiteratureExpansion.tv;
+using Ustas.RimAI.Art.events.quests;
+using Ustas.RimAI.Art.storage;
+using Ustas.RimAI.Art.tv;
 using RimWorld.Planet;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.storage.save
+namespace Ustas.RimAI.Art.storage.save
 {
     public sealed class LiteratueSaveData : WorldComponent
     {
@@ -62,7 +62,7 @@ namespace RimTalk_LiteratureExpansion.storage.save
                 WarningRaidQueue = new System.Collections.Generic.List<WarningRaidRecord>();
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
-                Log.Message($"[RimTalk LE] Literature data loaded. Cached synopses: {SynopsisCache?.Count ?? 0}, art: {ArtCache?.Count ?? 0}, ideos: {IdeoCache?.Count ?? 0}, ideoProcessed: {IdeoCache?.ProcessedCount ?? 0}, tv: {TvProgramCache?.Count ?? 0}, warningRaids: {WarningRaidQueue?.Count ?? 0}.");
+                Log.Message($"[RimAI.Art] Literature data loaded. Cached synopses: {SynopsisCache?.Count ?? 0}, art: {ArtCache?.Count ?? 0}, ideos: {IdeoCache?.Count ?? 0}, ideoProcessed: {IdeoCache?.ProcessedCount ?? 0}, tv: {TvProgramCache?.Count ?? 0}, warningRaids: {WarningRaidQueue?.Count ?? 0}.");
         }
 
         public static LiteratueSaveData Current => Find.World?.GetComponent<LiteratueSaveData>();

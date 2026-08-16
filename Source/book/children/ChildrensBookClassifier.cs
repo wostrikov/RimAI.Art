@@ -31,9 +31,9 @@ using System.Linq;
 using System.Reflection;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.book.children
+namespace Ustas.RimAI.Art.book.children
 {
-    public sealed class ChildrensBookClassifier : RimTalk_LiteratureExpansion.book.IBookClassifier
+    public sealed class ChildrensBookClassifier : Ustas.RimAI.Art.book.IBookClassifier
     {
         private const string DefOfTypeFullName = "Childrens_Books.ChildrensBookDefOf";
         private const string FieldChildrensBook = "BBLK_ChildrensBook";

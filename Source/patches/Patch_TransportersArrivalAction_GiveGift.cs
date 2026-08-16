@@ -11,12 +11,12 @@
  */
 using System.Collections.Generic;
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.events.quests;
+using Ustas.RimAI.Art.events.quests;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(TransportersArrivalAction_GiveGift), nameof(TransportersArrivalAction_GiveGift.Arrived))]
     public static class Patch_TransportersArrivalAction_GiveGift

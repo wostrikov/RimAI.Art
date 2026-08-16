@@ -1,9 +1,9 @@
-using RimTalk_LiteratureExpansion.art.model;
+using Ustas.RimAI.Art.art.model;
 using System;
 using System.Collections.Generic;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.storage
+namespace Ustas.RimAI.Art.storage
 {
     public sealed class ArtDescriptionRecord : IExposable
     {

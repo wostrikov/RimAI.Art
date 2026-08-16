@@ -1,4 +1,4 @@
-namespace RimTalk_LiteratureExpansion.storage
+namespace Ustas.RimAI.Art.storage
 {
     public sealed class ArtKey
     {

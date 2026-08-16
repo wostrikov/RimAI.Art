@@ -1,12 +1,12 @@
 using System.Text;
-using RimTalk.Service;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.settings;
+using Ustas.RimAI.Communication.Service;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.settings;
 using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.events.letters
+namespace Ustas.RimAI.Art.events.letters
 {
     public static class FamilyLetterRequest
     {

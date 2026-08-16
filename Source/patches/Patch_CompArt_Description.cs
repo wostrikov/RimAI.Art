@@ -3,11 +3,11 @@
  * - Override CompArt description text when cached art description is available.
  */
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.integration;
+using Ustas.RimAI.Art.integration;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(CompArt), nameof(CompArt.GenerateImageDescription))]
     public static class Patch_CompArt_Description

@@ -4,22 +4,22 @@
  * Purpose:
  * - Track newly generated art and enqueue for LLM description.
  */
-using RimTalk_LiteratureExpansion.art;
-using RimTalk_LiteratureExpansion.scanner.queue;
-using RimTalk_LiteratureExpansion.storage;
-using RimTalk_LiteratureExpansion.storage.save;
+using Ustas.RimAI.Art.art;
+using Ustas.RimAI.Art.scanner.queue;
+using Ustas.RimAI.Art.storage;
+using Ustas.RimAI.Art.storage.save;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.scanner.production
+namespace Ustas.RimAI.Art.scanner.production
 {
     public static class ArtProductionTracker
     {
         public static void NotifyGenerated(Thing thing)
         {
             if (thing == null || thing.DestroyedOrNull()) return;
-            if (!RimTalk_LiteratureExpansion.integration.ArtCacheUtil.IsArtEditingEnabled())
+            if (!Ustas.RimAI.Art.integration.ArtCacheUtil.IsArtEditingEnabled())
             {
-                Log.Message($"[RimTalk LE] Art generation skipped: art category edits disabled ({RimTalk_LiteratureExpansion.integration.ArtCacheUtil.DescribeArtSettings()}).");
+                Log.Message($"[RimAI.Art] Art generation skipped: art category edits disabled ({Ustas.RimAI.Art.integration.ArtCacheUtil.DescribeArtSettings()}).");
                 return;
             }
 
@@ -29,10 +29,10 @@ namespace RimTalk_LiteratureExpansion.scanner.production
                 var comp = thing.TryGetComp<RimWorld.CompArt>();
                 if (comp != null)
                 {
-                    var settings = RimTalk_LiteratureExpansion.settings.LiteratureMod.Settings;
+                    var settings = Ustas.RimAI.Art.settings.LiteratureMod.Settings;
                     bool allowLabelEdits = settings != null && settings.allowArtLabelEdits;
-                    if (!RimTalk_LiteratureExpansion.art.ArtEditPolicy.ShouldGenerate(thing, allowLabelEdits))
-                        Log.Message($"[RimTalk LE] Art generation skipped: not eligible ({thing.LabelCap}, {thing.def?.defName}).");
+                    if (!Ustas.RimAI.Art.art.ArtEditPolicy.ShouldGenerate(thing, allowLabelEdits))
+                        Log.Message($"[RimAI.Art] Art generation skipped: not eligible ({thing.LabelCap}, {thing.def?.defName}).");
                 }
                 return;
             }
@@ -46,7 +46,7 @@ namespace RimTalk_LiteratureExpansion.scanner.production
             }
 
             if (PendingArtQueue.Enqueue(meta))
-                Log.Message($"[RimTalk LE] Enqueued art {meta.ThingLabel} ({meta.DefName}) from generation.");
+                Log.Message($"[RimAI.Art] Enqueued art {meta.ThingLabel} ({meta.DefName}) from generation.");
         }
     }
 }

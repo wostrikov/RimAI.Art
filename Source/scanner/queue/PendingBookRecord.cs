@@ -1,8 +1,8 @@
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.storage;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.storage;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.scanner.queue
+namespace Ustas.RimAI.Art.scanner.queue
 {
     public sealed class PendingBookRecord
     {

@@ -1,9 +1,9 @@
 using System;
-using RimTalk_LiteratureExpansion.settings;
+using Ustas.RimAI.Art.settings;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.art
+namespace Ustas.RimAI.Art.art
 {
     [Flags]
     public enum ArtEditTarget

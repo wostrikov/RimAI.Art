@@ -16,7 +16,7 @@
 using System;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.settings.util
+namespace Ustas.RimAI.Art.settings.util
 {
     public static class SettingsValidators
     {

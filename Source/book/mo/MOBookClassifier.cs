@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.book.mo
+namespace Ustas.RimAI.Art.book.mo
 {
     public sealed class MOBookClassifier : IBookClassifier
     {

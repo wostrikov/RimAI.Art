@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
-using RimTalk.Data;
+using Ustas.RimAI.Communication.Data;
 
-namespace RimTalk_LiteratureExpansion.events.letters
+namespace Ustas.RimAI.Art.events.letters
 {
     [DataContract]
     public sealed class AllyDiplomacyLetterSpec : IJsonData

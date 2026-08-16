@@ -22,16 +22,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LudeonTK;
-using RimTalk_LiteratureExpansion.events;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.storage.save;
-using RimTalk_LiteratureExpansion.synopsis.llm;
+using Ustas.RimAI.Art.events;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.storage.save;
+using Ustas.RimAI.Art.synopsis.llm;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.events.quests
+namespace Ustas.RimAI.Art.events.quests
 {
 
     public static class QuestEventScheduler
@@ -57,7 +57,7 @@ namespace RimTalk_LiteratureExpansion.events.quests
         private const string TradeRequestTagSuffix = "RimTalkLE_TradeRequest";
         private const string AdvertQuestDefName = "RimTalkLE_AdvertQuest";
         private const string WarningQuestDefName = "RimTalkLE_WarningQuest";
-        private const string LogPrefix = "[RimTalk LE] [QuestEvent]";
+        private const string LogPrefix = "[RimAI.Art] [QuestEvent]";
 
         private static int _nextCheckTick;
         private static bool _advertPending;

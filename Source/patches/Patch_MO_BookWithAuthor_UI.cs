@@ -9,13 +9,13 @@
 using System.Collections.Generic;
 using System.Reflection;
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.integration;
-using RimTalk_LiteratureExpansion.storage;
-using RimTalk_LiteratureExpansion.storage.save;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.integration;
+using Ustas.RimAI.Art.storage;
+using Ustas.RimAI.Art.storage.save;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch]
     public static class Patch_MO_BookWithAuthor_UI

@@ -21,17 +21,17 @@
  * - Do not manage scan scheduling.
  */
 using System.Threading.Tasks;
-using RimTalk_LiteratureExpansion.authoring;
-using RimTalk_LiteratureExpansion.authoring.llm;
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.storage;
-using RimTalk_LiteratureExpansion.storage.save;
-using RimTalk_LiteratureExpansion.synopsis.llm;
-using RimTalk_LiteratureExpansion.synopsis.model;
+using Ustas.RimAI.Art.authoring;
+using Ustas.RimAI.Art.authoring.llm;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.storage;
+using Ustas.RimAI.Art.storage.save;
+using Ustas.RimAI.Art.synopsis.llm;
+using Ustas.RimAI.Art.synopsis.model;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.synopsis
+namespace Ustas.RimAI.Art.synopsis
 {
     public static class BookSynopsisService
     {
@@ -54,9 +54,9 @@ namespace RimTalk_LiteratureExpansion.synopsis
                 Context = SynopsisPromptBuilder.BuildContext(meta)
             };
 
-            Log.Message($"[RimTalk LE] BookSynopsisService: dispatch LLM request for {meta.DefName}.");
+            Log.Message($"[RimAI.Art] BookSynopsisService: dispatch LLM request for {meta.DefName}.");
             var synopsis = await SynopsisLLMAdapter.QuerySynopsisAsync(request);
-            Log.Message($"[RimTalk LE] BookSynopsisService: LLM request completed for {meta.DefName} (null={synopsis == null}).");
+            Log.Message($"[RimAI.Art] BookSynopsisService: LLM request completed for {meta.DefName} (null={synopsis == null}).");
             return Normalize(synopsis);
         }
 

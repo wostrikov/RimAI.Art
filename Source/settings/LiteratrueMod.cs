@@ -21,7 +21,7 @@ using UnityEngine;
 using Ustas.RimAI.Core.Modules;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.settings
+namespace Ustas.RimAI.Art.settings
 {
     public sealed class LiteratureMod : Mod
     {

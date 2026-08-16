@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using RimTalk.Service;
-using RimTalk_LiteratureExpansion.events.letters;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.storage.save;
-using RimTalk_LiteratureExpansion.synopsis.llm;
+using Ustas.RimAI.Communication.Service;
+using Ustas.RimAI.Art.events.letters;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.storage.save;
+using Ustas.RimAI.Art.synopsis.llm;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.events
+namespace Ustas.RimAI.Art.events
 {
     public static class LetterEventScheduler
     {
@@ -117,7 +117,7 @@ namespace RimTalk_LiteratureExpansion.events
             }
 
             _diplomacyPending = true;
-            Log.Message($"[RimTalk LE] [Letter] Scheduling ally diplomacy letter from {faction.Name}.");
+            Log.Message($"[RimAI.Art] [Letter] Scheduling ally diplomacy letter from {faction.Name}.");
 
             var task = IndependentBookLlmClient.QueryJsonAsync<AllyDiplomacyLetterSpec>(request);
             task.ContinueWith(t =>
@@ -139,7 +139,7 @@ namespace RimTalk_LiteratureExpansion.events
             if (spec == null || faction == null || faction.defeated)
             {
                 data.NextAllyDiplomacyTick = tick + DiplomacyRetryTicks;
-                Log.Message("[RimTalk LE] [Letter] Ally diplomacy letter failed; retry scheduled.");
+                Log.Message("[RimAI.Art] [Letter] Ally diplomacy letter failed; retry scheduled.");
                 return;
             }
 
@@ -168,7 +168,7 @@ namespace RimTalk_LiteratureExpansion.events
             if (!AreEasterLettersEnabled()) return;
             if (_familyPending)
             {
-                Log.Message("[RimTalk LE] [Letter] Family letter pending; skip schedule.");
+                Log.Message("[RimAI.Art] [Letter] Family letter pending; skip schedule.");
                 return;
             }
             if (data.NextFamilyLetterTick <= 0)
@@ -181,14 +181,14 @@ namespace RimTalk_LiteratureExpansion.events
                     out var recipientRelationToSender,
                     out var map))
             {
-                Log.Message("[RimTalk LE] [Letter] Family letter skipped: no eligible relatives.");
+                Log.Message("[RimAI.Art] [Letter] Family letter skipped: no eligible relatives.");
                 data.NextFamilyLetterTick = tick + FamilyRetryTicks;
                 return;
             }
 
             if (!LetterGiftResolver.TryResolveGift(null, relative?.Faction, out var giftSample))
             {
-                Log.Message("[RimTalk LE] [Letter] Family letter skipped: gift sampling failed.");
+                Log.Message("[RimAI.Art] [Letter] Family letter skipped: gift sampling failed.");
                 data.NextFamilyLetterTick = tick + FamilyRetryTicks;
                 return;
             }
@@ -201,7 +201,7 @@ namespace RimTalk_LiteratureExpansion.events
                 giftDefName = mt.InnerThing.def?.defName ?? giftDefName;
                 giftLabel = mt.InnerThing.LabelCap; // 或 mt.InnerThing.def.label.CapitalizeFirst()
             }
-            Log.Message($"[RimTalk LE] [Letter] Gift sample: def='{giftDefName}', label='{giftLabel}'.");
+            Log.Message($"[RimAI.Art] [Letter] Gift sample: def='{giftDefName}', label='{giftLabel}'.");
             var request = FamilyLetterRequest.BuildRequest(
                 colonist,
                 relative,
@@ -216,13 +216,13 @@ namespace RimTalk_LiteratureExpansion.events
             }
 
             _familyPending = true;
-            Log.Message($"[RimTalk LE] [Letter] Scheduling family letter for {colonist.LabelShortCap}.");
+            Log.Message($"[RimAI.Art] [Letter] Scheduling family letter for {colonist.LabelShortCap}.");
 
             var task = IndependentBookLlmClient.QueryJsonAsync<FamilyLetterSpec>(request);
             task.ContinueWith(t =>
             {
                 var spec = t.Status == TaskStatus.RanToCompletion ? t.Result : null;
-                Log.Message($"[RimTalk LE] [Letter] Family letter LLM completed (null={spec == null}).");
+                Log.Message($"[RimAI.Art] [Letter] Family letter LLM completed (null={spec == null}).");
                 EnqueueAction(() => ApplyFamilyLetterResult(spec, colonist, relative, map, giftDefName));
             }, TaskScheduler.Default);
         }
@@ -239,16 +239,16 @@ namespace RimTalk_LiteratureExpansion.events
             if (spec == null || colonist == null || map == null)
             {
                 data.NextFamilyLetterTick = tick + FamilyRetryTicks;
-                Log.Message("[RimTalk LE] [Letter] Family letter failed; retry scheduled.");
+                Log.Message("[RimAI.Art] [Letter] Family letter failed; retry scheduled.");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(giftDefName) ||
                 !LetterGiftResolver.TryResolveGift(giftDefName, relative?.Faction, out var gift))
             {
-                Log.Message($"[RimTalk LE] [Letter] Gift resolve failed: giftDefName='{giftDefName}', specGiftKind='{spec.GiftKind ?? ""}'.");
+                Log.Message($"[RimAI.Art] [Letter] Gift resolve failed: giftDefName='{giftDefName}', specGiftKind='{spec.GiftKind ?? ""}'.");
                 data.NextFamilyLetterTick = tick + FamilyRetryTicks;
-                Log.Message("[RimTalk LE] [Letter] Family letter gift resolution failed; retry scheduled.");
+                Log.Message("[RimAI.Art] [Letter] Family letter gift resolution failed; retry scheduled.");
                 return;
             }
 
@@ -375,7 +375,7 @@ namespace RimTalk_LiteratureExpansion.events
 
             if (candidates.Count == 0)
             {
-                Log.Message($"[RimTalk LE] [Letter] No family candidates: colonists={colonists.Count} related={relatedSeen} visible={visible} offMap={offMap} missingDirect={missingDirect}.");
+                Log.Message($"[RimAI.Art] [Letter] No family candidates: colonists={colonists.Count} related={relatedSeen} visible={visible} offMap={offMap} missingDirect={missingDirect}.");
                 return false;
             }
 
@@ -386,7 +386,7 @@ namespace RimTalk_LiteratureExpansion.events
             relative = chosen.relative;
             senderRelationToRecipient = chosen.senderRelation;
             recipientRelationToSender = chosen.recipientRelation;
-            Log.Message($"[RimTalk LE] [Letter] Picked family pair: recipient={colonist.LabelShortCap}, sender={relative.LabelShortCap}, senderRelation={senderRelationToRecipient}, recipientRelation={recipientRelationToSender}, priority={bestPriority}.");
+            Log.Message($"[RimAI.Art] [Letter] Picked family pair: recipient={colonist.LabelShortCap}, sender={relative.LabelShortCap}, senderRelation={senderRelationToRecipient}, recipientRelation={recipientRelationToSender}, priority={bestPriority}.");
             return true;
         }
 

@@ -8,17 +8,17 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using RimTalk;
-using RimTalk.Client;
-using RimTalk.Data;
-using RimTalk.Util;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.settings;
+using Ustas.RimAI.Communication;
+using Ustas.RimAI.Communication.Client;
+using Ustas.RimAI.Communication.Data;
+using Ustas.RimAI.Communication.Util;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.settings;
 using UnityEngine.Networking;
 using Ustas.RimAI.Core.AI;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.synopsis.llm
+namespace Ustas.RimAI.Art.synopsis.llm
 {
     public static class IndependentBookLlmClient
     {
@@ -66,14 +66,14 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
 
             if (!TryGetActiveConfig(out var config))
             {
-                Log.Warning($"[RimTalk LE] [Req {requestId}] No active RimTalk API config for independent literature request.");
+                Log.Warning($"[RimAI.Art] [Req {requestId}] No active RimTalk API config for independent literature request.");
                 return null;
             }
 
             string model = ResolveModel(config);
             if (string.IsNullOrWhiteSpace(model))
             {
-                Log.Warning($"[RimTalk LE] [Req {requestId}] Missing model for independent literature request.");
+                Log.Warning($"[RimAI.Art] [Req {requestId}] Missing model for independent literature request.");
                 return null;
             }
 
@@ -86,7 +86,7 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
                 usePlayer2Local = !string.IsNullOrWhiteSpace(apiKey);
                 if (!usePlayer2Local)
                 {
-                    Log.Warning($"[RimTalk LE] [Req {requestId}] Player2 API key is empty and no local app detected.");
+                    Log.Warning($"[RimAI.Art] [Req {requestId}] Player2 API key is empty and no local app detected.");
                     return null;
                 }
             }
@@ -96,37 +96,37 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
                 endpoint = $"{Player2LocalBaseUrl}/v1/chat/completions";
             if (string.IsNullOrWhiteSpace(endpoint))
             {
-                Log.Warning($"[RimTalk LE] [Req {requestId}] Missing endpoint for independent literature request.");
+                Log.Warning($"[RimAI.Art] [Req {requestId}] Missing endpoint for independent literature request.");
                 return null;
             }
 
             try
             {
-                Log.Message($"[RimTalk LE] [Req {requestId}] Independent LLM request start.");
-                Log.Message($"[RimTalk LE] [Req {requestId}] Provider: {config.Provider}, Model: {model}");
-                Log.Message($"[RimTalk LE] [Req {requestId}] Endpoint: {SanitizeEndpoint(config.Provider, endpoint)}");
-                Log.Message($"[RimTalk LE] [Req {requestId}] Credential source: independent provider setting");
+                Log.Message($"[RimAI.Art] [Req {requestId}] Independent LLM request start.");
+                Log.Message($"[RimAI.Art] [Req {requestId}] Provider: {config.Provider}, Model: {model}");
+                Log.Message($"[RimAI.Art] [Req {requestId}] Endpoint: {SanitizeEndpoint(config.Provider, endpoint)}");
+                Log.Message($"[RimAI.Art] [Req {requestId}] Credential source: independent provider setting");
                 if (string.IsNullOrWhiteSpace(apiKey) && config.Provider != AIProvider.Google)
-                    Log.Warning($"[RimTalk LE] [Req {requestId}] API key is empty.");
+                    Log.Warning($"[RimAI.Art] [Req {requestId}] API key is empty.");
 
                 int maxTokens = ResolveMaxOutputTokens();
-                Log.Message($"[RimTalk LE] [Req {requestId}] Request max tokens: {maxTokens}");
+                Log.Message($"[RimAI.Art] [Req {requestId}] Request max tokens: {maxTokens}");
                 string json = BuildRequestJson(config.Provider, model, request.Instruction, request.Context, maxTokens);
-                Log.Message($"[RimTalk LE] [Req {requestId}] Request payload length: {json?.Length ?? 0}");
+                Log.Message($"[RimAI.Art] [Req {requestId}] Request payload length: {json?.Length ?? 0}");
 
                 string responseText = await PostJsonAsync(requestId, endpoint, json, apiKey, config.Provider);
                 if (string.IsNullOrWhiteSpace(responseText))
                 {
-                    Log.Warning($"[RimTalk LE] [Req {requestId}] Empty response from independent literature request.");
+                    Log.Warning($"[RimAI.Art] [Req {requestId}] Empty response from independent literature request.");
                     return null;
                 }
 
-                Log.Message($"[RimTalk LE] [Req {requestId}] Response length: {responseText.Length}");
+                Log.Message($"[RimAI.Art] [Req {requestId}] Response length: {responseText.Length}");
                 LogResponseMeta(config.Provider, responseText, requestId);
                 string content = ExtractContent(config.Provider, responseText, requestId);
                 if (string.IsNullOrWhiteSpace(content))
                 {
-                    Log.Warning($"[RimTalk LE] [Req {requestId}] Failed to parse response content from independent literature request.");
+                    Log.Warning($"[RimAI.Art] [Req {requestId}] Failed to parse response content from independent literature request.");
                     return null;
                 }
 
@@ -137,21 +137,21 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
                     int startIndex = trimmed.IndexOf('{');
                     int endIndex = trimmed.LastIndexOf('}');
                     bool hasFence = trimmed.StartsWith("```", StringComparison.Ordinal);
-                    Log.Warning($"[RimTalk LE] [Req {requestId}] JSON detect: fence={hasFence}, start={startIndex}, end={endIndex}, len={trimmed.Length}");
-                    Log.Warning($"[RimTalk LE] [Req {requestId}] Response content was not JSON; abort deserialize.");
-                    Log.Warning($"[RimTalk LE] [Req {requestId}] Content preview: {TrimPreview(content)}");
+                    Log.Warning($"[RimAI.Art] [Req {requestId}] JSON detect: fence={hasFence}, start={startIndex}, end={endIndex}, len={trimmed.Length}");
+                    Log.Warning($"[RimAI.Art] [Req {requestId}] Response content was not JSON; abort deserialize.");
+                    Log.Warning($"[RimAI.Art] [Req {requestId}] Content preview: {TrimPreview(content)}");
                     return null;
                 }
 
-            Log.Message($"[RimTalk LE] [Req {requestId}] Parsed JSON payload length: {jsonPayload.Length}");
+            Log.Message($"[RimAI.Art] [Req {requestId}] Parsed JSON payload length: {jsonPayload.Length}");
             var result = JsonUtil.DeserializeFromJson<T>(jsonPayload);
-            Log.Message($"[RimTalk LE] [Req {requestId}] JSON deserialization {(result == null ? "failed" : "succeeded")}.");
+            Log.Message($"[RimAI.Art] [Req {requestId}] JSON deserialization {(result == null ? "failed" : "succeeded")}.");
             return result;
         }
 
             catch (Exception ex)
             {
-                Log.Warning($"[RimTalk LE] [Req {requestId}] Independent literature request failed: {ex.GetType().Name} - {ex.Message}");
+                Log.Warning($"[RimAI.Art] [Req {requestId}] Independent literature request failed: {ex.GetType().Name} - {ex.Message}");
                 return null;
             }
         }
@@ -162,7 +162,7 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
             IAIClient client = await AIClientFactory.GetAIClientAsync();
             if (client == null)
             {
-                Log.Warning($"[RimTalk LE] [Req {requestId}] Конфігурацію AI RimTalk не налаштовано.");
+                Log.Warning($"[RimAI.Art] [Req {requestId}] Конфігурацію AI RimTalk не налаштовано.");
                 return null;
             }
 
@@ -189,14 +189,14 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
                 var api = leSettings.api;
                 if (api == null)
                 {
-                    Log.Warning("[RimTalk LE] Independent API settings are missing.");
+                    Log.Warning("[RimAI.Art] Independent API settings are missing.");
                     return false;
                 }
 
                 if (string.IsNullOrWhiteSpace(api.baseUrl) ||
                     string.IsNullOrWhiteSpace(api.model))
                 {
-                    Log.Warning("[RimTalk LE] Independent API settings are incomplete (baseUrl/model).");
+                    Log.Warning("[RimAI.Art] Independent API settings are incomplete (baseUrl/model).");
                     return false;
                 }
 
@@ -212,7 +212,7 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
 
                 if (!HasUsableEndpoint(config))
                 {
-                    Log.Warning("[RimTalk LE] Independent API endpoint is missing.");
+                    Log.Warning("[RimAI.Art] Independent API endpoint is missing.");
                     config = null;
                     return false;
                 }
@@ -249,7 +249,7 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
                     if (candidate == null || !candidate.IsValid()) continue;
                     if (!HasUsableEndpoint(candidate))
                     {
-                        Log.Warning($"[RimTalk LE] Skipping config without endpoint (provider={candidate.Provider}).");
+                        Log.Warning($"[RimAI.Art] Skipping config without endpoint (provider={candidate.Provider}).");
                         continue;
                     }
 
@@ -265,7 +265,7 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
             {
                 if (!HasUsableEndpoint(localConfig))
                 {
-                    Log.Warning("[RimTalk LE] Local config missing Base URL for independent requests.");
+                    Log.Warning("[RimAI.Art] Local config missing Base URL for independent requests.");
                     return false;
                 }
                 config = localConfig;
@@ -359,7 +359,7 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
         {
             try
             {
-                var registryType = typeof(AIProvider).Assembly.GetType("RimTalk.AIProviderRegistry");
+                var registryType = typeof(AIProvider).Assembly.GetType("Ustas.RimAI.Communication.AIProviderRegistry");
                 if (registryType == null) return null;
                 var method = registryType.GetMethod("GetEndpointUrl",
                     BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(AIProvider) }, null);
@@ -472,7 +472,7 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
             }
             catch (Exception ex)
             {
-                Log.Warning($"[RimTalk LE] [Req {requestId}] Request payload encode failed: {ex.GetType().Name} - {ex.Message}");
+                Log.Warning($"[RimAI.Art] [Req {requestId}] Request payload encode failed: {ex.GetType().Name} - {ex.Message}");
                 throw;
             }
 
@@ -490,15 +490,15 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
                 }));
                 if (!shared.Succeeded)
                 {
-                    Log.Warning($"[RimTalk LE] [Req {requestId}] Shared text-AI failed: {shared.ErrorKind}");
+                    Log.Warning($"[RimAI.Art] [Req {requestId}] Shared text-AI failed: {shared.ErrorKind}");
                     return null;
                 }
 
-                Log.Message($"[RimTalk LE] [Req {requestId}] Shared transport={shared.TransportKind} status={shared.StatusCode}");
+                Log.Message($"[RimAI.Art] [Req {requestId}] Shared transport={shared.TransportKind} status={shared.StatusCode}");
                 return shared.RawPayload;
             }
 
-            Log.Message($"[RimTalk LE] [Req {requestId}] HTTP request via UnityWebRequest: provider={provider}, url={SanitizeEndpoint(provider, url)}, bodyBytes={bodyRaw.Length}");
+            Log.Message($"[RimAI.Art] [Req {requestId}] HTTP request via UnityWebRequest: provider={provider}, url={SanitizeEndpoint(provider, url)}, bodyBytes={bodyRaw.Length}");
 
             using var webRequest = new UnityWebRequest(url, "POST");
             webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -517,11 +517,11 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
             if (webRequest.responseCode >= 400 || webRequest.isNetworkError || webRequest.isHttpError)
             {
                 string detail = BuildSafePreview(responseText, 300);
-                Log.Warning($"[RimTalk LE] [Req {requestId}] HTTP {(int)webRequest.responseCode}: {webRequest.error ?? "(no error)"} body={detail}");
+                Log.Warning($"[RimAI.Art] [Req {requestId}] HTTP {(int)webRequest.responseCode}: {webRequest.error ?? "(no error)"} body={detail}");
                 return null;
             }
 
-            Log.Message($"[RimTalk LE] [Req {requestId}] Response status: {webRequest.responseCode} in {sw.ElapsedMilliseconds} ms.");
+            Log.Message($"[RimAI.Art] [Req {requestId}] Response status: {webRequest.responseCode} in {sw.ElapsedMilliseconds} ms.");
             return responseText;
         }
 
@@ -531,7 +531,7 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
             var matches = regex.Matches(responseText);
             if (matches.Count == 0)
             {
-                Log.Warning($"[RimTalk LE] [Req {requestId}] No content fragments matched in response.");
+                Log.Warning($"[RimAI.Art] [Req {requestId}] No content fragments matched in response.");
                 return null;
             }
 
@@ -539,7 +539,7 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
             foreach (Match match in matches)
                 sb.Append(match.Groups[1].Value);
 
-            Log.Message($"[RimTalk LE] [Req {requestId}] Content fragments: {matches.Count}.");
+            Log.Message($"[RimAI.Art] [Req {requestId}] Content fragments: {matches.Count}.");
             return Regex.Unescape(sb.ToString());
         }
 
@@ -651,7 +651,7 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
             if (!string.IsNullOrWhiteSpace(localKey))
             {
                 _player2LocalKey = localKey;
-                Log.Message($"[RimTalk LE] [Req {requestId}] Player2 local app authenticated.");
+                Log.Message($"[RimAI.Art] [Req {requestId}] Player2 local app authenticated.");
             }
 
             return _player2LocalKey;
@@ -666,14 +666,14 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
                 await SendUnityWebRequestAsync(healthRequest);
                 if (healthRequest.isNetworkError || healthRequest.isHttpError)
                 {
-                    Log.Message($"[RimTalk LE] [Req {requestId}] Player2 local health check failed: {healthRequest.responseCode} - {healthRequest.error}");
+                    Log.Message($"[RimAI.Art] [Req {requestId}] Player2 local health check failed: {healthRequest.responseCode} - {healthRequest.error}");
                     return false;
                 }
                 return healthRequest.responseCode == (long)HttpStatusCode.OK;
             }
             catch (Exception ex)
             {
-                Log.Message($"[RimTalk LE] [Req {requestId}] Player2 local health check exception: {ex.Message}");
+                Log.Message($"[RimAI.Art] [Req {requestId}] Player2 local health check exception: {ex.Message}");
                 return false;
             }
         }
@@ -691,7 +691,7 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
                 await SendUnityWebRequestAsync(loginRequest);
                 if (loginRequest.isNetworkError || loginRequest.isHttpError)
                 {
-                    Log.Message($"[RimTalk LE] [Req {requestId}] Player2 local login failed: {loginRequest.responseCode} - {loginRequest.error}");
+                    Log.Message($"[RimAI.Art] [Req {requestId}] Player2 local login failed: {loginRequest.responseCode} - {loginRequest.error}");
                     return null;
                 }
 
@@ -699,12 +699,12 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
                 if (!string.IsNullOrWhiteSpace(auth?.ApiKey))
                     return auth.ApiKey;
 
-                Log.Warning($"[RimTalk LE] [Req {requestId}] Player2 local app responded but no API key in response.");
+                Log.Warning($"[RimAI.Art] [Req {requestId}] Player2 local app responded but no API key in response.");
                 return null;
             }
             catch (Exception ex)
             {
-                Log.Message($"[RimTalk LE] [Req {requestId}] Player2 local login exception: {ex.Message}");
+                Log.Message($"[RimAI.Art] [Req {requestId}] Player2 local login exception: {ex.Message}");
                 return null;
             }
         }
@@ -797,17 +797,17 @@ namespace RimTalk_LiteratureExpansion.synopsis.llm
             }
 
             if (!string.IsNullOrWhiteSpace(finishReason))
-                Log.Message($"[RimTalk LE] [Req {requestId}] finish_reason: {finishReason}");
+                Log.Message($"[RimAI.Art] [Req {requestId}] finish_reason: {finishReason}");
 
             if (provider == AIProvider.Google)
             {
                 if (TryParseUsage(GoogleUsageRegex, responseText, out var prompt, out var completion, out var total))
-                    Log.Message($"[RimTalk LE] [Req {requestId}] token usage: prompt={prompt}, completion={completion}, total={total}");
+                    Log.Message($"[RimAI.Art] [Req {requestId}] token usage: prompt={prompt}, completion={completion}, total={total}");
             }
             else
             {
                 if (TryParseUsage(OpenAIUsageRegex, responseText, out var prompt, out var completion, out var total))
-                    Log.Message($"[RimTalk LE] [Req {requestId}] token usage: prompt={prompt}, completion={completion}, total={total}");
+                    Log.Message($"[RimAI.Art] [Req {requestId}] token usage: prompt={prompt}, completion={completion}, total={total}");
             }
         }
 

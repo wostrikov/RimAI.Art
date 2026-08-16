@@ -5,7 +5,7 @@
     Build:
       dotnet build -p:GameVersion=1.6
     Output:
-      <ProjectDir>\<GameVersion>\Assemblies\RimTalk_LiteratureExpansion.dll
+      <ProjectDir>\<GameVersion>\Assemblies\Ustas.RimAI.Art.dll
   -->
 
   <PropertyGroup>
@@ -14,8 +14,8 @@
 
     <TargetFramework>net48</TargetFramework>
 
-    <RootNamespace>RimTalk_LiteratureExpansion</RootNamespace>
-    <AssemblyName>RimTalk_LiteratureExpansion</AssemblyName>
+    <RootNamespace>Ustas.RimAI.Art</RootNamespace>
+    <AssemblyName>RimAI.Art</AssemblyName>
 
     <!-- RimWorld mod layout: put DLL directly under <GameVersion>/Assemblies -->
     <BaseOutputPath Condition=" '$(BaseOutputPath)' == '' ">$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-Literature-Expansion\bin\</BaseOutputPath>
@@ -60,13 +60,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\RimAI.Core\src\RimAI.Core\RimAI.Core.csproj" />
-    <Reference Include="RimTalk">
-      <!-- Expected layout: ..\..\RimTalk\<GameVersion>\Assemblies\RimTalk.dll -->
-      <HintPath>$(RimTalkDir)\$(GameVersion)\Assemblies\RimTalk.dll</HintPath>
-      <!-- Do not copy RimTalk.dll into this mod's Assemblies -->
+    <ProjectReference Include="..\..\RimAI.Core\src\RimAI.Core\RimAI.Core.csproj">
       <Private>false</Private>
-    </Reference>
+    </ProjectReference>
+    <ProjectReference Include="..\..\RimAI.Communication\RimTalk.csproj">
+      <Private>false</Private>
+    </ProjectReference>
   </ItemGroup>
 
   <!-- Prompt templates: embed into the assembly to avoid file path issues -->

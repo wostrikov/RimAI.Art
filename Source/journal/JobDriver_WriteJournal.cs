@@ -3,16 +3,16 @@
  * - Pawn writes a journal entry at a table after collecting logs.
  */
 using System.Collections.Generic;
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.integration;
-using RimTalk_LiteratureExpansion.scanner.queue;
-using RimTalk_LiteratureExpansion.storage;
-using RimTalk_LiteratureExpansion.synopsis.model;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.integration;
+using Ustas.RimAI.Art.scanner.queue;
+using Ustas.RimAI.Art.storage;
+using Ustas.RimAI.Art.synopsis.model;
 using RimWorld;
 using Verse;
 using Verse.AI;
 
-namespace RimTalk_LiteratureExpansion.journal
+namespace Ustas.RimAI.Art.journal
 {
     public sealed class JobDriver_WriteJournal : JobDriver
     {
@@ -23,7 +23,7 @@ namespace RimTalk_LiteratureExpansion.journal
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
             bool reserved = pawn.Reserve(job.targetA, job, errorOnFailed: errorOnFailed);
-            Log.Message($"[RimTalk LE] [Journal] Reserve table={job.targetA.Thing?.LabelCap ?? "null"} result={reserved} pawn={pawn?.LabelShort ?? "null"}");
+            Log.Message($"[RimAI.Art] [Journal] Reserve table={job.targetA.Thing?.LabelCap ?? "null"} result={reserved} pawn={pawn?.LabelShort ?? "null"}");
             return reserved;
         }
 
@@ -62,7 +62,7 @@ namespace RimTalk_LiteratureExpansion.journal
                 var log = JournalUtility.FindClosestLog(pawn);
                 if (log == null)
                 {
-                    Log.Message($"[RimTalk LE] [Journal] No available logs for {pawn?.LabelShort ?? "null"}; ending job.");
+                    Log.Message($"[RimAI.Art] [Journal] No available logs for {pawn?.LabelShort ?? "null"}; ending job.");
                     JobFailReason.Is("RimTalkLE_FloatMenu_WriteJournalMissingLogs".Translate());
                     EndJobWith(JobCondition.Incompletable);
                     return;
@@ -70,7 +70,7 @@ namespace RimTalk_LiteratureExpansion.journal
 
                 job.targetB = log;
                 job.count = 1;
-                Log.Message($"[RimTalk LE] [Journal] Found log {log.LabelCap} at {log.Position}.");
+                Log.Message($"[RimAI.Art] [Journal] Found log {log.LabelCap} at {log.Position}.");
             };
             toil.defaultCompleteMode = ToilCompleteMode.Instant;
             return toil;
@@ -84,7 +84,7 @@ namespace RimTalk_LiteratureExpansion.journal
                 var carried = pawn.carryTracker?.CarriedThing;
                 if (carried != null)
                 {
-                    Log.Message($"[RimTalk LE] [Journal] Consuming carried log {carried.LabelCap} x{carried.stackCount}.");
+                    Log.Message($"[RimAI.Art] [Journal] Consuming carried log {carried.LabelCap} x{carried.stackCount}.");
                     pawn.carryTracker.DestroyCarriedThing();
                 }
             };
@@ -102,11 +102,11 @@ namespace RimTalk_LiteratureExpansion.journal
                 {
                     def = DefDatabase<ThingDef>.GetNamedSilentFail("RimTalk_JournalBook");
                     if (def != null)
-                        Log.Message("[RimTalk LE] [Journal] Loaded RimTalk_JournalBook via DefDatabase fallback.");
+                        Log.Message("[RimAI.Art] [Journal] Loaded RimTalk_JournalBook via DefDatabase fallback.");
                 }
                 if (def == null || Table?.Map == null)
                 {
-                    Log.Message("[RimTalk LE] [Journal] Missing journal def or map; cannot spawn journal book.");
+                    Log.Message("[RimAI.Art] [Journal] Missing journal def or map; cannot spawn journal book.");
                     return;
                 }
 
@@ -114,7 +114,7 @@ namespace RimTalk_LiteratureExpansion.journal
                 var map = Table.Map;
                 var dropCell = Table.InteractionCell;
                 GenPlace.TryPlaceThing(journal, dropCell, map, ThingPlaceMode.Near);
-                Log.Message($"[RimTalk LE] [Journal] Spawned journal book at {dropCell}.");
+                Log.Message($"[RimAI.Art] [Journal] Spawned journal book at {dropCell}.");
 
                 var meta = BookClassifier.Classify(journal);
                 if (meta != null)
@@ -123,16 +123,16 @@ namespace RimTalk_LiteratureExpansion.journal
                     {
                         ApplyPlaceholder(meta, pawn);
                         PendingBookQueue.Enqueue(meta, pawn);
-                        Log.Message($"[RimTalk LE] [Journal] Enqueued journal book for LLM (type={meta.Type}).");
+                        Log.Message($"[RimAI.Art] [Journal] Enqueued journal book for LLM (type={meta.Type}).");
                     }
                     else
                     {
-                        Log.Message($"[RimTalk LE] [Journal] Journal book filtered out by settings ({meta.DefName}).");
+                        Log.Message($"[RimAI.Art] [Journal] Journal book filtered out by settings ({meta.DefName}).");
                     }
                 }
                 else
                 {
-                    Log.Message("[RimTalk LE] [Journal] Failed to classify spawned journal book.");
+                    Log.Message("[RimAI.Art] [Journal] Failed to classify spawned journal book.");
                 }
             };
             toil.defaultCompleteMode = ToilCompleteMode.Instant;

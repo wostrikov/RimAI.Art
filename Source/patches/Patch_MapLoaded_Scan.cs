@@ -18,10 +18,10 @@
  * - Do not enqueue duplicate work.
  */
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.scanner;
+using Ustas.RimAI.Art.scanner;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(Map), nameof(Map.FinalizeInit))]
     public static class Patch_MapLoaded_Scan

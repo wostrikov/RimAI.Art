@@ -1,11 +1,11 @@
 using System;
 using System.Threading.Tasks;
-using RimTalk_LiteratureExpansion.scanner.queue;
-using RimTalk_LiteratureExpansion.storage;
-using RimTalk_LiteratureExpansion.storage.save;
+using Ustas.RimAI.Art.scanner.queue;
+using Ustas.RimAI.Art.storage;
+using Ustas.RimAI.Art.storage.save;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.art
+namespace Ustas.RimAI.Art.art
 {
     public static class ArtDescriptionProcessor
     {
@@ -15,11 +15,11 @@ namespace RimTalk_LiteratureExpansion.art
 
         public static void Tick()
         {
-            if (!RimTalk_LiteratureExpansion.integration.ArtCacheUtil.IsArtEditingEnabled())
+            if (!Ustas.RimAI.Art.integration.ArtCacheUtil.IsArtEditingEnabled())
             {
                 if (!_loggedDisabled)
                 {
-                    Log.Message($"[RimTalk LE] Art processing disabled ({RimTalk_LiteratureExpansion.integration.ArtCacheUtil.DescribeArtSettings()}).");
+                    Log.Message($"[RimAI.Art] Art processing disabled ({Ustas.RimAI.Art.integration.ArtCacheUtil.DescribeArtSettings()}).");
                     _loggedDisabled = true;
                 }
                 return;
@@ -30,28 +30,28 @@ namespace RimTalk_LiteratureExpansion.art
             if (!PendingArtQueue.TryDequeue(out var record)) return;
             if (record == null || record.Meta == null)
             {
-                Log.Message("[RimTalk LE] Art queue record invalid; skip.");
+                Log.Message("[RimAI.Art] Art queue record invalid; skip.");
                 return;
             }
             if (record.Meta.Thing == null || record.Meta.Thing.DestroyedOrNull())
             {
-                Log.Message($"[RimTalk LE] Art record thing invalid; skip {record.Meta.DefName ?? "unknown"}.");
+                Log.Message($"[RimAI.Art] Art record thing invalid; skip {record.Meta.DefName ?? "unknown"}.");
                 return;
             }
             if (!ArtDefFilterPolicy.IsAllowed(record.Meta.Thing))
             {
-                Log.Message($"[RimTalk LE] Art record filtered out by settings; skip {record.Meta.DefName ?? "unknown"}.");
+                Log.Message($"[RimAI.Art] Art record filtered out by settings; skip {record.Meta.DefName ?? "unknown"}.");
                 return;
             }
 
-            Log.Message($"[RimTalk LE] Processing art {record.Meta.ThingLabel} ({record.Meta.DefName}).");
+            Log.Message($"[RimAI.Art] Processing art {record.Meta.ThingLabel} ({record.Meta.DefName}).");
 
             var cache = LiteratueSaveData.Current?.ArtCache;
             if (cache == null) return;
 
             if (cache.TryGet(record.Key, out _))
             {
-                Log.Message($"[RimTalk LE] Art description already cached for {record.Meta.DefName}.");
+                Log.Message($"[RimAI.Art] Art description already cached for {record.Meta.DefName}.");
                 return;
             }
 
@@ -64,12 +64,12 @@ namespace RimTalk_LiteratureExpansion.art
                 if (bladelink.CodedPawn != null)
                 {
                     var pawn = bladelink.CodedPawn;
-                    Log.Message($"[RimTalk LE] Persona weapon detected; using bonded pawn context for {record.Meta.DefName}.");
+                    Log.Message($"[RimAI.Art] Persona weapon detected; using bonded pawn context for {record.Meta.DefName}.");
                     PersonaWeaponAuthoringPipeline.StartGeneration(record.Meta.Thing, pawn, "queue", () => _processing = false);
                     return;
                 }
 
-                Log.Message($"[RimTalk LE] Persona weapon not bonded; skip {record.Meta.DefName}.");
+                Log.Message($"[RimAI.Art] Persona weapon not bonded; skip {record.Meta.DefName}.");
                 _processing = false;
                 return;
             }
@@ -77,7 +77,7 @@ namespace RimTalk_LiteratureExpansion.art
             var contextPawn = ResolveContextPawn(record);
             if (contextPawn == null)
             {
-                Log.Message($"[RimTalk LE] No context pawn available for art {record.Meta.DefName}; requeue.");
+                Log.Message($"[RimAI.Art] No context pawn available for art {record.Meta.DefName}; requeue.");
                 if (record.Attempts < MaxAttempts)
                     PendingArtQueue.Requeue(record);
 
@@ -94,19 +94,19 @@ namespace RimTalk_LiteratureExpansion.art
                     {
                         if (cache.TryGet(record.Key, out var existing) && existing != null && existing.IsManualOverride)
                         {
-                            Log.Message($"[RimTalk LE] Preserved manual art override for {record.Meta.DefName}.");
+                            Log.Message($"[RimAI.Art] Preserved manual art override for {record.Meta.DefName}.");
                             return;
                         }
 
                         cache.Set(record.Key, ArtDescriptionRecord.FromGenerated(description, existing));
-                        Log.Message($"[RimTalk LE] Saved art description for {record.Meta.DefName}.");
+                        Log.Message($"[RimAI.Art] Saved art description for {record.Meta.DefName}.");
                         return;
                     }
 
                     if (record.Attempts < MaxAttempts)
                     {
-                        Log.Message($"[RimTalk LE] LLM returned null for art {record.Meta.DefName}.");
-                        Log.Message($"[RimTalk LE] Art generation failed; requeue {record.Meta.DefName} (attempt {record.Attempts}).");
+                        Log.Message($"[RimAI.Art] LLM returned null for art {record.Meta.DefName}.");
+                        Log.Message($"[RimAI.Art] Art generation failed; requeue {record.Meta.DefName} (attempt {record.Attempts}).");
                         PendingArtQueue.Requeue(record);
                     }
                 }
@@ -114,8 +114,8 @@ namespace RimTalk_LiteratureExpansion.art
                 {
                     if (record.Attempts < MaxAttempts)
                     {
-                        Log.Message($"[RimTalk LE] LLM threw exception for art {record.Meta.DefName}: {ex.GetType().Name} - {ex.Message}");
-                        Log.Message($"[RimTalk LE] Exception during art generation; requeue {record.Meta.DefName} (attempt {record.Attempts}).");
+                        Log.Message($"[RimAI.Art] LLM threw exception for art {record.Meta.DefName}: {ex.GetType().Name} - {ex.Message}");
+                        Log.Message($"[RimAI.Art] Exception during art generation; requeue {record.Meta.DefName} (attempt {record.Attempts}).");
                         PendingArtQueue.Requeue(record);
                     }
                 }

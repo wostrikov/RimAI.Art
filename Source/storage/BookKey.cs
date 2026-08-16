@@ -17,7 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace RimTalk_LiteratureExpansion.storage
+namespace Ustas.RimAI.Art.storage
 {
     [DataContract]
     public sealed class BookKey : IEquatable<BookKey>

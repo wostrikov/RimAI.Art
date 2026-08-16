@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.tv
+namespace Ustas.RimAI.Art.tv
 {
     public static class TvFilterPolicy
     {

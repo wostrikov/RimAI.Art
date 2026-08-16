@@ -30,7 +30,7 @@
  */
 
 
-namespace RimTalk_LiteratureExpansion.book
+namespace Ustas.RimAI.Art.book
 {
     /// <summary>
     /// 仅基于已提供源码/反编译文件能可靠识别的类型

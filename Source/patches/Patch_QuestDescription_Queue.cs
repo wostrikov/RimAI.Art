@@ -14,12 +14,12 @@
  */
 using System;
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.events;
+using Ustas.RimAI.Art.events;
 using RimWorld;
 using RimWorld.QuestGen;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(QuestUtility), nameof(QuestUtility.GenerateQuestAndMakeAvailable), new[] { typeof(QuestScriptDef), typeof(Slate) })]
     public static class Patch_QuestDescription_Queue

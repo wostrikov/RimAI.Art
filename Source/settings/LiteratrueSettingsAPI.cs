@@ -1,6 +1,6 @@
 /*
  * Purpose:
- * - Store standalone API configuration used when NOT reusing RimTalk API settings.
+ * - Store standalone API configuration used when NOT reusing Ustas.RimAI.Communication API settings.
  *
  * Uses:
  * - Verse.ModSettings / IExposable
@@ -20,10 +20,10 @@
  * - Do not validate with network calls; only local checks.
  */
 using System.Collections.Generic;
-using RimTalk_LiteratureExpansion.settings.util;
+using Ustas.RimAI.Art.settings.util;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.settings
+namespace Ustas.RimAI.Art.settings
 {
     public sealed class LiteratureSettingsApi : IExposable
     {

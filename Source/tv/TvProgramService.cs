@@ -1,12 +1,12 @@
 using System.Text;
 using System.Threading.Tasks;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.storage.save;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.storage.save;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.tv
+namespace Ustas.RimAI.Art.tv
 {
     public static class TvProgramService
     {
@@ -67,9 +67,9 @@ namespace RimTalk_LiteratureExpansion.tv
                 Context = TvProgramPromptBuilder.BuildContext(tvBuilding)
             };
 
-            Log.Message($"[RimTalk LE] TvProgramService: dispatch LLM request for {tvBuilding.def?.defName}.");
+            Log.Message($"[RimAI.Art] TvProgramService: dispatch LLM request for {tvBuilding.def?.defName}.");
             var program = await TvProgramLlmAdapter.QueryAsync(request);
-            Log.Message($"[RimTalk LE] TvProgramService: LLM request completed for {tvBuilding.def?.defName} (null={program == null}).");
+            Log.Message($"[RimAI.Art] TvProgramService: LLM request completed for {tvBuilding.def?.defName} (null={program == null}).");
 
             program = Normalize(program);
             if (program != null)

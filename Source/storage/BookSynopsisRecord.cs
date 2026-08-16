@@ -1,10 +1,10 @@
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.synopsis.model;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.synopsis.model;
 using System;
 using System.Collections.Generic;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.storage
+namespace Ustas.RimAI.Art.storage
 {
     public sealed class BookSynopsisRecord : IExposable
     {

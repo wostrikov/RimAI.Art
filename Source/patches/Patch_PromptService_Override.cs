@@ -19,12 +19,12 @@
  * - Do not affect unrelated TalkRequests.
  */
 using HarmonyLib;
-using RimTalk.Data;
-using RimTalk.Service;
-using RimTalk_LiteratureExpansion.integration;
-using RimTalk_LiteratureExpansion.promptoverride;
+using Ustas.RimAI.Communication.Data;
+using Ustas.RimAI.Communication.Service;
+using Ustas.RimAI.Art.integration;
+using Ustas.RimAI.Art.promptoverride;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(PromptService), nameof(PromptService.DecoratePrompt))]
     public static class Patch_PromptService_Override

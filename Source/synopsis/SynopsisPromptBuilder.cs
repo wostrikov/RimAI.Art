@@ -17,12 +17,12 @@
  * - Do not inject RimTalk Constant.Instruction.
  */
 using System.Text;
-using RimTalk.Data;
-using RimTalk_LiteratureExpansion.settings.util;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.book;
+using Ustas.RimAI.Communication.Data;
+using Ustas.RimAI.Art.settings.util;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.book;
 
-namespace RimTalk_LiteratureExpansion.synopsis
+namespace Ustas.RimAI.Art.synopsis
 {
     public static class SynopsisPromptBuilder
     {

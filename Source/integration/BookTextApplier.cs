@@ -28,11 +28,11 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using RimWorld;
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.synopsis.model;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.synopsis.model;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.integration
+namespace Ustas.RimAI.Art.integration
 {
     public static class BookTextApplier
     {

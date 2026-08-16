@@ -1,7 +1,7 @@
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.journal
+namespace Ustas.RimAI.Art.journal
 {
     [DefOf]
     public static class JournalDefOf

@@ -3,11 +3,11 @@
  * - Override descriptions for non-CompArt items using cached art text.
  */
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.integration;
+using Ustas.RimAI.Art.integration;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(ThingWithComps), "get_DescriptionFlavor")]
     public static class Patch_ThingWithComps_DescriptionFlavor

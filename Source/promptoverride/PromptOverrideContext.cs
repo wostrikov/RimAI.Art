@@ -15,7 +15,7 @@
  * - Do not persist this object.
  * - Do not apply overrides globally.
  */
-namespace RimTalk_LiteratureExpansion.promptoverride
+namespace Ustas.RimAI.Art.promptoverride
 {
     public sealed class PromptOverrideContext
     {

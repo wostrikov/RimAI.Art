@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.storage
+namespace Ustas.RimAI.Art.storage
 {
     public sealed class BookSynopsisCache : IExposable
     {

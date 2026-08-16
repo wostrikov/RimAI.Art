@@ -3,11 +3,11 @@
  * - Override labels for non-CompArt items using cached art titles.
  */
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.integration;
+using Ustas.RimAI.Art.integration;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(ThingWithComps), "get_LabelNoCount")]
     public static class Patch_ThingWithComps_Label

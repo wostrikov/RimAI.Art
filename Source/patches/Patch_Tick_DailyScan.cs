@@ -18,10 +18,10 @@
  * - Do not perform LLM calls here.
  */
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.scanner;
+using Ustas.RimAI.Art.scanner;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(TickManager), nameof(TickManager.DoSingleTick))]
     public static class Patch_Tick_DailyScan

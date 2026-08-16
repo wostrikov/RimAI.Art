@@ -3,10 +3,10 @@
  * - Override art description (outside art tab) using cached art text.
  */
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.integration;
+using Ustas.RimAI.Art.integration;
 using RimWorld;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(CompArt), nameof(CompArt.GetDescriptionPart))]
     public static class Patch_CompArt_DescriptionPart

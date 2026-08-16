@@ -1,11 +1,11 @@
 using HarmonyLib;
-using RimTalk.Prompt;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.tv;
+using Ustas.RimAI.Communication.Prompt;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.tv;
 using Verse;
 using Verse.AI;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(ScribanParser), nameof(ScribanParser.Render),
         new[] { typeof(string), typeof(PromptContext), typeof(bool) })]

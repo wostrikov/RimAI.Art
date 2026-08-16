@@ -18,16 +18,16 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using RimTalk.Data;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.settings.util;
-using RimTalk_LiteratureExpansion.synopsis.llm;
+using Ustas.RimAI.Communication.Data;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.settings.util;
+using Ustas.RimAI.Art.synopsis.llm;
 using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.events
+namespace Ustas.RimAI.Art.events
 {
     [DataContract]
     public sealed class LetterFlavorSpec : IJsonData
@@ -47,7 +47,7 @@ namespace RimTalk_LiteratureExpansion.events
         private const int TimeoutSeconds = 60;
         private const int TargetTokens = 140;
         private const int DefaultCharLimit = 360;
-        private const string LogPrefix = "[RimTalk LE] [LetterRewrite]";
+        private const string LogPrefix = "[RimAI.Art] [LetterRewrite]";
 
         private static readonly Dictionary<int, PendingLetterRewrite> Pending = new Dictionary<int, PendingLetterRewrite>();
         private static readonly Queue<Action> PendingActions = new Queue<Action>();

@@ -1,7 +1,7 @@
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion
+namespace Ustas.RimAI.Art
 {
     internal static class PlayerFactionUtility
     {

@@ -1,19 +1,19 @@
 using System;
 using System.Threading.Tasks;
-using RimTalk.Service;
-using RimTalk_LiteratureExpansion.authoring;
-using RimTalk_LiteratureExpansion.authoring.llm;
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.integration;
-using RimTalk_LiteratureExpansion.journal;
-using RimTalk_LiteratureExpansion.scanner.queue;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.storage;
-using RimTalk_LiteratureExpansion.storage.save;
-using RimTalk_LiteratureExpansion.synopsis.model;
+using Ustas.RimAI.Communication.Service;
+using Ustas.RimAI.Art.authoring;
+using Ustas.RimAI.Art.authoring.llm;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.integration;
+using Ustas.RimAI.Art.journal;
+using Ustas.RimAI.Art.scanner.queue;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.storage;
+using Ustas.RimAI.Art.storage.save;
+using Ustas.RimAI.Art.synopsis.model;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.synopsis
+namespace Ustas.RimAI.Art.synopsis
 {
     public static class BookSynopsisProcessor
     {
@@ -32,7 +32,7 @@ namespace RimTalk_LiteratureExpansion.synopsis
             if (record.Meta.Thing == null || record.Meta.Thing.DestroyedOrNull()) return;
             if (!BookFilterPolicy.IsAllowed(record.Meta)) return;
 
-            Log.Message($"[RimTalk LE] Processing book {record.Meta.Title} ({record.Meta.DefName}) [{record.Meta.Type}].");
+            Log.Message($"[RimAI.Art] Processing book {record.Meta.Title} ({record.Meta.DefName}) [{record.Meta.Type}].");
 
             var cache = LiteratueSaveData.Current?.SynopsisCache;
             if (cache == null) return;
@@ -40,7 +40,7 @@ namespace RimTalk_LiteratureExpansion.synopsis
             if (cache.TryGet(record.Key, out var cached))
             {
                 BookTextApplier.Apply(record.Meta, cached.ToSynopsis());
-                Log.Message($"[RimTalk LE] Applied cached synopsis for {record.Meta.DefName}.");
+                Log.Message($"[RimAI.Art] Applied cached synopsis for {record.Meta.DefName}.");
                 return;
             }
 
@@ -49,12 +49,12 @@ namespace RimTalk_LiteratureExpansion.synopsis
 
             var summaryRequest = record.HasAuthor ? MemorySummaryRequest.BuildRequest(record.Author) : null;
             if (record.HasAuthor && summaryRequest == null)
-                Log.Message($"[RimTalk LE] Failed to build memory summary request for {record.Meta.DefName}.");
+                Log.Message($"[RimAI.Art] Failed to build memory summary request for {record.Meta.DefName}.");
 
             var contextPawn = ResolveContextPawn(record);
             if (contextPawn == null)
             {
-                Log.Message($"[RimTalk LE] No context pawn available for {record.Meta.DefName}; requeue.");
+                Log.Message($"[RimAI.Art] No context pawn available for {record.Meta.DefName}; requeue.");
                 if (record.Attempts < MaxAttempts)
                     PendingBookQueue.Requeue(record);
 
@@ -70,7 +70,7 @@ namespace RimTalk_LiteratureExpansion.synopsis
 
                     if (record.HasAuthor && summaryRequest != null)
                     {
-                        //Log.Message($"[RimTalk LE] Prepare Generating from author memories for {record.Meta.DefName}.");
+                        //Log.Message($"[RimAI.Art] Prepare Generating from author memories for {record.Meta.DefName}.");
                         if (record.Meta.Type == BookType.Journal)
                         {
                             synopsis = await JournalAuthoringPipeline.GenerateFromSummaryRequestAsync(
@@ -89,12 +89,12 @@ namespace RimTalk_LiteratureExpansion.synopsis
 
                     if (synopsis == null && record.Meta.Type != BookType.Journal)
                     {
-                        //Log.Message($"[RimTalk LE] Prepare Generating synopsis via LLM for {record.Meta.DefName}.");
+                        //Log.Message($"[RimAI.Art] Prepare Generating synopsis via LLM for {record.Meta.DefName}.");
                         synopsis = await BookSynopsisService.GetOrGenerateAsync(record.Meta, contextPawn);
                     }
                     else if (synopsis == null)
                     {
-                        Log.Message($"[RimTalk LE] Journal generation failed for {record.Meta.DefName}; generic book fallback suppressed.");
+                        Log.Message($"[RimAI.Art] Journal generation failed for {record.Meta.DefName}; generic book fallback suppressed.");
                     }
 
                     if (synopsis != null)
@@ -102,20 +102,20 @@ namespace RimTalk_LiteratureExpansion.synopsis
                         if (cache.TryGet(record.Key, out var existing) && existing != null && existing.IsManualOverride)
                         {
                             BookTextApplier.Apply(record.Meta, existing.ToSynopsis());
-                            Log.Message($"[RimTalk LE] Preserved manual book override for {record.Meta.DefName}.");
+                            Log.Message($"[RimAI.Art] Preserved manual book override for {record.Meta.DefName}.");
                             return;
                         }
 
                         cache.Set(record.Key, BookSynopsisRecord.FromGenerated(synopsis, record.Meta.Type, existing));
                         BookTextApplier.Apply(record.Meta, synopsis);
-                        //Log.Message($"[RimTalk LE] Saved synopsis for {record.Meta.DefName}.");
+                        //Log.Message($"[RimAI.Art] Saved synopsis for {record.Meta.DefName}.");
                         return;
                     }
 
                     if (record.Attempts < MaxAttempts)
                     {
-                        //Log.Message($"[RimTalk LE] LLM returned null for {record.Meta.DefName}.");
-                        //Log.Message($"[RimTalk LE] Synopsis generation failed; requeue {record.Meta.DefName} (attempt {record.Attempts}).");
+                        //Log.Message($"[RimAI.Art] LLM returned null for {record.Meta.DefName}.");
+                        //Log.Message($"[RimAI.Art] Synopsis generation failed; requeue {record.Meta.DefName} (attempt {record.Attempts}).");
                         PendingBookQueue.Requeue(record);
                     }
                 }
@@ -123,8 +123,8 @@ namespace RimTalk_LiteratureExpansion.synopsis
                 {
                     if (record.Attempts < MaxAttempts)
                     {
-                        Log.Message($"[RimTalk LE] LLM threw exception for {record.Meta.DefName}: {ex.GetType().Name} - {ex.Message}");
-                        Log.Message($"[RimTalk LE] Exception during synopsis generation; requeue {record.Meta.DefName} (attempt {record.Attempts}).");
+                        Log.Message($"[RimAI.Art] LLM threw exception for {record.Meta.DefName}: {ex.GetType().Name} - {ex.Message}");
+                        Log.Message($"[RimAI.Art] Exception during synopsis generation; requeue {record.Meta.DefName} (attempt {record.Attempts}).");
                         PendingBookQueue.Requeue(record);
                     }
                 }

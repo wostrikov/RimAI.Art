@@ -2,7 +2,7 @@ using System;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.book
+namespace Ustas.RimAI.Art.book
 {
     /// <summary>
     /// 书籍元信息（只读取“确定存在”的字段）。

@@ -20,11 +20,11 @@
  */
 using System.Collections.Generic;
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.scanner.production;
+using Ustas.RimAI.Art.scanner.production;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(Bill_Production), "Notify_IterationCompleted")]
     public static class Patch_BillProduction_Finish

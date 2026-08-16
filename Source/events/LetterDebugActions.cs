@@ -1,8 +1,8 @@
 using LudeonTK;
-using RimTalk_LiteratureExpansion.events;
+using Ustas.RimAI.Art.events;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.events
+namespace Ustas.RimAI.Art.events
 {
     public static class LetterDebugActions
     {

@@ -14,7 +14,7 @@
  * - Do not read user settings.
  * - Do not choose model/provider.
  */
-namespace RimTalk_LiteratureExpansion.synopsis
+namespace Ustas.RimAI.Art.synopsis
 {
     public static class SynopsisTokenPolicy
     {

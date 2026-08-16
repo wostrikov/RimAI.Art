@@ -24,19 +24,19 @@
  */
 using System;
 using System.Text;
-using RimTalk.Data;
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.scanner.queue;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.storage;
-using RimTalk_LiteratureExpansion.storage.save;
-using RimTalk_LiteratureExpansion.synopsis;
-using RimTalk_LiteratureExpansion.synopsis.model;
+using Ustas.RimAI.Communication.Data;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.scanner.queue;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.storage;
+using Ustas.RimAI.Art.storage.save;
+using Ustas.RimAI.Art.synopsis;
+using Ustas.RimAI.Art.synopsis.model;
 using RimWorld;
 using Verse;
 using Verse.AI;
 
-namespace RimTalk_LiteratureExpansion.integration
+namespace Ustas.RimAI.Art.integration
 {
     public static class TalkPromptBookInjector
     {

@@ -19,7 +19,7 @@
  */
 using System;
 
-namespace RimTalk_LiteratureExpansion.promptoverride
+namespace Ustas.RimAI.Art.promptoverride
 {
     public static class PromptOverrideService
     {

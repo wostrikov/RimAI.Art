@@ -1,7 +1,7 @@
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.art
+namespace Ustas.RimAI.Art.art
 {
     public sealed class ArtMeta
     {

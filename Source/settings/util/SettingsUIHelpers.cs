@@ -15,10 +15,10 @@
  */
 using System;
 using UnityEngine;
-using RimTalk_LiteratureExpansion.settings;
+using Ustas.RimAI.Art.settings;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.settings.util
+namespace Ustas.RimAI.Art.settings.util
 {
     public static class SettingsUIHelpers
     {

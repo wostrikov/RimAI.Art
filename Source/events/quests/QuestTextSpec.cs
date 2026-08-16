@@ -7,9 +7,9 @@
  * - description: quest description shown in UI/letter.
  */
 using System.Runtime.Serialization;
-using RimTalk.Data;
+using Ustas.RimAI.Communication.Data;
 
-namespace RimTalk_LiteratureExpansion.events.quests
+namespace Ustas.RimAI.Art.events.quests
 {
     [DataContract]
     public sealed class QuestTextSpec : IJsonData

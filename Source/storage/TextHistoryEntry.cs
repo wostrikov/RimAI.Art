@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.storage
+namespace Ustas.RimAI.Art.storage
 {
     public static class TextHistorySource
     {

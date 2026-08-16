@@ -10,7 +10,7 @@
  * Do NOT:
  * - Do not import RimTalk Constant.Instruction or override it.
  */
-namespace RimTalk_LiteratureExpansion.settings
+namespace Ustas.RimAI.Art.settings
 {
     public static class LiteratureSettingsDef
     {

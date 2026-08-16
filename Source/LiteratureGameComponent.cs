@@ -1,11 +1,11 @@
-using RimTalk_LiteratureExpansion.art;
-using RimTalk_LiteratureExpansion.events;
-using RimTalk_LiteratureExpansion.events.quests;
-using RimTalk_LiteratureExpansion.scanner.production;
-using RimTalk_LiteratureExpansion.synopsis;
+using Ustas.RimAI.Art.art;
+using Ustas.RimAI.Art.events;
+using Ustas.RimAI.Art.events.quests;
+using Ustas.RimAI.Art.scanner.production;
+using Ustas.RimAI.Art.synopsis;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion
+namespace Ustas.RimAI.Art
 {
     public sealed class LiteratureGameComponent : GameComponent
     {

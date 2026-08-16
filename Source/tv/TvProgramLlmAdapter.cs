@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.synopsis.llm;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.synopsis.llm;
 
-namespace RimTalk_LiteratureExpansion.tv
+namespace Ustas.RimAI.Art.tv
 {
     public static class TvProgramLlmAdapter
     {

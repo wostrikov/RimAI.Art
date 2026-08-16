@@ -3,7 +3,7 @@
 
   <JobDef>
     <defName>RimTalk_WriteJournal</defName>
-    <driverClass>RimTalk_LiteratureExpansion.journal.JobDriver_WriteJournal</driverClass>
+    <driverClass>Ustas.RimAI.Art.journal.JobDriver_WriteJournal</driverClass>
     <reportString>writing a journal entry.</reportString>
     <casualInterruptible>true</casualInterruptible>
     <playerInterruptible>true</playerInterruptible>
@@ -44,7 +44,7 @@
       </li>
     </comps>
     <modExtensions>
-      <li Class="RimTalk_LiteratureExpansion.book.journal.JournalBookExtension" />
+      <li Class="Ustas.RimAI.Art.book.journal.JournalBookExtension" />
     </modExtensions>
   </ThingDef>
 

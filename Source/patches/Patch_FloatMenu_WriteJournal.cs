@@ -3,13 +3,13 @@
  * - Add a right-click float menu option to write a journal at any table.
  */
 using System;
-using RimTalk_LiteratureExpansion.journal;
-using RimTalk_LiteratureExpansion.settings;
+using Ustas.RimAI.Art.journal;
+using Ustas.RimAI.Art.settings;
 using RimWorld;
 using Verse;
 using Verse.AI;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     public sealed class FloatMenuOptionProvider_WriteJournal : FloatMenuOptionProvider
     {
@@ -50,10 +50,10 @@ namespace RimTalk_LiteratureExpansion.patches
             {
                 jobDef = DefDatabase<JobDef>.GetNamedSilentFail("RimTalk_WriteJournal");
                 if (jobDef != null)
-                    Log.Message("[RimTalk LE] [Journal] Loaded RimTalk_WriteJournal via DefDatabase fallback.");
+                    Log.Message("[RimAI.Art] [Journal] Loaded RimTalk_WriteJournal via DefDatabase fallback.");
                 else
                 {
-                    Log.Error("[RimTalk LE] [Journal] Missing JobDef RimTalk_WriteJournal. Check Defs/Journal/JournalDefs.xml.");
+                    Log.Error("[RimAI.Art] [Journal] Missing JobDef RimTalk_WriteJournal. Check Defs/Journal/JournalDefs.xml.");
                     return null;
                 }
             }
@@ -81,23 +81,23 @@ namespace RimTalk_LiteratureExpansion.patches
                     {
                         if (pawn?.jobs == null)
                         {
-                            Log.Warning("[RimTalk LE] [Journal] Pawn or job tracker missing; cannot start journal job.");
+                            Log.Warning("[RimAI.Art] [Journal] Pawn or job tracker missing; cannot start journal job.");
                             return;
                         }
 
                         if (table == null || table.DestroyedOrNull() || !table.Spawned)
                         {
-                            Log.Warning("[RimTalk LE] [Journal] Table missing when issuing journal job.");
+                            Log.Warning("[RimAI.Art] [Journal] Table missing when issuing journal job.");
                             return;
                         }
 
                         var job = JobMaker.MakeJob(jobDef, table);
                         bool started = pawn.jobs.TryTakeOrderedJob(job);
-                        Log.Message($"[RimTalk LE] [Journal] Write journal job issued for {pawn.LabelShort}. started={started}");
+                        Log.Message($"[RimAI.Art] [Journal] Write journal job issued for {pawn.LabelShort}. started={started}");
                     }
                     catch (Exception ex)
                     {
-                        Log.Error($"[RimTalk LE] [Journal] Failed to start journal job: {ex}");
+                        Log.Error($"[RimAI.Art] [Journal] Failed to start journal job: {ex}");
                     }
                 },
                 MenuOptionPriority.Default,

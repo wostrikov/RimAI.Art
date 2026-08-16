@@ -13,7 +13,7 @@ using RimWorld;
 using RimWorld.Planet;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.events.quests
+namespace Ustas.RimAI.Art.events.quests
 {
     public sealed class WarningRaidRecord : IExposable
     {

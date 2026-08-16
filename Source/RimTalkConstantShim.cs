@@ -3,13 +3,13 @@
  * - Safely access RimTalk Constant values without hard dependency on its members.
  *
  * Notes:
- * - Falls back to local defaults when RimTalk.Data.Constant throws.
+ * - Falls back to local defaults when Ustas.RimAI.Communication.Data.Constant throws.
  */
 using System;
 using System.Reflection;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion
+namespace Ustas.RimAI.Art
 {
     public static class RimTalkConstantShim
     {
@@ -24,7 +24,7 @@ namespace RimTalk_LiteratureExpansion
             {
                 foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
                 {
-                    var type = assembly.GetType("RimTalk.Data.Constant", false);
+                    var type = assembly.GetType("Ustas.RimAI.Communication.Data.Constant", false);
                     if (type != null) return type;
                 }
             }

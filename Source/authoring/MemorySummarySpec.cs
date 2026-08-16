@@ -17,9 +17,9 @@
  * - Do not include book-specific formatting here.
  */
 using System.Runtime.Serialization;
-using RimTalk.Data;
+using Ustas.RimAI.Communication.Data;
 
-namespace RimTalk_LiteratureExpansion.authoring
+namespace Ustas.RimAI.Art.authoring
 {
     [DataContract]
     public sealed class MemorySummarySpec : IJsonData

@@ -1,11 +1,11 @@
 using System.Text;
-using RimTalk.Data;
-using RimTalk_LiteratureExpansion.settings.util;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.synopsis;
+using Ustas.RimAI.Communication.Data;
+using Ustas.RimAI.Art.settings.util;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.synopsis;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.art
+namespace Ustas.RimAI.Art.art
 {
     public static class ArtPromptBuilder
     {
@@ -17,7 +17,7 @@ namespace RimTalk_LiteratureExpansion.art
             return PromptTemplateUtil.Resolve(
                 settings?.promptArt,
                 template,
-                ("LANG", RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang),
+                ("LANG", Ustas.RimAI.Art.RimTalkConstantShim.Lang),
                 ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
                 ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()),
                 ("TOKEN_TARGET", tokenTarget.ToString()));
@@ -29,7 +29,7 @@ namespace RimTalk_LiteratureExpansion.art
             string template = BuildTemplate(tokenTarget);
             return PromptTemplateUtil.ApplyTokens(
                 template,
-                ("LANG", RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang),
+                ("LANG", Ustas.RimAI.Art.RimTalkConstantShim.Lang),
                 ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
                 ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()),
                 ("TOKEN_TARGET", tokenTarget.ToString()));
@@ -39,7 +39,7 @@ namespace RimTalk_LiteratureExpansion.art
         {
             return
 $@"Ти пишеш внутрішньосвітові описи мистецьких об'єктів RimWorld.
-Пиши мовою {RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang}. Виведи лише JSON.
+Пиши мовою {Ustas.RimAI.Art.RimTalkConstantShim.Lang}. Виведи лише JSON.
 
 Обов'язкові поля JSON:
 - ""title""

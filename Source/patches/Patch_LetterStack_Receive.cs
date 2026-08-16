@@ -10,10 +10,10 @@
  * - Capture letters and enqueue their text for flavor append.
  */
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.events;
+using Ustas.RimAI.Art.events;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(LetterStack), nameof(LetterStack.ReceiveLetter), new[] { typeof(Letter), typeof(string), typeof(int), typeof(bool) })]
     public static class Patch_LetterStack_Receive

@@ -1,20 +1,20 @@
 using System.Collections.Generic;
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.art;
-using RimTalk_LiteratureExpansion.art.model;
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.integration;
-using RimTalk_LiteratureExpansion.scanner.queue;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.storage;
-using RimTalk_LiteratureExpansion.storage.save;
-using RimTalk_LiteratureExpansion.synopsis.model;
-using RimTalk_LiteratureExpansion.tv;
+using Ustas.RimAI.Art.art;
+using Ustas.RimAI.Art.art.model;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.integration;
+using Ustas.RimAI.Art.scanner.queue;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.storage;
+using Ustas.RimAI.Art.storage.save;
+using Ustas.RimAI.Art.synopsis.model;
+using Ustas.RimAI.Art.tv;
 using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.manual
+namespace Ustas.RimAI.Art.manual
 {
     public enum ManualTextEditKind
     {

@@ -3,10 +3,10 @@
  * - Override CompArt title when cached art description is available.
  */
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.integration;
+using Ustas.RimAI.Art.integration;
 using RimWorld;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(CompArt), "get_Title")]
     public static class Patch_CompArt_Title

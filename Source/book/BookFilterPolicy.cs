@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using RimTalk_LiteratureExpansion.book.journal;
-using RimTalk_LiteratureExpansion.settings;
+using Ustas.RimAI.Art.book.journal;
+using Ustas.RimAI.Art.settings;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.book
+namespace Ustas.RimAI.Art.book
 {
     public static class BookFilterPolicy
     {

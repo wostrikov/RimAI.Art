@@ -3,11 +3,11 @@
  * - Trigger persona weapon LLM update when the weapon is bonded to a pawn.
  */
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.art;
+using Ustas.RimAI.Art.art;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(CompBladelinkWeapon), "OnCodedFor")]
     public static class Patch_CompBladelinkWeapon_Bonded

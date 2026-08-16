@@ -1,13 +1,13 @@
 using System.Threading.Tasks;
-using RimTalk_LiteratureExpansion.art.model;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.storage;
-using RimTalk_LiteratureExpansion.storage.save;
-using RimTalk_LiteratureExpansion.synopsis;
-using RimTalk_LiteratureExpansion.synopsis.llm;
+using Ustas.RimAI.Art.art.model;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.storage;
+using Ustas.RimAI.Art.storage.save;
+using Ustas.RimAI.Art.synopsis;
+using Ustas.RimAI.Art.synopsis.llm;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.art
+namespace Ustas.RimAI.Art.art
 {
     public static class ArtDescriptionService
     {
@@ -30,9 +30,9 @@ namespace RimTalk_LiteratureExpansion.art
                 Context = ArtPromptBuilder.BuildContext(meta)
             };
 
-            Log.Message($"[RimTalk LE] ArtDescriptionService: dispatch LLM request for {meta.DefName}.");
+            Log.Message($"[RimAI.Art] ArtDescriptionService: dispatch LLM request for {meta.DefName}.");
             var result = await IndependentBookLlmClient.QueryJsonAsync<ArtDescription>(request);
-            Log.Message($"[RimTalk LE] ArtDescriptionService: LLM request completed for {meta.DefName} (null={result == null}).");
+            Log.Message($"[RimAI.Art] ArtDescriptionService: LLM request completed for {meta.DefName} (null={result == null}).");
             return Normalize(result);
         }
 

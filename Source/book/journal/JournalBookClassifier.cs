@@ -1,6 +1,6 @@
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.book.journal
+namespace Ustas.RimAI.Art.book.journal
 {
     public sealed class JournalBookClassifier : IBookClassifier
     {

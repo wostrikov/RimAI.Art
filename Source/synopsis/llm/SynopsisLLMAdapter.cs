@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.synopsis.model;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.synopsis.model;
 
-namespace RimTalk_LiteratureExpansion.synopsis.llm
+namespace Ustas.RimAI.Art.synopsis.llm
 {
     public static class SynopsisLLMAdapter
     {

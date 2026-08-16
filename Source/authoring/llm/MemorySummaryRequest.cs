@@ -22,21 +22,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using RimTalk.Service;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.settings.util;
-using RimTalk_LiteratureExpansion.synopsis;
-using RimTalk_LiteratureExpansion.synopsis.llm;
+using Ustas.RimAI.Communication.Service;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.settings.util;
+using Ustas.RimAI.Art.synopsis;
+using Ustas.RimAI.Art.synopsis.llm;
 using Verse;
 using RimWorld;
 
-namespace RimTalk_LiteratureExpansion.authoring.llm
+namespace Ustas.RimAI.Art.authoring.llm
 {
     public static class MemorySummaryRequest
     {
         private const string TemplateResourceName =
-            "RimTalk_LiteratureExpansion.promptoverride.templates.Prompt_MemorySummary.txt";
+            "Ustas.RimAI.Art.promptoverride.templates.Prompt_MemorySummary.txt";
 
         public static LiteratureLlmRequest BuildRequest(Pawn pawn)
         {
@@ -46,7 +46,7 @@ namespace RimTalk_LiteratureExpansion.authoring.llm
             // which logs an error before the player faction exists.
             if (!PlayerFactionUtility.TryGetPlayerFaction(out _))
             {
-                Log.Warning("[RimTalk LE] MemorySummaryRequest.BuildRequest skipped: Faction manager or player faction not initialized.");
+                Log.Warning("[RimAI.Art] MemorySummaryRequest.BuildRequest skipped: Faction manager or player faction not initialized.");
                 return null;
             }
 
@@ -62,7 +62,7 @@ namespace RimTalk_LiteratureExpansion.authoring.llm
             }
             catch (NullReferenceException ex)
             {
-                Log.Warning($"[RimTalk LE] MemorySummaryRequest.BuildRequest failed: {ex.Message}. This may happen during pawn generation when internal caches are not ready.");
+                Log.Warning($"[RimAI.Art] MemorySummaryRequest.BuildRequest failed: {ex.Message}. This may happen during pawn generation when internal caches are not ready.");
                 return null;
             }
         }
@@ -80,7 +80,7 @@ namespace RimTalk_LiteratureExpansion.authoring.llm
             return PromptTemplateUtil.Resolve(
                 settings?.promptMemorySummary,
                 template,
-                ("LANG", RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang),
+                ("LANG", Ustas.RimAI.Art.RimTalkConstantShim.Lang),
                 ("SUMMARY_MAX_CHARS", SynopsisTokenPolicy.PromptSynopsisMaxChars.ToString()),
                 ("SUMMARY_MAX_SENTENCES", SynopsisTokenPolicy.SynopsisMaxSentences.ToString()));
         }
@@ -90,7 +90,7 @@ namespace RimTalk_LiteratureExpansion.authoring.llm
             var template = LoadTemplate();
             return PromptTemplateUtil.ApplyTokens(
                 template,
-                ("LANG", RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang),
+                ("LANG", Ustas.RimAI.Art.RimTalkConstantShim.Lang),
                 ("SUMMARY_MAX_CHARS", SynopsisTokenPolicy.PromptSynopsisMaxChars.ToString()),
                 ("SUMMARY_MAX_SENTENCES", SynopsisTokenPolicy.SynopsisMaxSentences.ToString()));
         }

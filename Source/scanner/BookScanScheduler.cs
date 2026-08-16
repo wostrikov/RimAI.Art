@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.scanner
+namespace Ustas.RimAI.Art.scanner
 {
     public static class BookScanScheduler
     {

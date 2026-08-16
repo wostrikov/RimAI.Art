@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
-using RimTalk.Data;
+using Ustas.RimAI.Communication.Data;
 
-namespace RimTalk_LiteratureExpansion.art.model
+namespace Ustas.RimAI.Art.art.model
 {
     [DataContract]
     public sealed class ArtDescription : IJsonData

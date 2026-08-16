@@ -15,10 +15,10 @@
  */
 using System.Collections.Generic;
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.scanner.production;
+using Ustas.RimAI.Art.scanner.production;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(RecipeWorker), nameof(RecipeWorker.Notify_IterationCompleted))]
     public static class Patch_Kiiro_MakeTextBook
@@ -36,7 +36,7 @@ namespace RimTalk_LiteratureExpansion.patches
                 !string.Equals(defName, KiiroRecipeNovel, System.StringComparison.Ordinal))
                 return;
 
-            Log.Message($"[RimTalk LE] Kiiro recipe completed: {defName} by {billDoer.LabelShort}.");
+            Log.Message($"[RimAI.Art] Kiiro recipe completed: {defName} by {billDoer.LabelShort}.");
             BookProductionTracker.NotifyProduced(billDoer);
         }
     }

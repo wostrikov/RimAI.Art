@@ -17,16 +17,16 @@
  * - Do not scan based on position; use direct product tracking.
  */
 using System.Collections.Generic;
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.scanner.queue;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.storage;
-using RimTalk_LiteratureExpansion.storage.save;
-using RimTalk_LiteratureExpansion.synopsis;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.scanner.queue;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.storage;
+using Ustas.RimAI.Art.storage.save;
+using Ustas.RimAI.Art.synopsis;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.scanner.production
+namespace Ustas.RimAI.Art.scanner.production
 {
     public static class BookProductionTracker
     {
@@ -73,7 +73,7 @@ namespace RimTalk_LiteratureExpansion.scanner.production
 
             if (matched > 0)
             {
-                Log.Message($"[RimTalk LE] Produced books via {recipeDef?.defName ?? "recipe"}: matched {matched}, enqueued {enqueued}, cached {cached}.");
+                Log.Message($"[RimAI.Art] Produced books via {recipeDef?.defName ?? "recipe"}: matched {matched}, enqueued {enqueued}, cached {cached}.");
             }
 
             if (enqueued > 0)

@@ -17,9 +17,9 @@
  * - Do not reference RimWorld or RimTalk APIs.
  */
 using System.Runtime.Serialization;
-using RimTalk.Data;
+using Ustas.RimAI.Communication.Data;
 
-namespace RimTalk_LiteratureExpansion.authoring
+namespace Ustas.RimAI.Art.authoring
 {
     [DataContract]
     public sealed class BookTitleSpec : IJsonData

@@ -9,15 +9,15 @@
  * - Provide a concise prompt and structured context for LLM output.
  */
 using System.Text;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.settings.util;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.settings.util;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.events.quests
+namespace Ustas.RimAI.Art.events.quests
 {
     public static class WarningQuestRequest
     {

@@ -7,16 +7,16 @@
  */
 using System.Text;
 using System.Threading.Tasks;
-using RimTalk_LiteratureExpansion.authoring;
-using RimTalk_LiteratureExpansion.art.model;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.settings.util;
-using RimTalk_LiteratureExpansion.synopsis;
-using RimTalk_LiteratureExpansion.synopsis.llm;
+using Ustas.RimAI.Art.authoring;
+using Ustas.RimAI.Art.art.model;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.settings.util;
+using Ustas.RimAI.Art.synopsis;
+using Ustas.RimAI.Art.synopsis.llm;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.art.llm
+namespace Ustas.RimAI.Art.art.llm
 {
     public static class PersonaWeaponRequest
     {
@@ -55,7 +55,7 @@ namespace RimTalk_LiteratureExpansion.art.llm
             return PromptTemplateUtil.Resolve(
                 settings?.promptPersonaWeapon,
                 template,
-                ("LANG", RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang),
+                ("LANG", Ustas.RimAI.Art.RimTalkConstantShim.Lang),
                 ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
                 ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()));
         }
@@ -65,7 +65,7 @@ namespace RimTalk_LiteratureExpansion.art.llm
             string template = BuildTemplate();
             return PromptTemplateUtil.ApplyTokens(
                 template,
-                ("LANG", RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang),
+                ("LANG", Ustas.RimAI.Art.RimTalkConstantShim.Lang),
                 ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
                 ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()));
         }
@@ -74,7 +74,7 @@ namespace RimTalk_LiteratureExpansion.art.llm
         {
             return
 $@"Ти даєш ім'я персональній зброї та пишеш її внутрішньосвітовий опис.
-Пиши мовою {RimTalk_LiteratureExpansion.RimTalkConstantShim.Lang}. Виведи лише JSON.
+Пиши мовою {Ustas.RimAI.Art.RimTalkConstantShim.Lang}. Виведи лише JSON.
 
 Обов'язкові поля JSON:
 - ""title""

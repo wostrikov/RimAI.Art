@@ -9,7 +9,7 @@
  * UI requirements:
  * - Checkbox: Enable Literature Expansion
  * - Checkbox: Use same API as RimTalk
- * - If not using RimTalk API:
+ * - If not using Ustas.RimAI.Communication API:
  *   - Text field: Base URL
  *   - Text field (masked if feasible): API Key
  *   - Text field: Model
@@ -25,22 +25,22 @@
  */
 using System.Collections.Generic;
 using System.Linq;
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.settings.util;
-using RimTalk_LiteratureExpansion.synopsis;
-using RimTalk_LiteratureExpansion.art;
-using RimTalk_LiteratureExpansion.art.llm;
-using RimTalk_LiteratureExpansion.authoring.llm;
-using RimTalk_LiteratureExpansion.journal.llm;
-using RimTalk_LiteratureExpansion.events;
-using RimTalk_LiteratureExpansion.events.quests;
-using RimTalk_LiteratureExpansion.storage.save;
-using RimTalk_LiteratureExpansion.tv;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.settings.util;
+using Ustas.RimAI.Art.synopsis;
+using Ustas.RimAI.Art.art;
+using Ustas.RimAI.Art.art.llm;
+using Ustas.RimAI.Art.authoring.llm;
+using Ustas.RimAI.Art.journal.llm;
+using Ustas.RimAI.Art.events;
+using Ustas.RimAI.Art.events.quests;
+using Ustas.RimAI.Art.storage.save;
+using Ustas.RimAI.Art.tv;
 using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.settings
+namespace Ustas.RimAI.Art.settings
 {
     public static class LiteratureSettingsWindow
     {
@@ -188,12 +188,12 @@ namespace RimTalk_LiteratureExpansion.settings
                 var cache = LiteratueSaveData.Current?.SynopsisCache;
                 if (cache == null)
                 {
-                    Log.Warning("[RimTalk LE] No active world data; cannot clear book cache.");
+                    Log.Warning("[RimAI.Art] No active world data; cannot clear book cache.");
                 }
                 else
                 {
                     int cleared = cache.Clear();
-                    Log.Message($"[RimTalk LE] Cleared {cleared} cached book synopses.");
+                    Log.Message($"[RimAI.Art] Cleared {cleared} cached book synopses.");
                 }
             }
 
@@ -203,12 +203,12 @@ namespace RimTalk_LiteratureExpansion.settings
                 var cache = LiteratueSaveData.Current?.ArtCache;
                 if (cache == null)
                 {
-                    Log.Warning("[RimTalk LE] No active world data; cannot clear art cache.");
+                    Log.Warning("[RimAI.Art] No active world data; cannot clear art cache.");
                 }
                 else
                 {
                     int cleared = cache.Clear();
-                    Log.Message($"[RimTalk LE] Cleared {cleared} cached art descriptions.");
+                    Log.Message($"[RimAI.Art] Cleared {cleared} cached art descriptions.");
                 }
             }
 
@@ -218,20 +218,20 @@ namespace RimTalk_LiteratureExpansion.settings
                 var maps = Find.Maps;
                 if (maps == null || maps.Count == 0)
                 {
-                    Log.Warning("[RimTalk LE] Manual rescan skipped: no active maps.");
+                    Log.Warning("[RimAI.Art] Manual rescan skipped: no active maps.");
                 }
                 else
                 {
-                    Log.Message($"[RimTalk LE] Manual rescan requested for {maps.Count} maps.");
+                    Log.Message($"[RimAI.Art] Manual rescan requested for {maps.Count} maps.");
                     bool bookEnabled = settings.enabled;
                     for (int i = 0; i < maps.Count; i++)
                     {
                         var map = maps[i];
-                        RimTalk_LiteratureExpansion.scanner.MapArtScanner.Scan(map);
+                        Ustas.RimAI.Art.scanner.MapArtScanner.Scan(map);
                         if (bookEnabled)
-                            RimTalk_LiteratureExpansion.scanner.MapBookScanner.Scan(map, detailedLog: true);
+                            Ustas.RimAI.Art.scanner.MapBookScanner.Scan(map, detailedLog: true);
                         else
-                            Log.Message($"[RimTalk LE] Book scan skipped: books disabled (map {map?.uniqueID ?? -1}).");
+                            Log.Message($"[RimAI.Art] Book scan skipped: books disabled (map {map?.uniqueID ?? -1}).");
                     }
                 }
             }

@@ -37,13 +37,13 @@
 
 using System.Collections.Generic;
 using Verse;
-using RimTalk_LiteratureExpansion.book.children;
-using RimTalk_LiteratureExpansion.book.journal;
-using RimTalk_LiteratureExpansion.book.mo;
-using RimTalk_LiteratureExpansion.book.vanilla;
-using RimTalk_LiteratureExpansion.book.vbe;
+using Ustas.RimAI.Art.book.children;
+using Ustas.RimAI.Art.book.journal;
+using Ustas.RimAI.Art.book.mo;
+using Ustas.RimAI.Art.book.vanilla;
+using Ustas.RimAI.Art.book.vbe;
 
-namespace RimTalk_LiteratureExpansion.book
+namespace Ustas.RimAI.Art.book
 {
     public interface IBookClassifier
     {

@@ -3,7 +3,7 @@ using System.Reflection;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.book.vbe
+namespace Ustas.RimAI.Art.book.vbe
 {
     public sealed class VBEBookClassifier : IBookClassifier
     {

@@ -3,16 +3,16 @@
  * - Orchestrate diary authoring when a pawn writes a journal entry.
  */
 using System.Threading.Tasks;
-using RimTalk_LiteratureExpansion.authoring;
-using RimTalk_LiteratureExpansion.authoring.llm;
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.journal.llm;
-using RimTalk_LiteratureExpansion.llm;
-using RimTalk_LiteratureExpansion.synopsis;
-using RimTalk_LiteratureExpansion.synopsis.model;
+using Ustas.RimAI.Art.authoring;
+using Ustas.RimAI.Art.authoring.llm;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.journal.llm;
+using Ustas.RimAI.Art.llm;
+using Ustas.RimAI.Art.synopsis;
+using Ustas.RimAI.Art.synopsis.model;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.journal
+namespace Ustas.RimAI.Art.journal
 {
     public static class JournalAuthoringPipeline
     {

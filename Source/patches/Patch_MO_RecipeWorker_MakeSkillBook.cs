@@ -9,15 +9,15 @@
 using System;
 using System.Reflection;
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.book;
-using RimTalk_LiteratureExpansion.scanner.queue;
-using RimTalk_LiteratureExpansion.settings;
-using RimTalk_LiteratureExpansion.storage;
-using RimTalk_LiteratureExpansion.storage.save;
+using Ustas.RimAI.Art.book;
+using Ustas.RimAI.Art.scanner.queue;
+using Ustas.RimAI.Art.settings;
+using Ustas.RimAI.Art.storage;
+using Ustas.RimAI.Art.storage.save;
 using RimWorld;
 using Verse;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch]
     public static class Patch_MO_RecipeWorker_MakeSkillBook
@@ -58,7 +58,7 @@ namespace RimTalk_LiteratureExpansion.patches
             if (PendingBookQueue.Contains(key)) return;
 
             PendingBookQueue.Enqueue(meta, worker);
-            Log.Message($"[RimTalk LE] MO book produced; enqueued {meta.DefName} for authoring.");
+            Log.Message($"[RimAI.Art] MO book produced; enqueued {meta.DefName} for authoring.");
         }
 
         private static bool IsMoWorker(object instance, RecipeDef recipeDef)

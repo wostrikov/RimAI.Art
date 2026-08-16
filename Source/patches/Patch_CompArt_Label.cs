@@ -3,10 +3,10 @@
  * - Override art item labels (outside art tab) using cached art titles.
  */
 using HarmonyLib;
-using RimTalk_LiteratureExpansion.integration;
+using Ustas.RimAI.Art.integration;
 using RimWorld;
 
-namespace RimTalk_LiteratureExpansion.patches
+namespace Ustas.RimAI.Art.patches
 {
     [HarmonyPatch(typeof(CompArt), nameof(CompArt.TransformLabel))]
     public static class Patch_CompArt_Label
