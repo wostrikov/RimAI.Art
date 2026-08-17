@@ -56,7 +56,7 @@ namespace Ustas.RimAI.Art.integration
             if (!BookFilterPolicy.IsAllowed(meta))
                 return;
 
-            var cache = LiteratueSaveData.Current?.SynopsisCache;
+            var cache = LiteratureSaveData.Current?.SynopsisCache;
             if (cache == null) return;
 
             if (!BookKeyProvider.TryGetKey(meta.Thing, out var key)) return;

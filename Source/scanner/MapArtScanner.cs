@@ -39,7 +39,7 @@ namespace Ustas.RimAI.Art.scanner
                 return;
             }
 
-            var cache = LiteratueSaveData.Current?.ArtCache;
+            var cache = LiteratureSaveData.Current?.ArtCache;
             if (cache == null)
             {
                 Log.Message($"[RimAI.Art] Art scan skipped: ArtCache unavailable (map {map.uniqueID}).");

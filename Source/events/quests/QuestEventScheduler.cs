@@ -81,7 +81,7 @@ namespace Ustas.RimAI.Art.events.quests
             // if (tick < _nextCheckTick) return;
             // _nextCheckTick = tick + CheckIntervalTicks;
 
-            // var data = LiteratueSaveData.Current;
+            // var data = LiteratureSaveData.Current;
             // if (data == null) return;
 
             // TryScheduleAdvertisement(data, tick);
@@ -105,7 +105,7 @@ namespace Ustas.RimAI.Art.events.quests
             Log.Message($"{LogPrefix} Gift delivery fulfilled trade request for {settlement.LabelCap}.");
         }
 
-        private static void TryScheduleAdvertisement(LiteratueSaveData data, int tick)
+        private static void TryScheduleAdvertisement(LiteratureSaveData data, int tick)
         {
             if (_advertPending) return;
             if (data.NextAdvertQuestTick <= 0)
@@ -162,7 +162,7 @@ namespace Ustas.RimAI.Art.events.quests
         private static void ApplyAdvertisementResult(PendingAdvertQuest pending, QuestTextSpec spec)
         {
             _advertPending = false;
-            var data = LiteratueSaveData.Current;
+            var data = LiteratureSaveData.Current;
             if (data == null || Find.TickManager == null) return;
 
             int tick = Find.TickManager.TicksGame;
@@ -188,7 +188,7 @@ namespace Ustas.RimAI.Art.events.quests
             data.NextAdvertQuestTick = tick + Rand.RangeInclusive(AdvertMinIntervalTicks, AdvertMaxIntervalTicks);
         }
 
-        private static void TryScheduleWarning(LiteratueSaveData data, int tick)
+        private static void TryScheduleWarning(LiteratureSaveData data, int tick)
         {
             if (_warningPending) return;
             if (data.NextWarningQuestTick <= 0)
@@ -242,7 +242,7 @@ namespace Ustas.RimAI.Art.events.quests
         private static void ApplyWarningResult(PendingWarningQuest pending, QuestTextSpec spec)
         {
             _warningPending = false;
-            var data = LiteratueSaveData.Current;
+            var data = LiteratureSaveData.Current;
             if (data == null || Find.TickManager == null) return;
 
             int tick = Find.TickManager.TicksGame;
@@ -281,7 +281,7 @@ namespace Ustas.RimAI.Art.events.quests
 
         private static void ProcessWarningRaidQueue(int tick)
         {
-            var data = LiteratueSaveData.Current;
+            var data = LiteratureSaveData.Current;
             if (data?.WarningRaidQueue == null || data.WarningRaidQueue.Count == 0) return;
             if (Find.QuestManager == null) return;
 
@@ -869,7 +869,7 @@ namespace Ustas.RimAI.Art.events.quests
             actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void DebugTriggerAdvertisementQuest()
         {
-            var data = LiteratueSaveData.Current;
+            var data = LiteratureSaveData.Current;
             if (data == null || Find.TickManager == null) return;
             int tick = Find.TickManager.TicksGame;
             data.NextAdvertQuestTick = tick;
@@ -880,7 +880,7 @@ namespace Ustas.RimAI.Art.events.quests
             actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void DebugTriggerWarningQuest()
         {
-            var data = LiteratueSaveData.Current;
+            var data = LiteratureSaveData.Current;
             if (data == null || Find.TickManager == null) return;
             int tick = Find.TickManager.TicksGame;
             data.NextWarningQuestTick = tick;

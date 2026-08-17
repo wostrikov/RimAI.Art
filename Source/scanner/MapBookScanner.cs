@@ -40,7 +40,7 @@ namespace Ustas.RimAI.Art.scanner
             var settings = LiteratureMod.Settings;
             if (settings != null && !settings.enabled) return;
 
-            var cache = LiteratueSaveData.Current?.SynopsisCache;
+            var cache = LiteratureSaveData.Current?.SynopsisCache;
             var things = map.listerThings?.AllThings;
             if (things == null || things.Count == 0) return;
 

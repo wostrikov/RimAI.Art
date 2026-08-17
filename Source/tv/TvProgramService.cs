@@ -14,7 +14,7 @@ namespace Ustas.RimAI.Art.tv
         {
             if (tvBuilding == null || tvBuilding.DestroyedOrNull()) return null;
 
-            var cache = LiteratueSaveData.Current?.TvProgramCache;
+            var cache = LiteratureSaveData.Current?.TvProgramCache;
             if (cache == null) return null;
 
             if (!TvProgramKeyProvider.TryGetKey(tvBuilding, out var key)) return null;
@@ -51,7 +51,7 @@ namespace Ustas.RimAI.Art.tv
         {
             if (tvBuilding == null || tvBuilding.DestroyedOrNull()) return null;
 
-            var cache = LiteratueSaveData.Current?.TvProgramCache;
+            var cache = LiteratureSaveData.Current?.TvProgramCache;
             if (cache == null) return null;
 
             if (!TvProgramKeyProvider.TryGetKey(tvBuilding, out var key)) return null;

@@ -185,7 +185,7 @@ namespace Ustas.RimAI.Art.settings
             Rect buttonRect = listing.GetRect(LiteratureSettingsDef.RowHeight);
             if (Widgets.ButtonText(buttonRect, "RimTalkLE_Settings_ClearBookCache".Translate()))
             {
-                var cache = LiteratueSaveData.Current?.SynopsisCache;
+                var cache = LiteratureSaveData.Current?.SynopsisCache;
                 if (cache == null)
                 {
                     Log.Warning("[RimAI.Art] No active world data; cannot clear book cache.");
@@ -200,7 +200,7 @@ namespace Ustas.RimAI.Art.settings
             Rect artCacheRect = listing.GetRect(LiteratureSettingsDef.RowHeight);
             if (Widgets.ButtonText(artCacheRect, "RimTalkLE_Settings_ClearArtCache".Translate()))
             {
-                var cache = LiteratueSaveData.Current?.ArtCache;
+                var cache = LiteratureSaveData.Current?.ArtCache;
                 if (cache == null)
                 {
                     Log.Warning("[RimAI.Art] No active world data; cannot clear art cache.");

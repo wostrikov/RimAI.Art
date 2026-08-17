@@ -37,7 +37,7 @@ namespace Ustas.RimAI.Art.scanner.production
                 return;
             }
 
-            var cache = LiteratueSaveData.Current?.ArtCache;
+            var cache = LiteratureSaveData.Current?.ArtCache;
             if (ArtKeyProvider.TryGetKey(thing, out var key) &&
                 cache != null &&
                 cache.Contains(key))

@@ -51,7 +51,7 @@ namespace Ustas.RimAI.Art.patches
 
         private static TvProgramRecord GetRecord(Thing tvThing)
         {
-            var cache = storage.save.LiteratueSaveData.Current?.TvProgramCache;
+            var cache = storage.save.LiteratureSaveData.Current?.TvProgramCache;
             if (cache == null) return null;
 
             if (!TvProgramKeyProvider.TryGetKey(tvThing, out var key)) return null;

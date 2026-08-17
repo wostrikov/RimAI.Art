@@ -34,7 +34,7 @@ namespace Ustas.RimAI.Art.synopsis
 
             Log.Message($"[RimAI.Art] Processing book {record.Meta.Title} ({record.Meta.DefName}) [{record.Meta.Type}].");
 
-            var cache = LiteratueSaveData.Current?.SynopsisCache;
+            var cache = LiteratureSaveData.Current?.SynopsisCache;
             if (cache == null) return;
 
             if (cache.TryGet(record.Key, out var cached))

@@ -47,7 +47,7 @@ namespace Ustas.RimAI.Art.scanner.production
             int enqueued = 0;
             int cached = 0;
 
-            var cache = LiteratueSaveData.Current?.SynopsisCache;
+            var cache = LiteratureSaveData.Current?.SynopsisCache;
             var mapOverride = worker?.Map;
 
             foreach (var product in products)

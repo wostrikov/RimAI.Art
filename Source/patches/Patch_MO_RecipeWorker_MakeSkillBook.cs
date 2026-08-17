@@ -53,7 +53,7 @@ namespace Ustas.RimAI.Art.patches
 
             if (!BookKeyProvider.TryGetKey(product, out var key)) return;
 
-            var cache = LiteratueSaveData.Current?.SynopsisCache;
+            var cache = LiteratureSaveData.Current?.SynopsisCache;
             if (cache != null && cache.Contains(key)) return;
             if (PendingBookQueue.Contains(key)) return;
 

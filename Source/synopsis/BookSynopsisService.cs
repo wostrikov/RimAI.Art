@@ -39,7 +39,7 @@ namespace Ustas.RimAI.Art.synopsis
         {
             if (meta == null) return null;
 
-            var cache = LiteratueSaveData.Current?.SynopsisCache;
+            var cache = LiteratureSaveData.Current?.SynopsisCache;
             if (cache != null && BookKeyProvider.TryGetKey(meta.Thing, out var key))
             {
                 if (cache.TryGet(key, out var record))

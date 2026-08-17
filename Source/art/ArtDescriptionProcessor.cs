@@ -46,7 +46,7 @@ namespace Ustas.RimAI.Art.art
 
             Log.Message($"[RimAI.Art] Processing art {record.Meta.ThingLabel} ({record.Meta.DefName}).");
 
-            var cache = LiteratueSaveData.Current?.ArtCache;
+            var cache = LiteratureSaveData.Current?.ArtCache;
             if (cache == null) return;
 
             if (cache.TryGet(record.Key, out _))

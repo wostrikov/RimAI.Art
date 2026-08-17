@@ -1,5 +1,5 @@
 /*
- * File: LiteratueSaveData.cs
+ * File: LiteratureSaveData.cs
  *
  * Purpose:
  * - Persist Literature Expansion data across save/load.
@@ -22,7 +22,7 @@ using Verse;
 
 namespace Ustas.RimAI.Art.storage.save
 {
-    public sealed class LiteratueSaveData : WorldComponent
+    public sealed class LiteratureSaveData : WorldComponent
     {
         public BookSynopsisCache SynopsisCache = new BookSynopsisCache();
         public ArtDescriptionCache ArtCache = new ArtDescriptionCache();
@@ -34,7 +34,7 @@ namespace Ustas.RimAI.Art.storage.save
         public int NextWarningQuestTick = -1;
         public System.Collections.Generic.List<WarningRaidRecord> WarningRaidQueue = new System.Collections.Generic.List<WarningRaidRecord>();
 
-        public LiteratueSaveData(World world) : base(world)
+        public LiteratureSaveData(World world) : base(world)
         {
         }
 
@@ -65,6 +65,6 @@ namespace Ustas.RimAI.Art.storage.save
                 Log.Message($"[RimAI.Art] Literature data loaded. Cached synopses: {SynopsisCache?.Count ?? 0}, art: {ArtCache?.Count ?? 0}, ideos: {IdeoCache?.Count ?? 0}, ideoProcessed: {IdeoCache?.ProcessedCount ?? 0}, tv: {TvProgramCache?.Count ?? 0}, warningRaids: {WarningRaidQueue?.Count ?? 0}.");
         }
 
-        public static LiteratueSaveData Current => Find.World?.GetComponent<LiteratueSaveData>();
+        public static LiteratureSaveData Current => Find.World?.GetComponent<LiteratureSaveData>();
     }
 }

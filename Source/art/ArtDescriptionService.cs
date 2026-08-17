@@ -15,7 +15,7 @@ namespace Ustas.RimAI.Art.art
         {
             if (meta == null) return null;
 
-            var cache = LiteratueSaveData.Current?.ArtCache;
+            var cache = LiteratureSaveData.Current?.ArtCache;
             if (cache != null && ArtKeyProvider.TryGetKey(meta.Thing, out var key))
             {
                 if (cache.TryGet(key, out var record))

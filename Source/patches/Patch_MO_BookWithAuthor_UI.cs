@@ -81,7 +81,7 @@ namespace Ustas.RimAI.Art.patches
             if (thing == null || thing.DestroyedOrNull()) return false;
             if (!BookFilterPolicy.IsAllowed(thing)) return false;
 
-            var cache = LiteratueSaveData.Current?.SynopsisCache;
+            var cache = LiteratureSaveData.Current?.SynopsisCache;
             if (cache == null) return false;
 
             if (!BookKeyProvider.TryGetKey(thing, out var key)) return false;

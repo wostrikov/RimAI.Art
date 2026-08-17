@@ -132,7 +132,7 @@ namespace Ustas.RimAI.Art.manual
             if (meta == null) return false;
 
             BookSynopsisRecord record = null;
-            var cache = LiteratueSaveData.Current?.SynopsisCache;
+            var cache = LiteratureSaveData.Current?.SynopsisCache;
             if (cache != null && BookKeyProvider.TryGetKey(thing, out var key))
                 cache.TryGet(key, out record);
 
@@ -171,7 +171,7 @@ namespace Ustas.RimAI.Art.manual
             if (meta == null) return false;
 
             ArtDescriptionRecord record = null;
-            var cache = LiteratueSaveData.Current?.ArtCache;
+            var cache = LiteratureSaveData.Current?.ArtCache;
             if (cache != null && ArtKeyProvider.TryGetKey(thing, out var key))
                 cache.TryGet(key, out record);
 
@@ -205,7 +205,7 @@ namespace Ustas.RimAI.Art.manual
             if (!BookKeyProvider.TryGetKey(thing, out var key))
                 return false;
 
-            var cache = LiteratueSaveData.Current?.SynopsisCache;
+            var cache = LiteratureSaveData.Current?.SynopsisCache;
             if (cache == null) return false;
 
             cache.TryGet(key, out var existing);
@@ -224,7 +224,7 @@ namespace Ustas.RimAI.Art.manual
             if (!ArtKeyProvider.TryGetKey(thing, out var key))
                 return false;
 
-            var cache = LiteratueSaveData.Current?.ArtCache;
+            var cache = LiteratureSaveData.Current?.ArtCache;
             if (cache == null) return false;
 
             cache.TryGet(key, out var existing);
@@ -241,7 +241,7 @@ namespace Ustas.RimAI.Art.manual
             if (!BookKeyProvider.TryGetKey(thing, out var key))
                 return false;
 
-            var cache = LiteratueSaveData.Current?.SynopsisCache;
+            var cache = LiteratureSaveData.Current?.SynopsisCache;
             if (cache == null) return false;
             if (!cache.TryGet(key, out var record) || record == null)
                 return false;
@@ -264,7 +264,7 @@ namespace Ustas.RimAI.Art.manual
             if (!ArtKeyProvider.TryGetKey(thing, out var key))
                 return false;
 
-            var cache = LiteratueSaveData.Current?.ArtCache;
+            var cache = LiteratureSaveData.Current?.ArtCache;
             if (cache == null) return false;
             if (!cache.TryGet(key, out var record) || record == null)
                 return false;
@@ -307,7 +307,7 @@ namespace Ustas.RimAI.Art.manual
             if (!TvFilterPolicy.IsTelevision(thing)) return false;
 
             TvProgramRecord record = null;
-            var cache = LiteratueSaveData.Current?.TvProgramCache;
+            var cache = LiteratureSaveData.Current?.TvProgramCache;
             if (cache != null && TvProgramKeyProvider.TryGetKey(thing, out var key))
                 cache.TryGet(key, out record);
 
@@ -336,7 +336,7 @@ namespace Ustas.RimAI.Art.manual
             if (!TvProgramKeyProvider.TryGetKey(thing, out var key))
                 return false;
 
-            var cache = LiteratueSaveData.Current?.TvProgramCache;
+            var cache = LiteratureSaveData.Current?.TvProgramCache;
             if (cache == null) return false;
 
             cache.TryGet(key, out var existing);
@@ -353,7 +353,7 @@ namespace Ustas.RimAI.Art.manual
             if (!TvProgramKeyProvider.TryGetKey(thing, out var key))
                 return false;
 
-            var cache = LiteratueSaveData.Current?.TvProgramCache;
+            var cache = LiteratureSaveData.Current?.TvProgramCache;
             if (cache == null) return false;
             if (!cache.TryGet(key, out var record) || record == null)
                 return false;

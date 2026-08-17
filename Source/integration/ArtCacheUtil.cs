@@ -68,7 +68,7 @@ namespace Ustas.RimAI.Art.integration
             record = null;
             if (thing == null) return false;
 
-            var cache = LiteratueSaveData.Current?.ArtCache;
+            var cache = LiteratureSaveData.Current?.ArtCache;
             if (cache == null) return false;
 
             if (!ArtKeyProvider.TryGetKey(thing, out var key)) return false;

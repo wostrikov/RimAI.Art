@@ -269,7 +269,7 @@ $@"Напиши 3–5 внутрішньосвітових речень для �
             if (!IsIdeoActive(record.Ideo)) return;
 
             record.Ideo.description = $"{record.OriginalDescription}\n\n{flavor}";
-            var cache = LiteratueSaveData.Current?.IdeoCache;
+            var cache = LiteratureSaveData.Current?.IdeoCache;
             cache?.Set(record.IdeoId, flavor);
             cache?.MarkProcessed(record.IdeoId);
             Processed.Add(record.IdeoId);
@@ -311,7 +311,7 @@ $@"Напиши 3–5 внутрішньосвітових речень для �
 
         private static bool IsAlreadyProcessed(int ideoId)
         {
-            var cache = LiteratueSaveData.Current?.IdeoCache;
+            var cache = LiteratureSaveData.Current?.IdeoCache;
             if (cache == null)
             {
                 Log.Message($"{LogPrefix} Cache missing when checking processed (id={ideoId}).");

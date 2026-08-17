@@ -38,7 +38,7 @@ namespace Ustas.RimAI.Art.events
             if (tick < _nextCheckTick) return;
             _nextCheckTick = tick + CheckIntervalTicks;
 
-            var data = LiteratueSaveData.Current;
+            var data = LiteratureSaveData.Current;
             if (data == null) return;
 
             TryScheduleAllyDiplomacy(data, tick);
@@ -47,7 +47,7 @@ namespace Ustas.RimAI.Art.events
 
         public static void DebugTriggerAllyDiplomacy()
         {
-            var data = LiteratueSaveData.Current;
+            var data = LiteratureSaveData.Current;
             if (data == null || Find.TickManager == null) return;
             int tick = Find.TickManager.TicksGame;
             data.NextAllyDiplomacyTick = tick;
@@ -56,7 +56,7 @@ namespace Ustas.RimAI.Art.events
 
         public static void DebugTriggerFamilyLetter()
         {
-            var data = LiteratueSaveData.Current;
+            var data = LiteratureSaveData.Current;
             if (data == null || Find.TickManager == null) return;
             int tick = Find.TickManager.TicksGame;
             data.NextFamilyLetterTick = tick;
@@ -88,7 +88,7 @@ namespace Ustas.RimAI.Art.events
             return settings != null && settings.enabled && settings.allowEasterLetters;
         }
 
-        private static void TryScheduleAllyDiplomacy(LiteratueSaveData data, int tick)
+        private static void TryScheduleAllyDiplomacy(LiteratureSaveData data, int tick)
         {
             if (!AreEasterLettersEnabled()) return;
             if (_diplomacyPending) return;
@@ -132,7 +132,7 @@ namespace Ustas.RimAI.Art.events
             _diplomacyPending = false;
             if (!AreEasterLettersEnabled()) return;
 
-            var data = LiteratueSaveData.Current;
+            var data = LiteratureSaveData.Current;
             if (data == null || Find.TickManager == null) return;
             int tick = Find.TickManager.TicksGame;
 
@@ -163,7 +163,7 @@ namespace Ustas.RimAI.Art.events
             data.NextAllyDiplomacyTick = tick + GenDate.TicksPerYear;
         }
 
-        private static void TryScheduleFamilyLetter(LiteratueSaveData data, int tick)
+        private static void TryScheduleFamilyLetter(LiteratureSaveData data, int tick)
         {
             if (!AreEasterLettersEnabled()) return;
             if (_familyPending)
@@ -232,7 +232,7 @@ namespace Ustas.RimAI.Art.events
             _familyPending = false;
             if (!AreEasterLettersEnabled()) return;
 
-            var data = LiteratueSaveData.Current;
+            var data = LiteratureSaveData.Current;
             if (data == null || Find.TickManager == null) return;
             int tick = Find.TickManager.TicksGame;
 

@@ -46,7 +46,7 @@ namespace Ustas.RimAI.Art.art
                 return;
             }
 
-            var cache = LiteratueSaveData.Current?.ArtCache;
+            var cache = LiteratureSaveData.Current?.ArtCache;
             if (cache == null)
             {
                 Log.Message("[RimAI.Art] Persona weapon update skipped: ArtCache unavailable.");
