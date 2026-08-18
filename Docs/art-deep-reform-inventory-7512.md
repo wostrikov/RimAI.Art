@@ -5,9 +5,12 @@ Measured against `RimAI.Art`. Production scope: `Source/**/*.cs` excluding `obj`
 | Wave | Status |
 | --- | --- |
 | A | inventory + characterization + Core prompt contracts consumed |
-| B | composition + orchestration (not started) |
+| pre-B | arbiter coverage facts corrected; queue + Stop behavioral isolation frozen |
+| B1 | composition ownership + Stop unwind (not started) |
+| B2 | orchestration + queues (not started) |
 | C | prompt / transport / result / persistence (not started) |
-| D | host/UI/logging/catch/guards/stage close (not started) |
+| D-logging | RimAiLog migration (deferred; not started) |
+| D | host/UI/guards/stage close (not started) |
 
 ---
 
@@ -73,10 +76,14 @@ Rule: `CURRENT_TEMPORARY <= COMMITTED_TEMPORARY_BASELINE` (never upward).
 | --- | --- |
 | Entry | `LiteratureMod` → `RimAiHandshake.TryActivate(..., ArtComposition.Current.Start)` |
 | Start | Idempotent `IsStarted` guard; module register; `Harmony("Ustas.RimAI.Art").PatchAll()`; Talk/Scriban registrations |
-| Stop | **Flag only** (`IsStarted = false`). No Unpatch, no Talk unregister, no queue teardown |
+| Stop | **Flag only** (`IsStarted = false`). No Unpatch, no Talk/Scriban unregister, no queue clear |
+| Start after Stop | Re-runs `Harmony.PatchAll()`; Talk/Scriban `Register()` are no-ops (`_registered` survives Stop) |
 | Ambient | `ArtComposition.Current` (ALLOWED facade candidate); `LiteratureSaveData.Current` |
 | Long-lived services | Mostly **static** helpers/queues/processors — **not** constructed under composition root today |
 | Settings | `LiteratureMod.Settings` static field (live reads in prompt builders) |
+
+Behavioral isolation is frozen in Core (`Composition_Stop_behavioral_isolation_is_frozen`)
+before Wave B ownership moves.
 
 ---
 
@@ -173,13 +180,23 @@ Related (not `*PromptBuilder` types, still build prompts):
 1. **QueryViaRimTalk** — `AIClientFactory.GetAIClientAsync` → chat completion.
    Art does not set `art-literature` metadata; any arbitration happens inside
    Communication/shared client paths (caller identity may not be Art Background).
-2. **SharedTextAiOrchestrator.Complete** — non-Google/non-Player2 independent path; sets
-   `Arbitration = AiRequestMetadata.FromCaller("art-literature")` → Core maps to
-   **Background** when arbiter is used
-3. **SharedHttpTransport** — Google / Player2 independent HTTP (**no** SharedTextAi Admit)
+2. **SharedTextAiOrchestrator.Complete** — independent OpenAI/Custom path; sets
+   `Arbitration = AiRequestMetadata.FromCaller("art-literature")` →
+   **`AiRequestArbiter.Current.Admit`** (transitive) → **Background**.
+3. **SharedHttpTransport** — Google / Player2 independent HTTP (**bypasses Admit**).
 
-`UsesAiRequestArbiter = false` at module level: Art never references `AiRequestArbiter`
-directly. Explicit Art Background metadata applies only to independent SharedTextAi mode.
+Frozen facts (`ArtInteriorDefaults`):
+
+| Fact | Value |
+| --- | --- |
+| `CallsAiRequestArbiterDirectly` | false |
+| `IndependentOpenAiCustomPathAdmitsViaSharedTextAi` | true |
+| `IndependentGooglePathBypassesArbiter` | true |
+| `IndependentPlayer2PathBypassesArbiter` | true |
+| `WaveBArbiterCoverageScope` | `Google_and_Player2_only` |
+
+**Wave B hazard:** wrapping the whole client in an outer `Admit` double-admits
+OpenAI/Custom on the same thread → `nested_request` rejection / deadlock guard.
 
 Timeout: 240000 ms. Retries: none dedicated beyond provider/client behavior.
 No image-generation transport.
@@ -200,6 +217,19 @@ Caches are save-game JSON via Verse Scribe — formats must be preserved.
 **Not persisted:** `PendingBookQueue` / `PendingArtQueue` and rewriter pending dictionaries
 (static in-memory only).
 
+Frozen policy (pre-B characterization):
+
+| Fact | Value |
+| --- | --- |
+| Domain pending queues | `PendingArtQueue`, `PendingBookQueue` |
+| Main-thread marshal queues | 5× `Queue<Action>` (letter/quest/ideo schedulers/rewriters) |
+| `DomainPendingQueuesAreTransientByDesign` | **true** (`PendingBookQueue` header: do not persist) |
+| `DomainPendingQueuesLostSilentlyOnSaveLoad` | **true** |
+| `CompositionStopClearsDomainPendingQueues` | **false** |
+
+Wave B may move ownership under `ArtComposition` but must not change persist
+semantics without an explicit separate decision.
+
 ---
 
 ## Threading / host boundary
@@ -213,16 +243,26 @@ Caches are save-game JSON via Verse Scribe — formats must be preserved.
 
 ## Known warts (characterization — do not “fix” silently in Wave A)
 
-1. **Stop is flag-only** — duplicate Start after Stop can re-PatchAll / re-register Talk hooks
+1. **Stop is flag-only** — Start after Stop re-PatchAll; Talk `_registered` survives → no re-subscribe
 2. **Multiple generation families**, one shared LLM client — orchestration not owned by composition
-3. **Arbiter only partial** — explicit `art-literature` Background only on independent SharedTextAi;
-   Google/Player2 bypass; RimTalk uses Comm client metadata (not Art-owned)
-4. **Logging debt** — 179 Verse `Log.*` baseline (~184 call-site scan); `RimAiLog` unused
-5. **Static service graph** — queues/processors/services not root-owned; pending queues unsaved
+3. **Arbiter gaps = Google + Player2 only** — OpenAI/Custom already Admit via SharedTextAi; do not outer-wrap client
+4. **Logging debt** — 179 Verse baseline / ~184 call sites; `RimAiLog` = 0; **defer migration to late wave near D**
+5. **Static service graph** — queues/processors/services not root-owned; domain pending queues unsaved (transient by design)
 6. **TvProgram generation dormant** — builder/service without callers
 7. **Largest type** — `IndependentBookLlmClient` mixes config resolve, transport, parse, logging
 8. **Quest advert/warning auto schedule disabled** — code retained; DebugAction only
 9. **No sibling C# callers** — isolation is TalkLifecycle events only (good boundary; keep)
+
+### Recommended wave split (pre-B agreement)
+
+| Wave | Scope |
+| --- | --- |
+| pre-B (this) | arbiter fact rename; queue + Stop behavioral isolation characterization |
+| B1 | composition ownership + Stop unwind only |
+| B2 | orchestration + queue ownership (keep transient policy unless decided otherwise) |
+| C | prompt / transport gaps (Google/Player2 Admit) / result / persistence |
+| D-logging | RimAiLog migration (mass mechanical; separate reviewable diff) |
+| D | remaining host/UI/guards/stage close |
 
 ---
 
@@ -243,12 +283,15 @@ Do **not** redesign artistic styles, providers, or settings UI in this stage.
 
 ---
 
-## Wave A deliverables
+## Wave A / pre-B deliverables
 
 - [x] Responsibility / trigger / pipeline map (this document)
 - [x] Core `ArtInteriorDefaults` + `ArtPromptDefaults`
 - [x] Production consume of prompt defaults (`ArtPromptBuilder`, `SynopsisTokenPolicy`, settings token constants)
 - [x] `Stage7512ArtInteriorCharacterizationTests` goldens / architecture facts
-- [ ] Waves B–D (composition, transport consolidation, logging/catch migration, guards, stage close)
+- [x] Arbiter coverage nuance (`Google_and_Player2_only`; no whole-client outer Admit)
+- [x] Domain pending queues characterized as transient-by-design + silent save/load loss
+- [x] Composition Stop behavioral isolation frozen (PatchAll re-run / Talk flags survive)
+- [ ] Waves B1–D (split composition vs orchestration; logging deferred)
 
 Whimsical: **NOT EDITED**.
