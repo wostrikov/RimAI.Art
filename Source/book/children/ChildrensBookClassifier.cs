@@ -27,6 +27,7 @@
 
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Verse;
@@ -80,9 +81,20 @@ namespace Ustas.RimAI.Art.book.children
                     _coloringBookDef = ReadStaticThingDef(defOfType, FieldColoringBook);
                 }
             }
-            catch
+            catch (TypeLoadException)
             {
-                // 忽略：进入 fallback
+            }
+            catch (ReflectionTypeLoadException)
+            {
+            }
+            catch (FileLoadException)
+            {
+            }
+            catch (TargetException)
+            {
+            }
+            catch (ArgumentException)
+            {
             }
 
             // 2) fallback：按字段名尝试 GetNamedSilentFail（不强保证，但安全）
@@ -113,9 +125,17 @@ namespace Ustas.RimAI.Art.book.children
                 {
                     t = asm.GetType(fullName, throwOnError: false);
                 }
-                catch
+                catch (TypeLoadException)
                 {
-                    // ignore
+                }
+                catch (FileLoadException)
+                {
+                }
+                catch (BadImageFormatException)
+                {
+                }
+                catch (ArgumentException)
+                {
                 }
 
                 if (t != null) return t;

@@ -354,8 +354,10 @@ namespace Ustas.RimAI.Art.synopsis.llm
             {
                 return provider.GetEndpointUrl();
             }
-            catch
+            // RimAI.catch-boundary: ALLOWED_TOP_LEVEL_BOUNDARY — optional provider endpoint lookup must fail closed
+            catch (Exception ex)
             {
+                Log.Warning("[RimAI.Art] Provider endpoint lookup failed: " + ex);
                 return null;
             }
         }

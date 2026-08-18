@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using Ustas.RimAI.Art.art;
@@ -290,8 +291,10 @@ namespace Ustas.RimAI.Art.manual
                 {
                     return compArt.GenerateImageDescription().Resolve().Trim();
                 }
-                catch
+                // RimAI.catch-boundary: ALLOWED_TOP_LEVEL_BOUNDARY — CompArt description faults must not abort manual edit
+                catch (Exception ex)
                 {
+                    Log.WarningOnce("[RimAI.Art] CompArt description resolve failed: " + ex, thing?.thingIDNumber ?? 0);
                 }
             }
 

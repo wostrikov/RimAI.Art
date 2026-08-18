@@ -135,7 +135,11 @@ namespace Ustas.RimAI.Art.integration
                 {
                     target = job.GetTarget(index);
                 }
-                catch
+                catch (ArgumentOutOfRangeException)
+                {
+                    continue;
+                }
+                catch (ArgumentException)
                 {
                     continue;
                 }

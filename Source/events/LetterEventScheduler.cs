@@ -410,8 +410,10 @@ namespace Ustas.RimAI.Art.events
                 senderRelation = colonist.GetMostImportantRelation(relative);
                 recipientRelation = relative.GetMostImportantRelation(colonist);
             }
-            catch
+            // RimAI.catch-boundary: ALLOWED_TOP_LEVEL_BOUNDARY — letter scheduler must not abort on relation lookup
+            catch (Exception ex)
             {
+                Log.WarningOnce("[RimAI.Art] Accurate relation labels failed: " + ex, colonist.thingIDNumber ^ relative.thingIDNumber);
                 return false;
             }
 
