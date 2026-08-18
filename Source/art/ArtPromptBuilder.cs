@@ -3,6 +3,7 @@ using Ustas.RimAI.Communication.Data;
 using Ustas.RimAI.Art.settings.util;
 using Ustas.RimAI.Art.settings;
 using Ustas.RimAI.Art.synopsis;
+using Ustas.RimAI.Core.Art;
 using Verse;
 
 namespace Ustas.RimAI.Art.art
@@ -13,44 +14,26 @@ namespace Ustas.RimAI.Art.art
         {
             int tokenTarget = GetTokenTarget();
             var settings = LiteratureMod.Settings;
-            string template = BuildTemplate(tokenTarget);
+            string template = ArtPromptDefaults.BuildDefaultInstructionTemplate(tokenTarget, Constant.Lang);
             return PromptTemplateUtil.Resolve(
                 settings?.promptArt,
                 template,
                 ("LANG", Constant.Lang),
-                ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
-                ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()),
+                ("TITLE_MAX_CHARS", ArtPromptDefaults.TitleMaxChars.ToString()),
+                ("SYNOPSIS_MAX_CHARS", ArtPromptDefaults.SynopsisMaxChars.ToString()),
                 ("TOKEN_TARGET", tokenTarget.ToString()));
         }
 
         public static string BuildDefaultPrompt()
         {
             int tokenTarget = GetTokenTarget();
-            string template = BuildTemplate(tokenTarget);
+            string template = ArtPromptDefaults.BuildDefaultInstructionTemplate(tokenTarget, Constant.Lang);
             return PromptTemplateUtil.ApplyTokens(
                 template,
                 ("LANG", Constant.Lang),
-                ("TITLE_MAX_CHARS", SynopsisTokenPolicy.TitleMaxChars.ToString()),
-                ("SYNOPSIS_MAX_CHARS", SynopsisTokenPolicy.SynopsisMaxChars.ToString()),
+                ("TITLE_MAX_CHARS", ArtPromptDefaults.TitleMaxChars.ToString()),
+                ("SYNOPSIS_MAX_CHARS", ArtPromptDefaults.SynopsisMaxChars.ToString()),
                 ("TOKEN_TARGET", tokenTarget.ToString()));
-        }
-
-        private static string BuildTemplate(int tokenTarget)
-        {
-            return
-$@"Ти пишеш внутрішньосвітові описи мистецьких об'єктів RimWorld.
-Пиши мовою {Constant.Lang}. Виведи лише JSON.
-
-Обов'язкові поля JSON:
-- ""title""
-- ""text""
-
-Обмеження:
-- Довжина title <= {SynopsisTokenPolicy.TitleMaxChars} символів.
-- Довжина text <= {SynopsisTokenPolicy.SynopsisMaxChars} символів.
-- ""text"" — повний опис твору (близько {tokenTarget} токенів), а не підсумок.
-- Використовуй лише надані підказки (оригінальна назва, автор, оригінальний опис, якість).
-- Не вигадуй стороннього лору. Пиши яскраво й конкретно.";
         }
 
         public static string BuildContext(ArtMeta meta)
@@ -58,36 +41,36 @@ $@"Ти пишеш внутрішньосвітові описи мистець�
             if (meta == null) return string.Empty;
 
             var sb = new StringBuilder();
-            sb.AppendLine("[Artwork]");
-            sb.AppendLine($"ThingLabel: {meta.ThingLabel}");
-            sb.AppendLine($"DefName: {meta.DefName}");
+            sb.AppendLine(ArtPromptDefaults.ContextArtworkHeader);
+            sb.AppendLine(ArtPromptDefaults.ContextThingLabelPrefix + meta.ThingLabel);
+            sb.AppendLine(ArtPromptDefaults.ContextDefNamePrefix + meta.DefName);
 
             var def = meta.Thing?.def;
             if (def != null)
             {
-                sb.AppendLine($"Category: {def.category}");
-                sb.AppendLine($"IsArtBuilding: {def.IsArt}");
-                sb.AppendLine($"IsWeapon: {def.IsWeapon}");
-                sb.AppendLine($"IsApparel: {def.IsApparel}");
+                sb.AppendLine(ArtPromptDefaults.ContextCategoryPrefix + def.category);
+                sb.AppendLine(ArtPromptDefaults.ContextIsArtBuildingPrefix + def.IsArt);
+                sb.AppendLine(ArtPromptDefaults.ContextIsWeaponPrefix + def.IsWeapon);
+                sb.AppendLine(ArtPromptDefaults.ContextIsApparelPrefix + def.IsApparel);
             }
 
             if (meta.CompArt != null)
-                sb.AppendLine($"HasArtTag: {meta.CompArt.CanShowArt}");
+                sb.AppendLine(ArtPromptDefaults.ContextHasArtTagPrefix + meta.CompArt.CanShowArt);
 
             if (meta.Thing?.TryGetComp<RimWorld.CompBladelinkWeapon>() != null)
-                sb.AppendLine("PersonaWeapon: True");
+                sb.AppendLine(ArtPromptDefaults.ContextPersonaWeaponLine);
 
             if (meta.Quality.HasValue)
-                sb.AppendLine($"Quality: {meta.Quality.Value}");
+                sb.AppendLine(ArtPromptDefaults.ContextQualityPrefix + meta.Quality.Value);
 
             if (!string.IsNullOrWhiteSpace(meta.OriginalTitle))
-                sb.AppendLine($"OriginalTitle: {meta.OriginalTitle}");
+                sb.AppendLine(ArtPromptDefaults.ContextOriginalTitlePrefix + meta.OriginalTitle);
 
             if (!string.IsNullOrWhiteSpace(meta.AuthorName))
-                sb.AppendLine($"Author: {meta.AuthorName}");
+                sb.AppendLine(ArtPromptDefaults.ContextAuthorPrefix + meta.AuthorName);
 
             if (!string.IsNullOrWhiteSpace(meta.OriginalDescription))
-                sb.AppendLine($"OriginalDescription: {meta.OriginalDescription}");
+                sb.AppendLine(ArtPromptDefaults.ContextOriginalDescriptionPrefix + meta.OriginalDescription);
 
             return sb.ToString().TrimEnd();
         }
@@ -95,12 +78,8 @@ $@"Ти пишеш внутрішньосвітові описи мистець�
         private static int GetTokenTarget()
         {
             var settings = LiteratureMod.Settings;
-            int target = settings?.synopsisTokenTarget ?? LiteratureSettingsDef.DefaultSynopsisTokenTarget;
-            if (target < LiteratureSettingsDef.MinSynopsisTokenTarget)
-                target = LiteratureSettingsDef.MinSynopsisTokenTarget;
-            if (target > LiteratureSettingsDef.MaxSynopsisTokenTarget)
-                target = LiteratureSettingsDef.MaxSynopsisTokenTarget;
-            return target;
+            int target = settings?.synopsisTokenTarget ?? ArtPromptDefaults.DefaultSynopsisTokenTarget;
+            return ArtPromptDefaults.ClampTokenTarget(target);
         }
     }
 }

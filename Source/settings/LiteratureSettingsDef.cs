@@ -22,9 +22,9 @@ namespace Ustas.RimAI.Art.settings
         public const int MaxModelLength = 120;
         public const int MaxPromptLength = 8000;
 
-        public const int DefaultSynopsisTokenTarget = 340;
-        public const int MinSynopsisTokenTarget = 120;
-        public const int MaxSynopsisTokenTarget = 800;
+        public const int DefaultSynopsisTokenTarget = Ustas.RimAI.Core.Art.ArtPromptDefaults.DefaultSynopsisTokenTarget;
+        public const int MinSynopsisTokenTarget = Ustas.RimAI.Core.Art.ArtPromptDefaults.MinSynopsisTokenTarget;
+        public const int MaxSynopsisTokenTarget = Ustas.RimAI.Core.Art.ArtPromptDefaults.MaxSynopsisTokenTarget;
         public const int StoryTokenBonus = 220;
 
         public const float RowHeight = 24f;

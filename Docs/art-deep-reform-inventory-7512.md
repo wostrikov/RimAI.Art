@@ -1,0 +1,229 @@
+# Art Deep Reform inventory — Phase 7.5.12
+
+Measured against `RimAI.Art`. Production scope: `Source/**/*.cs` excluding `obj`/`bin`.
+
+| Wave | Status |
+| --- | --- |
+| A | inventory + characterization + Core prompt contracts consumed |
+| B | composition + orchestration (not started) |
+| C | prompt / transport / result / persistence (not started) |
+| D | host/UI/logging/catch/guards/stage close (not started) |
+
+---
+
+## Product shape
+
+`RimAI.Art` (Literature Expansion) is a **literature / text-generation** module for
+art descriptions, book synopses, letters, quests, ideo text, journals, TV programs,
+and related rewriting — **not** an image-generation pipeline.
+
+```text
+LiteratureMod (settings + handshake)
+  → ArtComposition.Start
+       → RimAIModuleRegistry
+       → Harmony PatchAll
+       → Patch_PromptService_Override.Register (Talk decorate)
+       → Patch_ScribanParser_TvContent.Register
+  → LiteratureGameComponent tick hub
+       → queues / processors / schedulers / rewriters
+            → *PromptBuilder → LiteratureLlmRequest
+                 → IndependentBookLlmClient
+                      → RimTalk AIClientFactory
+                      OR SharedTextAiOrchestrator (+ AiRequestMetadata art-literature)
+                      OR SharedHttpTransport (Google / Player2)
+            → *Cache in LiteratureSaveData (WorldComponent)
+  → display Harmony patches read caches into labels / tooltips / CompArt
+```
+
+Frozen Core facts: `Ustas.RimAI.Core.Art.ArtInteriorDefaults`,
+`Ustas.RimAI.Core.Art.ArtPromptDefaults`.
+Characterization: `Stage7512ArtInteriorCharacterizationTests`.
+
+---
+
+## Wave A baselines (committed architecture inventories)
+
+| Bucket | Art value | Source |
+| --- | --- | --- |
+| Direct host logging (TEMPORARY) | **179** | `direct-host-logging-baseline.json` / phase757 |
+| Catch-all baseline by_module | **9** | `catch-all-baseline.json` |
+| Catch inventory by_module (raw) | 12 | `phase755-catch-inventory.json` (includes bare) |
+| DOMAIN catch (phase755 category) | **4** | `phase755-catch-inventory.json` |
+| Ambient `.Current` | **2** | `ArtComposition.Current`, `LiteratureSaveData.Current` |
+| File I/O TEMPORARY | **0** | no Art keys in `direct-file-io-baseline.json` |
+| Oversized WARN (phase754) | **2** | warn_by_module (historical inventory; current largest file ~731 LOC) |
+| RimAiLog usages | **0** | source scan |
+| Live `[HarmonyPatch]` attributes | **~24** | source scan |
+| Production `.cs` files / LOC | **132** / **~13.7k** | Wave A measure |
+
+Rule: `CURRENT_TEMPORARY <= COMMITTED_TEMPORARY_BASELINE` (never upward).
+
+---
+
+## Lifecycle / composition
+
+| Item | Behavior |
+| --- | --- |
+| Entry | `LiteratureMod` → `RimAiHandshake.TryActivate(..., ArtComposition.Current.Start)` |
+| Start | Idempotent `IsStarted` guard; module register; `Harmony("Ustas.RimAI.Art").PatchAll()`; Talk/Scriban registrations |
+| Stop | **Flag only** (`IsStarted = false`). No Unpatch, no Talk unregister, no queue teardown |
+| Ambient | `ArtComposition.Current` (ALLOWED facade candidate); `LiteratureSaveData.Current` |
+| Long-lived services | Mostly **static** helpers/queues/processors — **not** constructed under composition root today |
+| Settings | `LiteratureMod.Settings` static field (live reads in prompt builders) |
+
+---
+
+## Generation triggers (inventory)
+
+### Production / scan → queues
+
+| Trigger | Key types |
+| --- | --- |
+| CompArt initialize | `Patch_CompArt_Initialize` → `ArtProductionTracker` → `PendingArtQueue` |
+| Persona weapon bond | `Patch_CompBladelinkWeapon_Bonded` → `PersonaWeaponAuthoringPipeline` |
+| Book bill / recipes | `Patch_BillProduction_Finish`, `Patch_GenRecipe_MakeRecipeProducts`, Kiiro/MO patches → book queues |
+| Map load / daily scan | `Patch_MapLoaded_Scan`, `Patch_Tick_DailyScan` → art/book scanners → queues |
+| Letters received | `Patch_LetterStack_Receive` → `LetterTextRewriter` |
+| Quests | `Patch_QuestDescription_Queue` → `QuestDescriptionRewriter` |
+| Ideo regenerate | `Patch_Ideo_RegenerateDescription` → `IdeoDescriptionRewriter` |
+| Gift delivery | `Patch_TransportersArrivalAction_GiveGift` → quest event scheduler |
+| Journal job | `JobDriver_WriteJournal` / float menu → book queue |
+| Talk inject | `TalkPromptBookInjector` via prompt override (may enqueue missing book) |
+| Scheduled letters/quests | `LetterEventScheduler`, `QuestEventScheduler` (+ advert/warning flows) |
+
+### Tick hub
+
+`LiteratureGameComponent.GameComponentTick` drives processors and schedulers.
+
+### UI / debug (not all LLM)
+
+| Entry | Notes |
+| --- | --- |
+| Manual text gizmo | `ManualTextEditService` — cache edit/restore, not regen |
+| Write journal float menu | starts job → later LLM |
+| Debug letter/quest actions | debug only |
+
+### Display-only (not generation)
+
+CompArt / Thing label/tooltip/description patches; Scriban TV content inject from cache.
+
+### Dead / dormant path
+
+`TvProgramService.GetOrGenerateAsync` + `TvProgramPromptBuilder` exist; **no production callers** found in Wave A scan.
+
+---
+
+## Pipelines (all share `IndependentBookLlmClient`)
+
+Frozen list (`ArtInteriorDefaults.GenerationPipelines`, 14):
+
+ArtDescription, PersonaWeapon, BookSynopsis, TvProgram, LetterRewrite, LetterScheduler,
+QuestRewrite, QuestAdvertisement, QuestWarning, IdeoRewrite, JournalFromSummary,
+BookFromSummary, MemorySummary, ManualTextEdit.
+
+Canonical art-description chain:
+
+```text
+trigger → ArtMeta / subject
+  → ArtDescriptionService.GetOrGenerateAsync
+  → ArtPromptBuilder (instruction + context)
+  → IndependentBookLlmClient.QueryJsonAsync
+  → ArtDescriptionCache (LiteratureSaveData)
+  → CompArt / tooltip display patches
+```
+
+---
+
+## Prompt builders
+
+| Type | File | Notes |
+| --- | --- | --- |
+| `ArtPromptBuilder` | `Source/art/ArtPromptBuilder.cs` | Consumes `ArtPromptDefaults` (Wave A) |
+| `SynopsisPromptBuilder` | `Source/synopsis/SynopsisPromptBuilder.cs` | Book synopses |
+| `TvProgramPromptBuilder` | `Source/tv/TvProgramPromptBuilder.cs` | Dormant caller-wise |
+
+Token policy constants: `SynopsisTokenPolicy` / `LiteratureSettingsDef` alias
+`ArtPromptDefaults` Title/Synopsis/token clamp values.
+
+Related: `PromptTemplateUtil`, settings `promptArt` override, Talk prompt injector.
+
+---
+
+## AI / provider transport
+
+`IndependentBookLlmClient` modes:
+
+1. **QueryViaRimTalk** — `AIClientFactory.GetAIClientAsync` → chat completion (**no** Art-owned arbiter call)
+2. **SharedTextAiOrchestrator.Complete** — non-Google/non-Player2 independent path; sets
+   `Arbitration = AiRequestMetadata.FromCaller("art-literature")` → Core maps to
+   **Background** when arbiter is used
+3. **SharedHttpTransport** — Google / Player2 independent HTTP
+
+`UsesAiRequestArbiter = false` at module level: Art never references `AiRequestArbiter`
+directly; only subset of independent traffic goes through SharedTextAi.
+
+Timeout: 240000 ms. Retries: none dedicated beyond provider/client behavior.
+No image-generation transport.
+
+---
+
+## Persistence / cache
+
+`LiteratureSaveData` (`WorldComponent`) scribe labels:
+
+`synopsisCache`, `artCache`, `ideoCache`, `tvProgramCache`,
+`nextAllyDiplomacyTick`, `nextFamilyLetterTick`, `nextAdvertQuestTick`,
+`nextWarningQuestTick`, `warningRaidQueue`.
+
+No direct `System.IO.File.*` / `ILocalStorage` / `AtomicFileWriter` in Art Wave A measure.
+Caches are save-game JSON via Verse Scribe — formats must be preserved.
+
+---
+
+## Threading / host boundary
+
+- LLM work is async (`Task` / `async`); SharedTextAi path uses `Task.Run` around orchestrator
+- Display patches run on main thread reading caches
+- No Unity texture / image binary pipeline
+- Capture of thing/meta before async is uneven across pipelines (Wave B/C target)
+
+---
+
+## Known warts (characterization — do not “fix” silently in Wave A)
+
+1. **Stop is flag-only** — duplicate Start after Stop can re-PatchAll / re-register Talk hooks
+2. **Multiple generation families**, one shared LLM client — orchestration not owned by composition
+3. **Arbiter only partial** — RimTalk + Google/Player2 bypass SharedTextAi arbitration
+4. **Logging debt** — 179 Verse `Log.*`; `RimAiLog` unused
+5. **Static service graph** — queues/processors/services not root-owned
+6. **TvProgram generation dormant** — builder/service without callers
+7. **Largest type** — `IndependentBookLlmClient` mixes config resolve, transport, parse, logging
+
+---
+
+## Target architecture (post Deep Reform — Waves B–D)
+
+```text
+ArtComposition
+  → Art generation/application orchestrator(s)
+  → subject/context resolver
+  → prompt builder(s) (deterministic; Core defaults)
+  → LLM client boundary (arbiter-aware where text-AI applies)
+  → result parser/processor
+  → persistence/cache ownership
+  → thin Harmony / UI adapters
+```
+
+Do **not** redesign artistic styles, providers, or settings UI in this stage.
+
+---
+
+## Wave A deliverables
+
+- [x] Responsibility / trigger / pipeline map (this document)
+- [x] Core `ArtInteriorDefaults` + `ArtPromptDefaults`
+- [x] Production consume of prompt defaults (`ArtPromptBuilder`, `SynopsisTokenPolicy`, settings token constants)
+- [x] `Stage7512ArtInteriorCharacterizationTests` goldens / architecture facts
+- [ ] Waves B–D (composition, transport consolidation, logging/catch migration, guards, stage close)
+
+Whimsical: **NOT EDITED**.

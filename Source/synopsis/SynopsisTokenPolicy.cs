@@ -18,9 +18,9 @@ namespace Ustas.RimAI.Art.synopsis
 {
     public static class SynopsisTokenPolicy
     {
-        public const int TitleMaxChars = 60;
-        public const int SynopsisMaxChars = 600;
-        public const int SynopsisMaxSentences = 6;
-        public const int PromptSynopsisMaxChars = 600;
+        public const int TitleMaxChars = Ustas.RimAI.Core.Art.ArtPromptDefaults.TitleMaxChars;
+        public const int SynopsisMaxChars = Ustas.RimAI.Core.Art.ArtPromptDefaults.SynopsisMaxChars;
+        public const int SynopsisMaxSentences = Ustas.RimAI.Core.Art.ArtPromptDefaults.SynopsisMaxSentences;
+        public const int PromptSynopsisMaxChars = Ustas.RimAI.Core.Art.ArtPromptDefaults.PromptSynopsisMaxChars;
     }
 }
