@@ -7,7 +7,8 @@ using Ustas.RimAI.Core.Modules;
 namespace Ustas.RimAI.Art;
 
 /// <summary>
-/// Module composition root for RimAI.Art. Owns Harmony and prompt-service patches.
+/// Module composition root for RimAI.Art. Owns Harmony install (process lifetime)
+/// and TalkLifecycle contributor registration (prompt override + TV Scriban).
 /// </summary>
 public sealed class ArtComposition : IRimAiModuleComposition
 {
@@ -16,6 +17,8 @@ public sealed class ArtComposition : IRimAiModuleComposition
     public string ModuleId => RimAiModuleIds.Art;
 
     public bool IsStarted { get; private set; }
+
+    Harmony _harmony;
 
     public void Start()
     {
@@ -28,8 +31,10 @@ public sealed class ArtComposition : IRimAiModuleComposition
             "RimAI.Art",
             "Art"));
 
-        var harmony = new Harmony("Ustas.RimAI.Art");
-        harmony.PatchAll();
+        // Harmony is process-lifetime (matches Personas/Events/Memory/Communication).
+        // PatchAll on every Start is idempotent for the same harmony id; do not UnpatchAll on Stop.
+        _harmony ??= new Harmony("Ustas.RimAI.Art");
+        _harmony.PatchAll();
         Patch_PromptService_Override.Register();
         Patch_ScribanParser_TvContent.Register();
         IsStarted = true;
@@ -37,6 +42,14 @@ public sealed class ArtComposition : IRimAiModuleComposition
 
     public void Stop()
     {
+        if (!IsStarted)
+            return;
+
+        // Do not UnpatchAll — Harmony is process-lifetime.
+        // Must clear TalkLifecycle registration flags so Start can re-subscribe;
+        // otherwise prompt override / TV inject stay dead after Stop→Start.
+        Patch_PromptService_Override.Unregister();
+        Patch_ScribanParser_TvContent.Unregister();
         IsStarted = false;
     }
 }

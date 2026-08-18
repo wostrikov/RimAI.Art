@@ -7,16 +7,34 @@ using Verse.AI;
 
 namespace Ustas.RimAI.Art.patches
 {
+    /// <summary>
+    /// Talk-path contributor: TV snippet inject via <see cref="TalkLifecycle.ScribanRendered"/>.
+    /// Not a Harmony patch. Register/Unregister are idempotent; Stop clears <c>_registered</c>
+    /// so Start can re-subscribe.
+    /// </summary>
     public static class Patch_ScribanParser_TvContent
     {
         static bool _registered;
+
+        public static bool IsRegistered => _registered;
 
         public static void Register()
         {
             if (_registered)
                 return;
-            _registered = true;
             TalkLifecycle.ScribanRendered += OnScribanRendered;
+            _registered = true;
+        }
+
+        /// <summary>
+        /// Unsubscribes Art-owned handler only. Does not call TalkLifecycle.Clear().
+        /// </summary>
+        public static void Unregister()
+        {
+            if (!_registered)
+                return;
+            TalkLifecycle.ScribanRendered -= OnScribanRendered;
+            _registered = false;
         }
 
         static void OnScribanRendered(ScribanRenderedArgs args)

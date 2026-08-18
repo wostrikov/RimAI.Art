@@ -6,7 +6,7 @@ Measured against `RimAI.Art`. Production scope: `Source/**/*.cs` excluding `obj`
 | --- | --- |
 | A | inventory + characterization + Core prompt contracts consumed |
 | pre-B | arbiter coverage facts corrected; queue + Stop behavioral isolation frozen |
-| B1 | composition ownership + Stop unwind (not started) |
+| B1 | composition Stop unwind (Talk/Scriban Unregister + `_registered` clear) — done |
 | B2 | orchestration + queues (not started) |
 | C | prompt / transport / result / persistence (not started) |
 | D-logging | RimAiLog migration (deferred; not started) |
@@ -75,15 +75,15 @@ Rule: `CURRENT_TEMPORARY <= COMMITTED_TEMPORARY_BASELINE` (never upward).
 | Item | Behavior |
 | --- | --- |
 | Entry | `LiteratureMod` → `RimAiHandshake.TryActivate(..., ArtComposition.Current.Start)` |
-| Start | Idempotent `IsStarted` guard; module register; `Harmony("Ustas.RimAI.Art").PatchAll()`; Talk/Scriban registrations |
-| Stop | **Flag only** (`IsStarted = false`). No Unpatch, no Talk/Scriban unregister, no queue clear |
-| Start after Stop | Re-runs `Harmony.PatchAll()`; Talk/Scriban `Register()` are no-ops (`_registered` survives Stop) |
+| Start | Idempotent `IsStarted` guard; module register; Harmony PatchAll (process lifetime); Talk/Scriban `Register()` |
+| Stop | Unregisters Talk decorate + Scriban TV (clears `_registered`); **no** UnpatchAll; **no** domain queue clear |
+| Start after Stop | Re-runs PatchAll (Harmony dedupes); Talk/Scriban **re-subscribe** (flags cleared on Stop) |
 | Ambient | `ArtComposition.Current` (ALLOWED facade candidate); `LiteratureSaveData.Current` |
-| Long-lived services | Mostly **static** helpers/queues/processors — **not** constructed under composition root today |
+| Long-lived services | Mostly **static** helpers/queues/processors — root ownership of queues deferred to B2 |
 | Settings | `LiteratureMod.Settings` static field (live reads in prompt builders) |
 
-Behavioral isolation is frozen in Core (`Composition_Stop_behavioral_isolation_is_frozen`)
-before Wave B ownership moves.
+Wave B1 acceptance: Stop→Start restores TalkLifecycle subscriptions (`StartAfterStopReSubscribesTalkLifecycle = true`).
+Domain pending queues remain transient / uncleared on Stop.
 
 ---
 
@@ -243,11 +243,11 @@ semantics without an explicit separate decision.
 
 ## Known warts (characterization — do not “fix” silently in Wave A)
 
-1. **Stop is flag-only** — Start after Stop re-PatchAll; Talk `_registered` survives → no re-subscribe
-2. **Multiple generation families**, one shared LLM client — orchestration not owned by composition
+1. **Stop unwinds Talk/Scriban** (B1) — Harmony process-lifetime; Start after Stop re-subscribes
+2. **Multiple generation families**, one shared LLM client — orchestration not owned by composition (B2)
 3. **Arbiter gaps = Google + Player2 only** — OpenAI/Custom already Admit via SharedTextAi; do not outer-wrap client
 4. **Logging debt** — 179 Verse baseline / ~184 call sites; `RimAiLog` = 0; **defer migration to late wave near D**
-5. **Static service graph** — queues/processors/services not root-owned; domain pending queues unsaved (transient by design)
+5. **Static service graph** — queues/processors not root-owned yet; domain pending queues unsaved (transient by design)
 6. **TvProgram generation dormant** — builder/service without callers
 7. **Largest type** — `IndependentBookLlmClient` mixes config resolve, transport, parse, logging
 8. **Quest advert/warning auto schedule disabled** — code retained; DebugAction only
@@ -291,7 +291,8 @@ Do **not** redesign artistic styles, providers, or settings UI in this stage.
 - [x] `Stage7512ArtInteriorCharacterizationTests` goldens / architecture facts
 - [x] Arbiter coverage nuance (`Google_and_Player2_only`; no whole-client outer Admit)
 - [x] Domain pending queues characterized as transient-by-design + silent save/load loss
-- [x] Composition Stop behavioral isolation frozen (PatchAll re-run / Talk flags survive)
-- [ ] Waves B1–D (split composition vs orchestration; logging deferred)
+- [x] Composition Stop behavioral isolation frozen (pre-B) then **updated in B1** (Unregister + re-subscribe)
+- [x] Wave B1: Talk/Scriban Unregister; no UnpatchAll; no queue/logging/orchestration
+- [ ] Waves B2–D (orchestration + queues; transport; logging deferred)
 
 Whimsical: **NOT EDITED**.
