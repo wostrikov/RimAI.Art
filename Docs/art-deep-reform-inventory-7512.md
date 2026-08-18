@@ -39,6 +39,13 @@ Frozen Core facts: `Ustas.RimAI.Core.Art.ArtInteriorDefaults`,
 `Ustas.RimAI.Core.Art.ArtPromptDefaults`.
 Characterization: `Stage7512ArtInteriorCharacterizationTests`.
 
+### Cross-module callers
+
+Sibling products under `sources/` do **not** import Art C# types
+(`ArtComposition`, `Literature*`, synopsis/TV/persona pipelines). Integration is
+**event-only**: Art subscribes to Core `TalkLifecycle.PromptDecorated` /
+`ScribanRendered`; Communication publishes those events without referencing Art.
+
 ---
 
 ## Wave A baselines (committed architecture inventories)
@@ -89,7 +96,8 @@ Rule: `CURRENT_TEMPORARY <= COMMITTED_TEMPORARY_BASELINE` (never upward).
 | Gift delivery | `Patch_TransportersArrivalAction_GiveGift` → quest event scheduler |
 | Journal job | `JobDriver_WriteJournal` / float menu → book queue |
 | Talk inject | `TalkPromptBookInjector` via prompt override (may enqueue missing book) |
-| Scheduled letters/quests | `LetterEventScheduler`, `QuestEventScheduler` (+ advert/warning flows) |
+| Scheduled letters | `LetterEventScheduler` (ally/family easter letters when enabled) |
+| Quest advert/warning | `QuestEventScheduler` flows exist; **auto tick schedule DISABLED** (TODO); **DebugAction** only |
 
 ### Tick hub
 
@@ -101,7 +109,8 @@ Rule: `CURRENT_TEMPORARY <= COMMITTED_TEMPORARY_BASELINE` (never upward).
 | --- | --- |
 | Manual text gizmo | `ManualTextEditService` — cache edit/restore, not regen |
 | Write journal float menu | starts job → later LLM |
-| Debug letter/quest actions | debug only |
+| Debug letter/quest actions | debug only (incl. advert/warning quests) |
+| Settings clear-cache | `LiteratureSettingsWindow` — not LLM |
 
 ### Display-only (not generation)
 
@@ -110,6 +119,7 @@ CompArt / Thing label/tooltip/description patches; Scriban TV content inject fro
 ### Dead / dormant path
 
 `TvProgramService.GetOrGenerateAsync` + `TvProgramPromptBuilder` exist; **no production callers** found in Wave A scan.
+TV inject reads cache only; manual edit can populate cache.
 
 ---
 
@@ -145,7 +155,14 @@ trigger → ArtMeta / subject
 Token policy constants: `SynopsisTokenPolicy` / `LiteratureSettingsDef` alias
 `ArtPromptDefaults` Title/Synopsis/token clamp values.
 
-Related: `PromptTemplateUtil`, settings `promptArt` override, Talk prompt injector.
+Related (not `*PromptBuilder` types, still build prompts):
+
+- `PersonaWeaponRequest`, `JournalFromSummaryRequest`, `BookFromSummaryRequest`, `MemorySummaryRequest`
+- `LetterTextRewriter`, `IdeoDescriptionRewriter`, `QuestDescriptionRewriter`
+- `AdvertisementQuestRequest`, `WarningQuestRequest`
+- **Inline UA string prompts (no settings template):** `FamilyLetterRequest`, `AllyDiplomacyLetterRequest`
+- Embedded resource: `promptoverride/templates/Prompt_MemorySummary.txt`
+- `PromptTemplateUtil`, settings `prompt*` overrides, Talk book injector (read-only append)
 
 ---
 
@@ -153,14 +170,16 @@ Related: `PromptTemplateUtil`, settings `promptArt` override, Talk prompt inject
 
 `IndependentBookLlmClient` modes:
 
-1. **QueryViaRimTalk** — `AIClientFactory.GetAIClientAsync` → chat completion (**no** Art-owned arbiter call)
+1. **QueryViaRimTalk** — `AIClientFactory.GetAIClientAsync` → chat completion.
+   Art does not set `art-literature` metadata; any arbitration happens inside
+   Communication/shared client paths (caller identity may not be Art Background).
 2. **SharedTextAiOrchestrator.Complete** — non-Google/non-Player2 independent path; sets
    `Arbitration = AiRequestMetadata.FromCaller("art-literature")` → Core maps to
    **Background** when arbiter is used
-3. **SharedHttpTransport** — Google / Player2 independent HTTP
+3. **SharedHttpTransport** — Google / Player2 independent HTTP (**no** SharedTextAi Admit)
 
 `UsesAiRequestArbiter = false` at module level: Art never references `AiRequestArbiter`
-directly; only subset of independent traffic goes through SharedTextAi.
+directly. Explicit Art Background metadata applies only to independent SharedTextAi mode.
 
 Timeout: 240000 ms. Retries: none dedicated beyond provider/client behavior.
 No image-generation transport.
@@ -178,6 +197,9 @@ No image-generation transport.
 No direct `System.IO.File.*` / `ILocalStorage` / `AtomicFileWriter` in Art Wave A measure.
 Caches are save-game JSON via Verse Scribe — formats must be preserved.
 
+**Not persisted:** `PendingBookQueue` / `PendingArtQueue` and rewriter pending dictionaries
+(static in-memory only).
+
 ---
 
 ## Threading / host boundary
@@ -193,11 +215,14 @@ Caches are save-game JSON via Verse Scribe — formats must be preserved.
 
 1. **Stop is flag-only** — duplicate Start after Stop can re-PatchAll / re-register Talk hooks
 2. **Multiple generation families**, one shared LLM client — orchestration not owned by composition
-3. **Arbiter only partial** — RimTalk + Google/Player2 bypass SharedTextAi arbitration
-4. **Logging debt** — 179 Verse `Log.*`; `RimAiLog` unused
-5. **Static service graph** — queues/processors/services not root-owned
+3. **Arbiter only partial** — explicit `art-literature` Background only on independent SharedTextAi;
+   Google/Player2 bypass; RimTalk uses Comm client metadata (not Art-owned)
+4. **Logging debt** — 179 Verse `Log.*` baseline (~184 call-site scan); `RimAiLog` unused
+5. **Static service graph** — queues/processors/services not root-owned; pending queues unsaved
 6. **TvProgram generation dormant** — builder/service without callers
 7. **Largest type** — `IndependentBookLlmClient` mixes config resolve, transport, parse, logging
+8. **Quest advert/warning auto schedule disabled** — code retained; DebugAction only
+9. **No sibling C# callers** — isolation is TalkLifecycle events only (good boundary; keep)
 
 ---
 
