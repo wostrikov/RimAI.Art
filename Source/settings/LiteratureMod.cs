@@ -18,6 +18,7 @@
  * - Do not reference RimTalk services directly (only settings integration).
  */
 using UnityEngine;
+using Ustas.RimAI.Art;
 using Ustas.RimAI.Core.Handshake;
 using Ustas.RimAI.Core.Modules;
 using Verse;
@@ -32,20 +33,16 @@ namespace Ustas.RimAI.Art.settings
         public LiteratureMod(ModContentPack content) : base(content)
         {
             Settings = GetSettings<LiteratureSettings>();
-            var handshake = RimAiHandshake.Register(RimAiHandshakeDescriptor.Current(
-                RimAiModuleIds.Art,
-                HandshakeModuleVersion,
-                isOptional: true));
-            if (!handshake.IsCompatible)
+            if (!RimAiHandshake.TryActivate(
+                    RimAiHandshakeDescriptor.Current(
+                        RimAiModuleIds.Art,
+                        HandshakeModuleVersion,
+                        isOptional: true),
+                    ArtComposition.Current.Start))
             {
                 return;
             }
 
-            RimAIModuleRegistry.Current.Register(new RimAIModuleDescriptor(
-                "art",
-                "RimAI.Art",
-                "RimAI.Art",
-                "Art"));
             RimAISettingsContributionRegistry.Current.Register(new DelegateSettingsContributor(
                 "art-literature",
                 "Literature",
