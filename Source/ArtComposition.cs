@@ -9,8 +9,8 @@ namespace Ustas.RimAI.Art;
 
 /// <summary>
 /// Module composition root for RimAI.Art. Owns Harmony install (process lifetime),
-/// TalkLifecycle contributor registration (prompt override + TV Scriban), and
-/// lifecycle clear of domain pending generation queues.
+/// TalkLifecycle contributor registration, domain pending queue lifecycle clear,
+/// and the thin literature orchestrator.
 /// </summary>
 public sealed class ArtComposition : IRimAiModuleComposition
 {
@@ -19,6 +19,9 @@ public sealed class ArtComposition : IRimAiModuleComposition
     public string ModuleId => RimAiModuleIds.Art;
 
     public bool IsStarted { get; private set; }
+
+    /// <summary>Root-owned literature generation entry. Null while stopped.</summary>
+    public ArtLiteratureOrchestrator Literature { get; private set; }
 
     Harmony _harmony;
 
@@ -39,6 +42,7 @@ public sealed class ArtComposition : IRimAiModuleComposition
         _harmony.PatchAll();
         Patch_PromptService_Override.Register();
         Patch_ScribanParser_TvContent.Register();
+        Literature = new ArtLiteratureOrchestrator();
         IsStarted = true;
     }
 
@@ -47,18 +51,18 @@ public sealed class ArtComposition : IRimAiModuleComposition
         if (!IsStarted)
             return;
 
+        // Flip IsStarted before Clear so in-flight Requeue cannot repopulate (Wave C barrier).
+        IsStarted = false;
+        Literature = null;
+
         // Do not UnpatchAll — Harmony is process-lifetime.
         // Must clear TalkLifecycle registration flags so Start can re-subscribe;
         // otherwise prompt override / TV inject stay dead after Stop→Start.
         Patch_PromptService_Override.Unregister();
         Patch_ScribanParser_TvContent.Unregister();
 
-        // Wave B2: domain pending queues are lifecycle-owned here. Drop deferred LLM work
-        // so Stop→Start does not resume stale art/book generation. Marshal Queue<Action>
-        // (letter/quest/ideo) are not cleared — they are main-thread dispatch only.
+        // Domain pending queues are lifecycle-owned here. Marshal Queue<Action> untouched.
         PendingArtQueue.Clear();
         PendingBookQueue.Clear();
-
-        IsStarted = false;
     }
 }

@@ -8,7 +8,7 @@ Measured against `RimAI.Art`. Production scope: `Source/**/*.cs` excluding `obj`
 | pre-B | arbiter coverage facts corrected; queue + Stop behavioral isolation frozen |
 | B1 | composition Stop unwind (Talk/Scriban Unregister + `_registered` clear) — done |
 | B2 | domain pending queue lifecycle under ArtComposition; Stop Clears — done |
-| C | prompt / transport / result / persistence (not started) |
+| C | IsStarted queue barrier; Google/Player2 direct Admit; thin orchestrator/result — done |
 | D-logging | RimAiLog migration (deferred; not started) |
 | D | host/UI/guards/stage close (not started) |
 
@@ -79,10 +79,12 @@ Rule: `CURRENT_TEMPORARY <= COMMITTED_TEMPORARY_BASELINE` (never upward).
 | --- | --- |
 | Entry | `LiteratureMod` → `RimAiHandshake.TryActivate(..., ArtComposition.Current.Start)` |
 | Start | Idempotent `IsStarted` guard; module register; Harmony PatchAll (process lifetime); Talk/Scriban `Register()` |
-| Stop | Unregisters Talk/Scriban; **Clears** `PendingArtQueue` / `PendingBookQueue`; **no** UnpatchAll; **no** marshal `Queue<Action>` clear |
-| Start after Stop | Re-runs PatchAll (Harmony dedupes); Talk/Scriban **re-subscribe**; domain queues empty |
+| Stop | Sets `IsStarted=false` first; nulls `Literature` orchestrator; Unregisters Talk/Scriban; **Clears** domain pending queues; **no** UnpatchAll; **no** marshal clear |
+| Start after Stop | Re-runs PatchAll; Talk/Scriban re-subscribe; new `ArtLiteratureOrchestrator`; domain queues empty |
 | Ambient | `ArtComposition.Current` (ALLOWED facade candidate); `LiteratureSaveData.Current` |
-| Long-lived services | Domain pending queue **lifecycle** owned by `ArtComposition` (static call-site API retained); processors still static |
+| Long-lived services | Domain pending queue lifecycle + `ArtLiteratureOrchestrator` owned by composition; processors still static |
+| Queue barrier (Wave C) | Enqueue / TryDequeue / Requeue require `IsStarted` — in-flight Requeue after Stop cannot repopulate |
+| Independent HTTP arbiter (Wave C) | Google/Player2: direct `AiRequestArbiter.Admit`; OpenAI/Custom: SharedTextAi only (no outer Admit) |
 | Settings | `LiteratureMod.Settings` static field (live reads in prompt builders) |
 
 Wave B1 acceptance: Stop→Start restores TalkLifecycle subscriptions (`StartAfterStopReSubscribesTalkLifecycle = true`).
@@ -187,17 +189,18 @@ Related (not `*PromptBuilder` types, still build prompts):
 2. **SharedTextAiOrchestrator.Complete** — independent OpenAI/Custom path; sets
    `Arbitration = AiRequestMetadata.FromCaller("art-literature")` →
    **`AiRequestArbiter.Current.Admit`** (transitive) → **Background**.
-3. **SharedHttpTransport** — Google / Player2 independent HTTP (**bypasses Admit**).
+3. **SharedHttpTransport** — Google / Player2 independent HTTP with **direct** `AiRequestArbiter.Admit` (Wave C).
 
 Frozen facts (`ArtInteriorDefaults`):
 
 | Fact | Value |
 | --- | --- |
-| `CallsAiRequestArbiterDirectly` | false |
+| `CallsAiRequestArbiterDirectly` | true (Google/Player2 HTTP only) |
 | `IndependentOpenAiCustomPathAdmitsViaSharedTextAi` | true |
-| `IndependentGooglePathBypassesArbiter` | true |
-| `IndependentPlayer2PathBypassesArbiter` | true |
-| `WaveBArbiterCoverageScope` | `Google_and_Player2_only` |
+| `IndependentGooglePathBypassesArbiter` | false |
+| `IndependentPlayer2PathBypassesArbiter` | false |
+| `WaveCIndependentHttpDirectAdmitComplete` | true |
+| `WaveBArbiterCoverageScope` | `Google_and_Player2_only` (tripwire: never whole-client outer Admit) |
 
 **Wave B hazard:** wrapping the whole client in an outer `Admit` double-admits
 OpenAI/Custom on the same thread → `nested_request` rejection / deadlock guard.
@@ -232,8 +235,13 @@ Frozen policy (B2):
 | `DomainPendingQueuesLifecycleOwnedByArtComposition` | **true** |
 | `CompositionStopClearsDomainPendingQueues` | **true** |
 | `CompositionStopClearsMainThreadMarshalQueues` | **false** |
+| `DomainPendingQueuesRequireCompositionStarted` | **true** (Wave C barrier) |
+| `PostStopInFlightRequeueCannotRepopulateQueues` | **true** |
+| `WaveCIndependentHttpDirectAdmitComplete` | **true** (Google/Player2 direct Admit) |
+| `IndependentProvidersThatBypassArbiter` | empty |
 
-Static enqueue/dequeue API retained for scanners/processors; Clear is composition-owned.
+Static enqueue/dequeue API retained for scanners/processors; Clear + IsStarted gate are composition-owned.
+`ArtDescriptionResultProcessor` owns art JSON normalize; `ArtLiteratureOrchestrator` is the thin root-owned art-description entry.
 
 ---
 
@@ -249,15 +257,16 @@ Static enqueue/dequeue API retained for scanners/processors; Clear is compositio
 ## Known warts (characterization — do not “fix” silently in Wave A)
 
 1. **Stop unwinds Talk/Scriban** (B1) — Harmony process-lifetime; Start after Stop re-subscribes
-2. **Stop Clears domain pending queues** (B2) — lifecycle owned by ArtComposition; call-site API still static
-3. **Multiple generation families**, one shared LLM client — full orchestrator still deferred (Wave C+)
-4. **Arbiter gaps = Google + Player2 only** — OpenAI/Custom already Admit via SharedTextAi; do not outer-wrap client
-5. **Logging debt** — 179 Verse baseline / ~184 call sites; `RimAiLog` = 0; **defer migration to late wave near D**
-6. **Processors / marshal queues still static** — not composition-owned yet
+2. **Stop Clears domain pending queues** (B2) + **IsStarted gate** (C) — in-flight Requeue rejected
+3. **Google/Player2 direct Admit** (C) — OpenAI/Custom still SharedTextAi only; whole-client outer Admit forbidden
+4. **Thin orchestrator / result processor** (C) — `ArtLiteratureOrchestrator`, `ArtDescriptionResultProcessor`; full multi-pipeline orchestrator still deferred
+5. **Logging debt** — 179 Verse baseline / ~184 call sites; `RimAiLog` = 0; **defer migration to late wave near D** (Clear() int counts unused until then)
+6. **Processors / marshal queues still static** — Tick gated by IsStarted; marshal not composition-owned
 7. **TvProgram generation dormant** — builder/service without callers
-8. **Largest type** — `IndependentBookLlmClient` mixes config resolve, transport, parse, logging
+8. **Largest type** — `IndependentBookLlmClient` still mixes config/transport/parse/logging
 9. **Quest advert/warning auto schedule disabled** — code retained; DebugAction only
 10. **No sibling C# callers** — isolation is TalkLifecycle events only (good boundary; keep)
+11. **RimTalk path** — still uses AIClientFactory; Art-owned Admit not applied there
 
 ### Recommended wave split (pre-B agreement)
 
@@ -266,8 +275,8 @@ Static enqueue/dequeue API retained for scanners/processors; Clear is compositio
 | pre-B | arbiter fact rename; queue + Stop behavioral isolation characterization |
 | B1 | composition ownership + Stop unwind only — **done** |
 | B2 | domain pending queue lifecycle + Stop Clear — **done** |
-| C | prompt / transport gaps (Google/Player2 Admit) / result / persistence / orchestrator |
-| D-logging | RimAiLog migration (mass mechanical; separate reviewable diff) |
+| C | IsStarted barrier; Google/Player2 Admit; thin orchestrator/result — **done** |
+| D-logging | RimAiLog migration (incl. consume Clear() counts); separate reviewable diff |
 | D | remaining host/UI/guards/stage close |
 
 ---
@@ -300,6 +309,7 @@ Do **not** redesign artistic styles, providers, or settings UI in this stage.
 - [x] Composition Stop behavioral isolation frozen (pre-B) then **updated in B1** (Unregister + re-subscribe)
 - [x] Wave B1: Talk/Scriban Unregister; no UnpatchAll; no queue/logging/orchestration
 - [x] Wave B2: pin `CompositionStopClearsDomainPendingQueues`; `PendingArtQueue`/`PendingBookQueue`.Clear from `ArtComposition.Stop`
-- [ ] Waves C–D (transport/prompt/result; logging deferred)
+- [x] Wave C: IsStarted queue barrier; Google/Player2 direct Admit; `ArtLiteratureOrchestrator` + `ArtDescriptionResultProcessor`
+- [ ] Waves D-logging / D (RimAiLog + Clear counts; guards/stage close)
 
 Whimsical: **NOT EDITED**.

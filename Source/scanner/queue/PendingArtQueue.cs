@@ -15,6 +15,7 @@ namespace Ustas.RimAI.Art.scanner.queue
 
         public static bool Enqueue(ArtMeta meta)
         {
+            if (!ArtComposition.Current.IsStarted) return false;
             if (meta == null || meta.Thing == null || meta.Thing.DestroyedOrNull()) return false;
             if (!ArtKeyProvider.TryGetKey(meta.Thing, out var key)) return false;
             if (Keys.Contains(key.Id)) return false;
@@ -27,6 +28,7 @@ namespace Ustas.RimAI.Art.scanner.queue
         public static bool TryDequeue(out PendingArtRecord record)
         {
             record = null;
+            if (!ArtComposition.Current.IsStarted) return false;
             if (Queue.Count == 0) return false;
 
             record = Queue.Dequeue();
@@ -38,6 +40,8 @@ namespace Ustas.RimAI.Art.scanner.queue
 
         public static void Requeue(PendingArtRecord record)
         {
+            // Wave C: reject post-Stop in-flight requeue so Clear is a real barrier.
+            if (!ArtComposition.Current.IsStarted) return;
             if (record == null || record.Key == null || !record.Key.IsValid) return;
             if (Keys.Contains(record.Key.Id)) return;
             Queue.Enqueue(record);

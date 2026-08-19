@@ -22,6 +22,8 @@ namespace Ustas.RimAI.Art.synopsis
 
         public static void Tick()
         {
+            if (!ArtComposition.Current.IsStarted) return;
+
             var settings = LiteratureMod.Settings;
             if (settings != null && !settings.enabled) return;
 

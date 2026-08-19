@@ -33,25 +33,7 @@ namespace Ustas.RimAI.Art.art
             Log.Message($"[RimAI.Art] ArtDescriptionService: dispatch LLM request for {meta.DefName}.");
             var result = await IndependentBookLlmClient.QueryJsonAsync<ArtDescription>(request);
             Log.Message($"[RimAI.Art] ArtDescriptionService: LLM request completed for {meta.DefName} (null={result == null}).");
-            return Normalize(result);
-        }
-
-        private static ArtDescription Normalize(ArtDescription description)
-        {
-            if (description == null) return null;
-
-            var title = description.Title?.Trim();
-            var text = description.Text?.Trim();
-
-            if (title != null && title.Length > SynopsisTokenPolicy.TitleMaxChars)
-                title = title.Substring(0, SynopsisTokenPolicy.TitleMaxChars).TrimEnd();
-
-            if (text != null && text.Length > SynopsisTokenPolicy.SynopsisMaxChars)
-                text = text.Substring(0, SynopsisTokenPolicy.SynopsisMaxChars).TrimEnd();
-
-            description.Title = title;
-            description.Text = text;
-            return description;
+            return ArtDescriptionResultProcessor.Normalize(result);
         }
     }
 }

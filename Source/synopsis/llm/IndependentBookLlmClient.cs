@@ -484,36 +484,48 @@ namespace Ustas.RimAI.Art.synopsis.llm
                 return shared.RawPayload;
             }
 
-            Log.Message($"[RimAI.Art] [Req {requestId}] HTTP request via shared transport: provider={provider}, url={SanitizeEndpoint(provider, url)}, bodyBytes={bodyRaw.Length}");
-
-            var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            if (provider != AIProvider.Google && !string.IsNullOrWhiteSpace(apiKey))
-                headers["Authorization"] = $"Bearer {apiKey}";
-            if (provider == AIProvider.Player2)
-                headers[Player2GameKeys.HeaderName] = Player2GameKeys.Canonical;
-
-            var sw = Stopwatch.StartNew();
-            var http = await SharedHttpTransport.Current.SendAsync(new HttpTransportRequest
+            // Wave C: Google/Player2 independent HTTP — direct Admit only (do not route through
+            // SharedTextAiOrchestrator; OpenAI/Custom already admit there).
+            var metadata = AiRequestMetadata.FromCaller("art-literature");
+            using (var admission = AiRequestArbiter.Current.Admit(metadata))
             {
-                Method = "POST",
-                Url = url,
-                Headers = headers,
-                BodyBytes = bodyRaw,
-                ContentType = "application/json",
-                TimeoutMilliseconds = TimeoutMs,
-                CorrelationId = "art-literature-" + requestId
-            });
+                if (!admission.Succeeded)
+                    return null;
 
-            string responseText = http.BodyText;
-            if (http.StatusCode >= 400 || !http.Succeeded)
-            {
-                string detail = BuildSafePreview(responseText, 300);
-                Log.Warning($"[RimAI.Art] [Req {requestId}] HTTP {http.StatusCode}: {http.ErrorMessage ?? "(no error)"} body={detail}");
-                return null;
+                admission.MarkStarted();
+                Log.Message($"[RimAI.Art] [Req {requestId}] HTTP request via shared transport: provider={provider}, url={SanitizeEndpoint(provider, url)}, bodyBytes={bodyRaw.Length}");
+
+                var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                if (provider != AIProvider.Google && !string.IsNullOrWhiteSpace(apiKey))
+                    headers["Authorization"] = $"Bearer {apiKey}";
+                if (provider == AIProvider.Player2)
+                    headers[Player2GameKeys.HeaderName] = Player2GameKeys.Canonical;
+
+                var sw = Stopwatch.StartNew();
+                var http = await SharedHttpTransport.Current.SendAsync(new HttpTransportRequest
+                {
+                    Method = "POST",
+                    Url = url,
+                    Headers = headers,
+                    BodyBytes = bodyRaw,
+                    ContentType = "application/json",
+                    TimeoutMilliseconds = TimeoutMs,
+                    CorrelationId = "art-literature-" + requestId
+                });
+
+                string responseText = http.BodyText;
+                if (http.StatusCode >= 400 || !http.Succeeded)
+                {
+                    string detail = BuildSafePreview(responseText, 300);
+                    Log.Warning($"[RimAI.Art] [Req {requestId}] HTTP {http.StatusCode}: {http.ErrorMessage ?? "(no error)"} body={detail}");
+                    admission.MarkFailed();
+                    return null;
+                }
+
+                Log.Message($"[RimAI.Art] [Req {requestId}] Response status: {http.StatusCode} in {sw.ElapsedMilliseconds} ms.");
+                admission.MarkCompleted();
+                return http.BodyText;
             }
-
-            Log.Message($"[RimAI.Art] [Req {requestId}] Response status: {http.StatusCode} in {sw.ElapsedMilliseconds} ms.");
-            return http.BodyText;
         }
 
         private static string ExtractContent(AIProvider provider, string responseText, int requestId)

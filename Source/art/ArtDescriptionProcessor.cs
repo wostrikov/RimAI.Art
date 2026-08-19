@@ -15,6 +15,8 @@ namespace Ustas.RimAI.Art.art
 
         public static void Tick()
         {
+            if (!ArtComposition.Current.IsStarted) return;
+
             if (!Ustas.RimAI.Art.integration.ArtCacheUtil.IsArtEditingEnabled())
             {
                 if (!_loggedDisabled)
@@ -89,7 +91,10 @@ namespace Ustas.RimAI.Art.art
             {
                 try
                 {
-                    var description = await ArtDescriptionService.GetOrGenerateAsync(record.Meta, contextPawn);
+                    var orchestrator = ArtComposition.Current.Literature;
+                    var description = orchestrator == null
+                        ? null
+                        : await orchestrator.GetOrGenerateArtDescriptionAsync(record.Meta, contextPawn);
                     if (description != null)
                     {
                         if (cache.TryGet(record.Key, out var existing) && existing != null && existing.IsManualOverride)
