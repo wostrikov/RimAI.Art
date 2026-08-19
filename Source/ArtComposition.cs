@@ -62,7 +62,9 @@ public sealed class ArtComposition : IRimAiModuleComposition
         Patch_PromptService_Override.Unregister();
         Patch_ScribanParser_TvContent.Unregister();
 
-        // Domain pending queues are lifecycle-owned here. Marshal Queue<Action> untouched.
+        // Domain pending queues are lifecycle-owned here. Marshal Queue<Action> are not
+        // Cleared on Stop (CompositionStopClearsMainThreadMarshalQueues = false); Wave D
+        // gates EnqueueAction on IsStarted instead so producers cannot refill after Stop.
         // D-logging: consume Clear() counts so Stop is diagnosable (not count-and-discard).
         var clearedArt = PendingArtQueue.Clear();
         var clearedBook = PendingBookQueue.Clear();

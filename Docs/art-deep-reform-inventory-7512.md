@@ -10,7 +10,7 @@ Measured against `RimAI.Art`. Production scope: `Source/**/*.cs` excluding `obj`
 | B2 | domain pending queue lifecycle under ArtComposition; Stop Clears — done |
 | C | IsStarted queue barrier; Google/Player2 direct Admit; thin orchestrator/result — done |
 | D-logging | RimAiLog migration + Clear counts + Admit reject logging — done |
-| D | host/UI/guards/stage close (not started) |
+| D | marshal enqueue IsStarted gate (no Clear); stage close — done |
 
 ---
 
@@ -79,11 +79,12 @@ Rule: `CURRENT_TEMPORARY <= COMMITTED_TEMPORARY_BASELINE` (never upward).
 | --- | --- |
 | Entry | `LiteratureMod` → `RimAiHandshake.TryActivate(..., ArtComposition.Current.Start)` |
 | Start | Idempotent `IsStarted` guard; module register; Harmony PatchAll (process lifetime); Talk/Scriban `Register()` |
-| Stop | Sets `IsStarted=false` first; nulls `Literature` orchestrator; Unregisters Talk/Scriban; **Clears** domain pending queues and **logs Clear counts** (Debug); **no** UnpatchAll; **no** marshal clear |
+| Stop | Sets `IsStarted=false` first; nulls `Literature` orchestrator; Unregisters Talk/Scriban; **Clears** domain pending queues and **logs Clear counts** (Debug); **no** UnpatchAll; **no** marshal Clear (enqueue gated) |
 | Start after Stop | Re-runs PatchAll; Talk/Scriban re-subscribe; new `ArtLiteratureOrchestrator`; domain queues empty |
 | Ambient | `ArtComposition.Current` (ALLOWED facade candidate); `LiteratureSaveData.Current` |
 | Long-lived services | Domain pending queue lifecycle + `ArtLiteratureOrchestrator` owned by composition; processors still static |
 | Queue barrier (Wave C) | Enqueue / TryDequeue / Requeue require `IsStarted` — in-flight Requeue after Stop cannot repopulate |
+| Marshal barrier (Wave D) | `EnqueueAction` requires `IsStarted`; Stop does **not** Clear marshal queues; already-queued actions may still drain |
 | Independent HTTP arbiter (Wave C) | Google/Player2: direct `AiRequestArbiter.Admit`; OpenAI/Custom: SharedTextAi only (no outer Admit) |
 | Settings | `LiteratureMod.Settings` static field (live reads in prompt builders) |
 
@@ -235,6 +236,9 @@ Frozen policy (B2):
 | `DomainPendingQueuesLifecycleOwnedByArtComposition` | **true** |
 | `CompositionStopClearsDomainPendingQueues` | **true** |
 | `CompositionStopClearsMainThreadMarshalQueues` | **false** |
+| `MainThreadMarshalQueuesRequireCompositionStarted` | **true** (Wave D enqueue gate) |
+| `MainThreadMarshalEnqueueRejectedWhenStopped` | **true** |
+| `MainThreadMarshalDrainContinuesAfterStop` | **true** |
 | `DomainPendingQueuesRequireCompositionStarted` | **true** (Wave C barrier) |
 | `PostStopInFlightRequeueCannotRepopulateQueues` | **true** |
 | `WaveCIndependentHttpDirectAdmitComplete` | **true** (Google/Player2 direct Admit) |
@@ -267,7 +271,7 @@ Static enqueue/dequeue API retained for scanners/processors; Clear + IsStarted g
 3. **Google/Player2 direct Admit** (C) — OpenAI/Custom still SharedTextAi only; whole-client outer Admit forbidden
 4. **Thin orchestrator / result processor** (C) — `ArtLiteratureOrchestrator`, `ArtDescriptionResultProcessor`; full multi-pipeline orchestrator still deferred
 5. **Logging (D-logging done)** — Verse host-log baseline Art → **0**; RimAiLog category `Art`; checklist: Clear() counts logged on Stop; independent HTTP Admit rejection logged; mass migration complete
-6. **Processors / marshal queues still static** — Tick gated by IsStarted; marshal not composition-owned
+6. **Marshal queues** (Wave D) — enqueue gated on `IsStarted`; Stop still does not Clear; drain of already-queued actions continues; processors remain static
 7. **TvProgram generation dormant** — builder/service without callers
 8. **Largest type** — `IndependentBookLlmClient` still mixes config/transport/parse/logging
 9. **Quest advert/warning auto schedule disabled** — code retained; DebugAction only
@@ -283,7 +287,7 @@ Static enqueue/dequeue API retained for scanners/processors; Clear + IsStarted g
 | B2 | domain pending queue lifecycle + Stop Clear — **done** |
 | C | IsStarted barrier; Google/Player2 Admit; thin orchestrator/result — **done** |
 | D-logging | RimAiLog migration + Clear counts + Admit reject logging — **done** |
-| D | remaining host/UI/guards/stage close |
+| D | marshal enqueue IsStarted gate (no Clear); stage close — **done** |
 
 ---
 
@@ -316,6 +320,8 @@ Do **not** redesign artistic styles, providers, or settings UI in this stage.
 - [x] Wave B1: Talk/Scriban Unregister; no UnpatchAll; no queue/logging/orchestration
 - [x] Wave B2: pin `CompositionStopClearsDomainPendingQueues`; `PendingArtQueue`/`PendingBookQueue`.Clear from `ArtComposition.Stop`
 - [x] Wave C: IsStarted queue barrier; Google/Player2 direct Admit; `ArtLiteratureOrchestrator` + `ArtDescriptionResultProcessor`
-- [ ] Waves D-logging / D (RimAiLog + Clear counts; guards/stage close)
+- [x] D-logging: RimAiLog migration; Clear counts; Admit reject logging; Art host-log baseline → 0
+- [x] Wave D: marshal `EnqueueAction` IsStarted gate (`CompositionStopClearsMainThreadMarshalQueues` stays false); stage close
 
 Whimsical: **NOT EDITED**.
+`ArtDeepReformStage7512Complete = true`. Roadmap CURRENT → M2.5.

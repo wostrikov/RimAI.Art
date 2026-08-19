@@ -118,6 +118,8 @@ namespace Ustas.RimAI.Art.events.quests
 
         internal static void EnqueueAction(Action action)
         {
+            // Wave D: gate enqueue on composition start — do not Clear on Stop.
+            if (!ArtComposition.Current.IsStarted) return;
             if (action == null) return;
             lock (QueueLock)
                 PendingActions.Enqueue(action);
