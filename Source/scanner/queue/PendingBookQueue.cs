@@ -79,5 +79,17 @@ namespace Ustas.RimAI.Art.scanner.queue
         {
             return key != null && key.IsValid && Keys.Contains(key.Id);
         }
+
+        /// <summary>
+        /// Drops all pending book synopsis/title work. Owned lifecycle call site:
+        /// <c>ArtComposition.Stop</c>.
+        /// </summary>
+        public static int Clear()
+        {
+            int count = Queue.Count;
+            Queue.Clear();
+            Keys.Clear();
+            return count;
+        }
     }
 }

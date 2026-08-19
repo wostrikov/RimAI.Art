@@ -1,5 +1,6 @@
 using HarmonyLib;
 using Ustas.RimAI.Art.patches;
+using Ustas.RimAI.Art.scanner.queue;
 using Ustas.RimAI.Core.Composition;
 using Ustas.RimAI.Core.Handshake;
 using Ustas.RimAI.Core.Modules;
@@ -7,8 +8,9 @@ using Ustas.RimAI.Core.Modules;
 namespace Ustas.RimAI.Art;
 
 /// <summary>
-/// Module composition root for RimAI.Art. Owns Harmony install (process lifetime)
-/// and TalkLifecycle contributor registration (prompt override + TV Scriban).
+/// Module composition root for RimAI.Art. Owns Harmony install (process lifetime),
+/// TalkLifecycle contributor registration (prompt override + TV Scriban), and
+/// lifecycle clear of domain pending generation queues.
 /// </summary>
 public sealed class ArtComposition : IRimAiModuleComposition
 {
@@ -50,6 +52,13 @@ public sealed class ArtComposition : IRimAiModuleComposition
         // otherwise prompt override / TV inject stay dead after Stop→Start.
         Patch_PromptService_Override.Unregister();
         Patch_ScribanParser_TvContent.Unregister();
+
+        // Wave B2: domain pending queues are lifecycle-owned here. Drop deferred LLM work
+        // so Stop→Start does not resume stale art/book generation. Marshal Queue<Action>
+        // (letter/quest/ideo) are not cleared — they are main-thread dispatch only.
+        PendingArtQueue.Clear();
+        PendingBookQueue.Clear();
+
         IsStarted = false;
     }
 }

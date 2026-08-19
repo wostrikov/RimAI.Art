@@ -7,7 +7,7 @@ Measured against `RimAI.Art`. Production scope: `Source/**/*.cs` excluding `obj`
 | A | inventory + characterization + Core prompt contracts consumed |
 | pre-B | arbiter coverage facts corrected; queue + Stop behavioral isolation frozen |
 | B1 | composition Stop unwind (Talk/Scriban Unregister + `_registered` clear) — done |
-| B2 | orchestration + queues (not started) |
+| B2 | domain pending queue lifecycle under ArtComposition; Stop Clears — done |
 | C | prompt / transport / result / persistence (not started) |
 | D-logging | RimAiLog migration (deferred; not started) |
 | D | host/UI/guards/stage close (not started) |
@@ -27,6 +27,9 @@ LiteratureMod (settings + handshake)
        → Harmony PatchAll
        → Patch_PromptService_Override.Register (Talk decorate)
        → Patch_ScribanParser_TvContent.Register
+  → ArtComposition.Stop
+       → Talk/Scriban Unregister
+       → PendingArtQueue.Clear + PendingBookQueue.Clear
   → LiteratureGameComponent tick hub
        → queues / processors / schedulers / rewriters
             → *PromptBuilder → LiteratureLlmRequest
@@ -76,14 +79,15 @@ Rule: `CURRENT_TEMPORARY <= COMMITTED_TEMPORARY_BASELINE` (never upward).
 | --- | --- |
 | Entry | `LiteratureMod` → `RimAiHandshake.TryActivate(..., ArtComposition.Current.Start)` |
 | Start | Idempotent `IsStarted` guard; module register; Harmony PatchAll (process lifetime); Talk/Scriban `Register()` |
-| Stop | Unregisters Talk decorate + Scriban TV (clears `_registered`); **no** UnpatchAll; **no** domain queue clear |
-| Start after Stop | Re-runs PatchAll (Harmony dedupes); Talk/Scriban **re-subscribe** (flags cleared on Stop) |
+| Stop | Unregisters Talk/Scriban; **Clears** `PendingArtQueue` / `PendingBookQueue`; **no** UnpatchAll; **no** marshal `Queue<Action>` clear |
+| Start after Stop | Re-runs PatchAll (Harmony dedupes); Talk/Scriban **re-subscribe**; domain queues empty |
 | Ambient | `ArtComposition.Current` (ALLOWED facade candidate); `LiteratureSaveData.Current` |
-| Long-lived services | Mostly **static** helpers/queues/processors — root ownership of queues deferred to B2 |
+| Long-lived services | Domain pending queue **lifecycle** owned by `ArtComposition` (static call-site API retained); processors still static |
 | Settings | `LiteratureMod.Settings` static field (live reads in prompt builders) |
 
 Wave B1 acceptance: Stop→Start restores TalkLifecycle subscriptions (`StartAfterStopReSubscribesTalkLifecycle = true`).
-Domain pending queues remain transient / uncleared on Stop.
+Wave B2 acceptance: Stop Clears domain pending queues (`CompositionStopClearsDomainPendingQueues = true`);
+save→quit→load still drops unsaved work (transient-by-design). Marshal queues untouched.
 
 ---
 
@@ -217,18 +221,19 @@ Caches are save-game JSON via Verse Scribe — formats must be preserved.
 **Not persisted:** `PendingBookQueue` / `PendingArtQueue` and rewriter pending dictionaries
 (static in-memory only).
 
-Frozen policy (pre-B characterization):
+Frozen policy (B2):
 
 | Fact | Value |
 | --- | --- |
 | Domain pending queues | `PendingArtQueue`, `PendingBookQueue` |
 | Main-thread marshal queues | 5× `Queue<Action>` (letter/quest/ideo schedulers/rewriters) |
-| `DomainPendingQueuesAreTransientByDesign` | **true** (`PendingBookQueue` header: do not persist) |
-| `DomainPendingQueuesLostSilentlyOnSaveLoad` | **true** |
-| `CompositionStopClearsDomainPendingQueues` | **false** |
+| `DomainPendingQueuesAreTransientByDesign` | **true** (not persisted; scan rebuilds) |
+| `DomainPendingQueuesLostSilentlyOnSaveLoad` | **true** (process death; still silent) |
+| `DomainPendingQueuesLifecycleOwnedByArtComposition` | **true** |
+| `CompositionStopClearsDomainPendingQueues` | **true** |
+| `CompositionStopClearsMainThreadMarshalQueues` | **false** |
 
-Wave B may move ownership under `ArtComposition` but must not change persist
-semantics without an explicit separate decision.
+Static enqueue/dequeue API retained for scanners/processors; Clear is composition-owned.
 
 ---
 
@@ -244,23 +249,24 @@ semantics without an explicit separate decision.
 ## Known warts (characterization — do not “fix” silently in Wave A)
 
 1. **Stop unwinds Talk/Scriban** (B1) — Harmony process-lifetime; Start after Stop re-subscribes
-2. **Multiple generation families**, one shared LLM client — orchestration not owned by composition (B2)
-3. **Arbiter gaps = Google + Player2 only** — OpenAI/Custom already Admit via SharedTextAi; do not outer-wrap client
-4. **Logging debt** — 179 Verse baseline / ~184 call sites; `RimAiLog` = 0; **defer migration to late wave near D**
-5. **Static service graph** — queues/processors not root-owned yet; domain pending queues unsaved (transient by design)
-6. **TvProgram generation dormant** — builder/service without callers
-7. **Largest type** — `IndependentBookLlmClient` mixes config resolve, transport, parse, logging
-8. **Quest advert/warning auto schedule disabled** — code retained; DebugAction only
-9. **No sibling C# callers** — isolation is TalkLifecycle events only (good boundary; keep)
+2. **Stop Clears domain pending queues** (B2) — lifecycle owned by ArtComposition; call-site API still static
+3. **Multiple generation families**, one shared LLM client — full orchestrator still deferred (Wave C+)
+4. **Arbiter gaps = Google + Player2 only** — OpenAI/Custom already Admit via SharedTextAi; do not outer-wrap client
+5. **Logging debt** — 179 Verse baseline / ~184 call sites; `RimAiLog` = 0; **defer migration to late wave near D**
+6. **Processors / marshal queues still static** — not composition-owned yet
+7. **TvProgram generation dormant** — builder/service without callers
+8. **Largest type** — `IndependentBookLlmClient` mixes config resolve, transport, parse, logging
+9. **Quest advert/warning auto schedule disabled** — code retained; DebugAction only
+10. **No sibling C# callers** — isolation is TalkLifecycle events only (good boundary; keep)
 
 ### Recommended wave split (pre-B agreement)
 
 | Wave | Scope |
 | --- | --- |
-| pre-B (this) | arbiter fact rename; queue + Stop behavioral isolation characterization |
-| B1 | composition ownership + Stop unwind only |
-| B2 | orchestration + queue ownership (keep transient policy unless decided otherwise) |
-| C | prompt / transport gaps (Google/Player2 Admit) / result / persistence |
+| pre-B | arbiter fact rename; queue + Stop behavioral isolation characterization |
+| B1 | composition ownership + Stop unwind only — **done** |
+| B2 | domain pending queue lifecycle + Stop Clear — **done** |
+| C | prompt / transport gaps (Google/Player2 Admit) / result / persistence / orchestrator |
 | D-logging | RimAiLog migration (mass mechanical; separate reviewable diff) |
 | D | remaining host/UI/guards/stage close |
 
@@ -293,6 +299,7 @@ Do **not** redesign artistic styles, providers, or settings UI in this stage.
 - [x] Domain pending queues characterized as transient-by-design + silent save/load loss
 - [x] Composition Stop behavioral isolation frozen (pre-B) then **updated in B1** (Unregister + re-subscribe)
 - [x] Wave B1: Talk/Scriban Unregister; no UnpatchAll; no queue/logging/orchestration
-- [ ] Waves B2–D (orchestration + queues; transport; logging deferred)
+- [x] Wave B2: pin `CompositionStopClearsDomainPendingQueues`; `PendingArtQueue`/`PendingBookQueue`.Clear from `ArtComposition.Stop`
+- [ ] Waves C–D (transport/prompt/result; logging deferred)
 
 Whimsical: **NOT EDITED**.
