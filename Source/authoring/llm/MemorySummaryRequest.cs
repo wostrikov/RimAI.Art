@@ -31,6 +31,7 @@ using Ustas.RimAI.Art.synopsis.llm;
 using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Data;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.authoring.llm
 {
@@ -47,7 +48,7 @@ namespace Ustas.RimAI.Art.authoring.llm
             // which logs an error before the player faction exists.
             if (!PlayerFactionUtility.TryGetPlayerFaction(out _))
             {
-                Log.Warning("[RimAI.Art] MemorySummaryRequest.BuildRequest skipped: Faction manager or player faction not initialized.");
+                RimAiLog.Warning(RimAiLogCategory.Art, "[RimAI.Art] MemorySummaryRequest.BuildRequest skipped: Faction manager or player faction not initialized.");
                 return null;
             }
 
@@ -63,7 +64,7 @@ namespace Ustas.RimAI.Art.authoring.llm
             }
             catch (NullReferenceException ex)
             {
-                Log.Warning($"[RimAI.Art] MemorySummaryRequest.BuildRequest failed: {ex.Message}. This may happen during pawn generation when internal caches are not ready.");
+                RimAiLog.Warning(RimAiLogCategory.Art, $"[RimAI.Art] MemorySummaryRequest.BuildRequest failed: {ex.Message}. This may happen during pawn generation when internal caches are not ready.");
                 return null;
             }
         }

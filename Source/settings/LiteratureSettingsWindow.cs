@@ -39,6 +39,7 @@ using Ustas.RimAI.Art.tv;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.settings
 {
@@ -188,12 +189,12 @@ namespace Ustas.RimAI.Art.settings
                 var cache = LiteratureSaveData.Current?.SynopsisCache;
                 if (cache == null)
                 {
-                    Log.Warning("[RimAI.Art] No active world data; cannot clear book cache.");
+                    RimAiLog.Warning(RimAiLogCategory.Art, "[RimAI.Art] No active world data; cannot clear book cache.");
                 }
                 else
                 {
                     int cleared = cache.Clear();
-                    Log.Message($"[RimAI.Art] Cleared {cleared} cached book synopses.");
+                    RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Cleared {cleared} cached book synopses.");
                 }
             }
 
@@ -203,12 +204,12 @@ namespace Ustas.RimAI.Art.settings
                 var cache = LiteratureSaveData.Current?.ArtCache;
                 if (cache == null)
                 {
-                    Log.Warning("[RimAI.Art] No active world data; cannot clear art cache.");
+                    RimAiLog.Warning(RimAiLogCategory.Art, "[RimAI.Art] No active world data; cannot clear art cache.");
                 }
                 else
                 {
                     int cleared = cache.Clear();
-                    Log.Message($"[RimAI.Art] Cleared {cleared} cached art descriptions.");
+                    RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Cleared {cleared} cached art descriptions.");
                 }
             }
 
@@ -218,11 +219,11 @@ namespace Ustas.RimAI.Art.settings
                 var maps = Find.Maps;
                 if (maps == null || maps.Count == 0)
                 {
-                    Log.Warning("[RimAI.Art] Manual rescan skipped: no active maps.");
+                    RimAiLog.Warning(RimAiLogCategory.Art, "[RimAI.Art] Manual rescan skipped: no active maps.");
                 }
                 else
                 {
-                    Log.Message($"[RimAI.Art] Manual rescan requested for {maps.Count} maps.");
+                    RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Manual rescan requested for {maps.Count} maps.");
                     bool bookEnabled = settings.enabled;
                     for (int i = 0; i < maps.Count; i++)
                     {
@@ -231,7 +232,7 @@ namespace Ustas.RimAI.Art.settings
                         if (bookEnabled)
                             Ustas.RimAI.Art.scanner.MapBookScanner.Scan(map, detailedLog: true);
                         else
-                            Log.Message($"[RimAI.Art] Book scan skipped: books disabled (map {map?.uniqueID ?? -1}).");
+                            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Book scan skipped: books disabled (map {map?.uniqueID ?? -1}).");
                     }
                 }
             }

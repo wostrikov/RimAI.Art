@@ -19,6 +19,7 @@ using Ustas.RimAI.Art.storage;
 using Ustas.RimAI.Art.tv;
 using RimWorld.Planet;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.storage.save
 {
@@ -62,7 +63,7 @@ namespace Ustas.RimAI.Art.storage.save
                 WarningRaidQueue = new System.Collections.Generic.List<WarningRaidRecord>();
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
-                Log.Message($"[RimAI.Art] Literature data loaded. Cached synopses: {SynopsisCache?.Count ?? 0}, art: {ArtCache?.Count ?? 0}, ideos: {IdeoCache?.Count ?? 0}, ideoProcessed: {IdeoCache?.ProcessedCount ?? 0}, tv: {TvProgramCache?.Count ?? 0}, warningRaids: {WarningRaidQueue?.Count ?? 0}.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Literature data loaded. Cached synopses: {SynopsisCache?.Count ?? 0}, art: {ArtCache?.Count ?? 0}, ideos: {IdeoCache?.Count ?? 0}, ideoProcessed: {IdeoCache?.ProcessedCount ?? 0}, tv: {TvProgramCache?.Count ?? 0}, warningRaids: {WarningRaidQueue?.Count ?? 0}.");
         }
 
         public static LiteratureSaveData Current => Find.World?.GetComponent<LiteratureSaveData>();

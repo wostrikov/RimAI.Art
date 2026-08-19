@@ -30,6 +30,7 @@ using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.events.quests
 {
@@ -101,7 +102,7 @@ namespace Ustas.RimAI.Art.events.quests
 
             QuestUtility.SendQuestTargetSignals(tags, QuestUtility.QuestTargetSignalPart_TradeRequestFulfilled, settlement.Named("SUBJECT"));
             comp.Disable();
-            Log.Message($"{LogPrefix} Gift delivery fulfilled trade request for {settlement.LabelCap}.");
+            RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Gift delivery fulfilled trade request for {settlement.LabelCap}.");
         }
         internal static void ProcessPendingActions()
         {

@@ -12,6 +12,7 @@ using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.events.quests
 {
@@ -60,7 +61,7 @@ namespace Ustas.RimAI.Art.events.quests
 
         var pending = new PendingWarningQuest(map, faction, settlement, silverDemand, raidPoints);
         _warningPending = true;
-        Log.Message($"{LogPrefix} Scheduling warning quest from {faction.Name}.");
+        RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Scheduling warning quest from {faction.Name}.");
 
         var task = IndependentBookLlmClient.QueryJsonAsync<QuestTextSpec>(request);
         task.ContinueWith(t =>
@@ -142,7 +143,7 @@ namespace Ustas.RimAI.Art.events.quests
             {
                 record.AcceptedTick = quest.acceptanceTick;
                 record.DueTick = quest.acceptanceTick + DeliveryTicks + Rand.RangeInclusive(RaidDelayMinTicks, RaidDelayMaxTicks);
-                Log.Message($"{LogPrefix} Warning quest accepted; raid rescheduled (questId={quest.id}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Warning quest accepted; raid rescheduled (questId={quest.id}).");
             }
 
             if (record.DueTick > 0 && tick >= record.DueTick)
@@ -168,7 +169,7 @@ namespace Ustas.RimAI.Art.events.quests
         parms.forced = true;
 
         bool fired = IncidentDefOf.RaidEnemy.Worker.TryExecute(parms);
-        Log.Message($"{LogPrefix} Warning raid fired={fired} faction={record.Faction.Name} points={parms.points:F0}.");
+        RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Warning raid fired={fired} faction={record.Faction.Name} points={parms.points:F0}.");
         return fired;
     }
 
@@ -183,7 +184,7 @@ namespace Ustas.RimAI.Art.events.quests
         var def = DefDatabase<QuestScriptDef>.GetNamed(WarningQuestDefName, false);
         if (def == null)
         {
-            Log.Warning($"{LogPrefix} Missing QuestScriptDef {WarningQuestDefName}.");
+            RimAiLog.Warning(RimAiLogCategory.Art, $"{LogPrefix} Missing QuestScriptDef {WarningQuestDefName}.");
             return null;
         }
 

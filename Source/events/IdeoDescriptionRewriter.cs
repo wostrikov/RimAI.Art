@@ -27,6 +27,7 @@ using Ustas.RimAI.Art.storage.save;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.events
 {
@@ -107,7 +108,7 @@ namespace Ustas.RimAI.Art.events
             string original = ideo.description?.Trim();
             if (string.IsNullOrWhiteSpace(original))
             {
-                Log.Message($"{LogPrefix} Skip: empty description (id={ideo.id}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Skip: empty description (id={ideo.id}).");
                 return;
             }
 
@@ -117,7 +118,7 @@ namespace Ustas.RimAI.Art.events
                 int tick = Find.TickManager?.TicksGame ?? 0;
                 if (tick - _lastNoColonistLogTick > GenDate.TicksPerHour)
                 {
-                    Log.Message($"{LogPrefix} Skip: no colonist available for ideology context.");
+                    RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Skip: no colonist available for ideology context.");
                     _lastNoColonistLogTick = tick;
                 }
                 return;
@@ -127,12 +128,12 @@ namespace Ustas.RimAI.Art.events
             if (IsAlreadyProcessed(ideo.id))
             {
                 Processed.Add(ideo.id);
-                Log.Message($"{LogPrefix} Skip: already processed (id={ideo.id}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Skip: already processed (id={ideo.id}).");
                 return;
             }
             var record = new PendingIdeoRewrite(ideo, initiator, original, entityTokens, GenTicks.SecondsToTicks(TimeoutSeconds));
             Pending[ideo.id] = record;
-            Log.Message($"{LogPrefix} Queued ideology (id={ideo.id}, name={ideo.name ?? "?"}, entities={record.EntityTokens.Count}).");
+            RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Queued ideology (id={ideo.id}, name={ideo.name ?? "?"}, entities={record.EntityTokens.Count}).");
         }
 
         private static void TryQueueAll()
@@ -148,7 +149,7 @@ namespace Ustas.RimAI.Art.events
                 int tick = Find.TickManager?.TicksGame ?? 0;
                 if (tick - _lastNoColonistLogTick > GenDate.TicksPerHour)
                 {
-                    Log.Message($"{LogPrefix} Skip scan: no colonist available for ideology context.");
+                    RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Skip scan: no colonist available for ideology context.");
                     _lastNoColonistLogTick = tick;
                 }
                 return;
@@ -169,7 +170,7 @@ namespace Ustas.RimAI.Art.events
             }
 
             record.Requested = true;
-            Log.Message($"{LogPrefix} Dispatching independent LLM request (id={record.IdeoId}).");
+            RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Dispatching independent LLM request (id={record.IdeoId}).");
 
             var task = IndependentBookLlmClient.QueryJsonAsync<IdeoFlavorSpec>(request);
             task.ContinueWith(t =>
@@ -273,7 +274,7 @@ $@"Напиши 3–5 внутрішньосвітових речень для �
             cache?.Set(record.IdeoId, flavor);
             cache?.MarkProcessed(record.IdeoId);
             Processed.Add(record.IdeoId);
-            Log.Message($"{LogPrefix} Applied flavor (id={record.IdeoId}, name={record.IdeoName ?? "?"}).");
+            RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Applied flavor (id={record.IdeoId}, name={record.IdeoName ?? "?"}).");
         }
 
         private static bool IsIdeoActive(Ideo ideo)
@@ -314,12 +315,12 @@ $@"Напиши 3–5 внутрішньосвітових речень для �
             var cache = LiteratureSaveData.Current?.IdeoCache;
             if (cache == null)
             {
-                Log.Message($"{LogPrefix} Cache missing when checking processed (id={ideoId}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Cache missing when checking processed (id={ideoId}).");
                 return false;
             }
 
             bool processed = cache.IsProcessed(ideoId);
-            Log.Message($"{LogPrefix} Cache check processed={processed} (id={ideoId}, cached={cache.ProcessedCount}).");
+            RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Cache check processed={processed} (id={ideoId}, cached={cache.ProcessedCount}).");
             return processed;
         }
 

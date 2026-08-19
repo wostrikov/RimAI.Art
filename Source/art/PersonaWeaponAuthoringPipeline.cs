@@ -12,6 +12,7 @@ using Ustas.RimAI.Art.settings;
 using Ustas.RimAI.Art.storage;
 using Ustas.RimAI.Art.storage.save;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.art
 {
@@ -27,7 +28,7 @@ namespace Ustas.RimAI.Art.art
 
             if (!PlayerFactionUtility.IsPlayerFactionPawn(pawn))
             {
-                Log.Message("[RimAI.Art] Persona weapon update skipped: bonded pawn is not an initialized player-faction pawn.");
+                RimAiLog.Info(RimAiLogCategory.Art, "[RimAI.Art] Persona weapon update skipped: bonded pawn is not an initialized player-faction pawn.");
                 onComplete?.Invoke();
                 return;
             }
@@ -35,13 +36,13 @@ namespace Ustas.RimAI.Art.art
             var settings = LiteratureMod.Settings;
             if (settings == null || !settings.allowArtWeaponEdits || !settings.allowArtLabelEdits)
             {
-                Log.Message($"[RimAI.Art] Persona weapon update skipped: settings disabled ({ArtCacheUtil.DescribeArtSettings()}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Persona weapon update skipped: settings disabled ({ArtCacheUtil.DescribeArtSettings()}).");
                 onComplete?.Invoke();
                 return;
             }
             if (!ArtDefFilterPolicy.IsAllowed(weapon))
             {
-                Log.Message($"[RimAI.Art] Persona weapon update skipped: filtered out by settings ({weapon.def?.defName ?? "unknown"}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Persona weapon update skipped: filtered out by settings ({weapon.def?.defName ?? "unknown"}).");
                 onComplete?.Invoke();
                 return;
             }
@@ -49,14 +50,14 @@ namespace Ustas.RimAI.Art.art
             var cache = LiteratureSaveData.Current?.ArtCache;
             if (cache == null)
             {
-                Log.Message("[RimAI.Art] Persona weapon update skipped: ArtCache unavailable.");
+                RimAiLog.Info(RimAiLogCategory.Art, "[RimAI.Art] Persona weapon update skipped: ArtCache unavailable.");
                 onComplete?.Invoke();
                 return;
             }
 
             if (!ArtKeyProvider.TryGetKey(weapon, out var key))
             {
-                Log.Message("[RimAI.Art] Persona weapon update skipped: invalid art key.");
+                RimAiLog.Info(RimAiLogCategory.Art, "[RimAI.Art] Persona weapon update skipped: invalid art key.");
                 onComplete?.Invoke();
                 return;
             }
@@ -65,12 +66,12 @@ namespace Ustas.RimAI.Art.art
             var summaryRequest = MemorySummaryRequest.BuildRequest(pawn);
             if (summaryRequest == null)
             {
-                Log.Message("[RimAI.Art] Persona weapon update skipped: unable to build memory summary request.");
+                RimAiLog.Info(RimAiLogCategory.Art, "[RimAI.Art] Persona weapon update skipped: unable to build memory summary request.");
                 onComplete?.Invoke();
                 return;
             }
 
-            Log.Message($"[RimAI.Art] Persona weapon update start ({reason}): {meta.ThingLabel} ({meta.DefName}) for {pawn.LabelShortCap ?? pawn.Name?.ToStringShort ?? "Unknown"}.");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Persona weapon update start ({reason}): {meta.ThingLabel} ({meta.DefName}) for {pawn.LabelShortCap ?? pawn.Name?.ToStringShort ?? "Unknown"}.");
 
             Task.Run(async () =>
             {
@@ -79,29 +80,29 @@ namespace Ustas.RimAI.Art.art
                     var summary = await MemorySummaryRequest.QueryAsync(summaryRequest);
                     if (summary == null)
                     {
-                        Log.Message($"[RimAI.Art] Persona weapon update failed: memory summary null ({meta.DefName}).");
+                        RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Persona weapon update failed: memory summary null ({meta.DefName}).");
                         return;
                     }
 
                     var description = await PersonaWeaponRequest.QueryAsync(meta, summary, pawn, summaryRequest.Context);
                     if (description == null)
                     {
-                        Log.Message($"[RimAI.Art] Persona weapon update failed: LLM returned null ({meta.DefName}).");
+                        RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Persona weapon update failed: LLM returned null ({meta.DefName}).");
                         return;
                     }
 
                     if (cache.TryGet(key, out var existing) && existing != null && existing.IsManualOverride)
                     {
-                        Log.Message($"[RimAI.Art] Persona weapon manual override preserved ({meta.DefName}).");
+                        RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Persona weapon manual override preserved ({meta.DefName}).");
                         return;
                     }
 
                     cache.Set(key, ArtDescriptionRecord.FromGenerated(description, existing));
-                    Log.Message($"[RimAI.Art] Persona weapon updated: {meta.DefName}.");
+                    RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Persona weapon updated: {meta.DefName}.");
                 }
                 catch (Exception ex)
                 {
-                    Log.Message($"[RimAI.Art] Persona weapon update exception: {ex.GetType().Name} - {ex.Message}");
+                    RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Persona weapon update exception: {ex.GetType().Name} - {ex.Message}");
                 }
                 finally
                 {

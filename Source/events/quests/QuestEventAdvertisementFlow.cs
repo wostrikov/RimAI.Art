@@ -12,6 +12,7 @@ using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.events.quests
 {
@@ -63,7 +64,7 @@ namespace Ustas.RimAI.Art.events.quests
 
         var pending = new PendingAdvertQuest(map, faction, settlement, options);
         _advertPending = true;
-        Log.Message($"{LogPrefix} Scheduling advertisement quest from {faction.Name}.");
+        RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Scheduling advertisement quest from {faction.Name}.");
 
         var task = IndependentBookLlmClient.QueryJsonAsync<QuestTextSpec>(request);
         task.ContinueWith(t =>
@@ -106,7 +107,7 @@ namespace Ustas.RimAI.Art.events.quests
         var def = DefDatabase<QuestScriptDef>.GetNamed(AdvertQuestDefName, false);
         if (def == null)
         {
-            Log.Warning($"{LogPrefix} Missing QuestScriptDef {AdvertQuestDefName}.");
+            RimAiLog.Warning(RimAiLogCategory.Art, $"{LogPrefix} Missing QuestScriptDef {AdvertQuestDefName}.");
             return null;
         }
 

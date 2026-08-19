@@ -26,6 +26,7 @@ using Ustas.RimAI.Art.synopsis.llm;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.events
 {
@@ -91,7 +92,7 @@ namespace Ustas.RimAI.Art.events
 
             if (!IsLetterAllowed(settings, letter))
             {
-                Log.Message($"{LogPrefix} Skip: letter not allowed (id={letter.ID}, def={letter.def?.defName ?? "null"}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Skip: letter not allowed (id={letter.ID}, def={letter.def?.defName ?? "null"}).");
                 return;
             }
 
@@ -110,7 +111,7 @@ namespace Ustas.RimAI.Art.events
             var entityTokens = CollectEntityTokens(letter, originalText);
             var record = new PendingLetterRewrite(letter, initiator, originalText, entityTokens, GenTicks.SecondsToTicks(TimeoutSeconds));
             Pending[letter.ID] = record;
-            Log.Message($"{LogPrefix} Queued letter (id={letter.ID}, def={letter.def?.defName ?? "null"}, entities={record.EntityTokens.Count}).");
+            RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Queued letter (id={letter.ID}, def={letter.def?.defName ?? "null"}, entities={record.EntityTokens.Count}).");
         }
 
         private static void StartRequest(PendingLetterRewrite record)
@@ -119,13 +120,13 @@ namespace Ustas.RimAI.Art.events
             var request = BuildRequest(record);
             if (request == null)
             {
-                Log.Warning($"{LogPrefix} Failed to build request: {DescribeRecord(record)}");
+                RimAiLog.Warning(RimAiLogCategory.Art, $"{LogPrefix} Failed to build request: {DescribeRecord(record)}");
                 Pending.Remove(record.LetterId);
                 return;
             }
 
             record.Requested = true;
-            Log.Message($"{LogPrefix} Dispatching independent LLM request: {DescribeRecord(record)}");
+            RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Dispatching independent LLM request: {DescribeRecord(record)}");
 
             var task = IndependentBookLlmClient.QueryJsonAsync<LetterFlavorSpec>(request);
             task.ContinueWith(t =>
@@ -235,7 +236,7 @@ $@"Напиши коротке сповіщення про надходженн�
             if (!TryAppendFlavorToLetter(record.Letter, record.OriginalText, flavor))
                 return;
 
-            Log.Message($"{LogPrefix} Applied flavor (id={record.LetterId}).");
+            RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Applied flavor (id={record.LetterId}).");
         }
 
         private static bool IsLetterActive(Letter letter)

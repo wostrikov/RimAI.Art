@@ -25,6 +25,7 @@ using Ustas.RimAI.Art.scanner.queue;
 using Ustas.RimAI.Art.storage;
 using Ustas.RimAI.Art.storage.save;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.scanner
 {
@@ -35,20 +36,20 @@ namespace Ustas.RimAI.Art.scanner
             if (map == null) return;
             if (!Ustas.RimAI.Art.integration.ArtCacheUtil.IsArtEditingEnabled())
             {
-                Log.Message($"[RimAI.Art] Art scan skipped: art category edits disabled (map {map.uniqueID}, {Ustas.RimAI.Art.integration.ArtCacheUtil.DescribeArtSettings()}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Art scan skipped: art category edits disabled (map {map.uniqueID}, {Ustas.RimAI.Art.integration.ArtCacheUtil.DescribeArtSettings()}).");
                 return;
             }
 
             var cache = LiteratureSaveData.Current?.ArtCache;
             if (cache == null)
             {
-                Log.Message($"[RimAI.Art] Art scan skipped: ArtCache unavailable (map {map.uniqueID}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Art scan skipped: ArtCache unavailable (map {map.uniqueID}).");
                 return;
             }
             var things = map.listerThings?.AllThings;
             if (things == null || things.Count == 0)
             {
-                Log.Message($"[RimAI.Art] Art scan: no things on map {map.uniqueID}.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Art scan: no things on map {map.uniqueID}.");
                 return;
             }
 
@@ -92,11 +93,11 @@ namespace Ustas.RimAI.Art.scanner
 
             if (matched > 0)
             {
-                Log.Message($"[RimAI.Art] Scan map {map.uniqueID}: art {matched}, enqueued {enqueued}, cached {cached}, noComp {noArtComp}, notShowable {notShowable}, notEligible {notEligible}.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Scan map {map.uniqueID}: art {matched}, enqueued {enqueued}, cached {cached}, noComp {noArtComp}, notShowable {notShowable}, notEligible {notEligible}.");
             }
             else
             {
-                Log.Message($"[RimAI.Art] Scan map {map.uniqueID}: no art matched (noComp {noArtComp}, notShowable {notShowable}, notEligible {notEligible}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Scan map {map.uniqueID}: no art matched (noComp {noArtComp}, notShowable {notShowable}, notEligible {notEligible}).");
             }
         }
     }

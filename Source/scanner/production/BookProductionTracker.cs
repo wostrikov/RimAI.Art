@@ -25,6 +25,7 @@ using Ustas.RimAI.Art.storage.save;
 using Ustas.RimAI.Art.synopsis;
 using RimWorld;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.scanner.production
 {
@@ -73,7 +74,7 @@ namespace Ustas.RimAI.Art.scanner.production
 
             if (matched > 0)
             {
-                Log.Message($"[RimAI.Art] Produced books via {recipeDef?.defName ?? "recipe"}: matched {matched}, enqueued {enqueued}, cached {cached}.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Produced books via {recipeDef?.defName ?? "recipe"}: matched {matched}, enqueued {enqueued}, cached {cached}.");
             }
 
             if (enqueued > 0)

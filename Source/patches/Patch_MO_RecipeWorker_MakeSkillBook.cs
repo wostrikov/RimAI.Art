@@ -16,6 +16,7 @@ using Ustas.RimAI.Art.storage;
 using Ustas.RimAI.Art.storage.save;
 using RimWorld;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.patches
 {
@@ -58,7 +59,7 @@ namespace Ustas.RimAI.Art.patches
             if (PendingBookQueue.Contains(key)) return;
 
             PendingBookQueue.Enqueue(meta, worker);
-            Log.Message($"[RimAI.Art] MO book produced; enqueued {meta.DefName} for authoring.");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] MO book produced; enqueued {meta.DefName} for authoring.");
         }
 
         private static bool IsMoWorker(object instance, RecipeDef recipeDef)

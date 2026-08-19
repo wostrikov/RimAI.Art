@@ -8,6 +8,7 @@ using Ustas.RimAI.Art.settings;
 using RimWorld;
 using Verse;
 using Verse.AI;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.patches
 {
@@ -50,10 +51,10 @@ namespace Ustas.RimAI.Art.patches
             {
                 jobDef = DefDatabase<JobDef>.GetNamedSilentFail("RimTalk_WriteJournal");
                 if (jobDef != null)
-                    Log.Message("[RimAI.Art] [Journal] Loaded RimTalk_WriteJournal via DefDatabase fallback.");
+                    RimAiLog.Info(RimAiLogCategory.Art, "[RimAI.Art] [Journal] Loaded RimTalk_WriteJournal via DefDatabase fallback.");
                 else
                 {
-                    Log.Error("[RimAI.Art] [Journal] Missing JobDef RimTalk_WriteJournal. Check Defs/Journal/JournalDefs.xml.");
+                    RimAiLog.Error(RimAiLogCategory.Art, "[RimAI.Art] [Journal] Missing JobDef RimTalk_WriteJournal. Check Defs/Journal/JournalDefs.xml.");
                     return null;
                 }
             }
@@ -81,23 +82,23 @@ namespace Ustas.RimAI.Art.patches
                     {
                         if (pawn?.jobs == null)
                         {
-                            Log.Warning("[RimAI.Art] [Journal] Pawn or job tracker missing; cannot start journal job.");
+                            RimAiLog.Warning(RimAiLogCategory.Art, "[RimAI.Art] [Journal] Pawn or job tracker missing; cannot start journal job.");
                             return;
                         }
 
                         if (table == null || table.DestroyedOrNull() || !table.Spawned)
                         {
-                            Log.Warning("[RimAI.Art] [Journal] Table missing when issuing journal job.");
+                            RimAiLog.Warning(RimAiLogCategory.Art, "[RimAI.Art] [Journal] Table missing when issuing journal job.");
                             return;
                         }
 
                         var job = JobMaker.MakeJob(jobDef, table);
                         bool started = pawn.jobs.TryTakeOrderedJob(job);
-                        Log.Message($"[RimAI.Art] [Journal] Write journal job issued for {pawn.LabelShort}. started={started}");
+                        RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Journal] Write journal job issued for {pawn.LabelShort}. started={started}");
                     }
                     catch (Exception ex)
                     {
-                        Log.Error($"[RimAI.Art] [Journal] Failed to start journal job: {ex}");
+                        RimAiLog.Error(RimAiLogCategory.Art, $"[RimAI.Art] [Journal] Failed to start journal job: {ex}");
                     }
                 },
                 MenuOptionPriority.Default,

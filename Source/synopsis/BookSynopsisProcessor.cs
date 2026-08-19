@@ -12,6 +12,7 @@ using Ustas.RimAI.Art.storage;
 using Ustas.RimAI.Art.storage.save;
 using Ustas.RimAI.Art.synopsis.model;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.synopsis
 {
@@ -34,7 +35,7 @@ namespace Ustas.RimAI.Art.synopsis
             if (record.Meta.Thing == null || record.Meta.Thing.DestroyedOrNull()) return;
             if (!BookFilterPolicy.IsAllowed(record.Meta)) return;
 
-            Log.Message($"[RimAI.Art] Processing book {record.Meta.Title} ({record.Meta.DefName}) [{record.Meta.Type}].");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Processing book {record.Meta.Title} ({record.Meta.DefName}) [{record.Meta.Type}].");
 
             var cache = LiteratureSaveData.Current?.SynopsisCache;
             if (cache == null) return;
@@ -42,7 +43,7 @@ namespace Ustas.RimAI.Art.synopsis
             if (cache.TryGet(record.Key, out var cached))
             {
                 BookTextApplier.Apply(record.Meta, cached.ToSynopsis());
-                Log.Message($"[RimAI.Art] Applied cached synopsis for {record.Meta.DefName}.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Applied cached synopsis for {record.Meta.DefName}.");
                 return;
             }
 
@@ -51,12 +52,12 @@ namespace Ustas.RimAI.Art.synopsis
 
             var summaryRequest = record.HasAuthor ? MemorySummaryRequest.BuildRequest(record.Author) : null;
             if (record.HasAuthor && summaryRequest == null)
-                Log.Message($"[RimAI.Art] Failed to build memory summary request for {record.Meta.DefName}.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Failed to build memory summary request for {record.Meta.DefName}.");
 
             var contextPawn = ResolveContextPawn(record);
             if (contextPawn == null)
             {
-                Log.Message($"[RimAI.Art] No context pawn available for {record.Meta.DefName}; requeue.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] No context pawn available for {record.Meta.DefName}; requeue.");
                 if (record.Attempts < MaxAttempts)
                     PendingBookQueue.Requeue(record);
 
@@ -72,7 +73,7 @@ namespace Ustas.RimAI.Art.synopsis
 
                     if (record.HasAuthor && summaryRequest != null)
                     {
-                        //Log.Message($"[RimAI.Art] Prepare Generating from author memories for {record.Meta.DefName}.");
+                        //RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Prepare Generating from author memories for {record.Meta.DefName}.");
                         if (record.Meta.Type == BookType.Journal)
                         {
                             synopsis = await JournalAuthoringPipeline.GenerateFromSummaryRequestAsync(
@@ -91,12 +92,12 @@ namespace Ustas.RimAI.Art.synopsis
 
                     if (synopsis == null && record.Meta.Type != BookType.Journal)
                     {
-                        //Log.Message($"[RimAI.Art] Prepare Generating synopsis via LLM for {record.Meta.DefName}.");
+                        //RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Prepare Generating synopsis via LLM for {record.Meta.DefName}.");
                         synopsis = await BookSynopsisService.GetOrGenerateAsync(record.Meta, contextPawn);
                     }
                     else if (synopsis == null)
                     {
-                        Log.Message($"[RimAI.Art] Journal generation failed for {record.Meta.DefName}; generic book fallback suppressed.");
+                        RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Journal generation failed for {record.Meta.DefName}; generic book fallback suppressed.");
                     }
 
                     if (synopsis != null)
@@ -104,20 +105,20 @@ namespace Ustas.RimAI.Art.synopsis
                         if (cache.TryGet(record.Key, out var existing) && existing != null && existing.IsManualOverride)
                         {
                             BookTextApplier.Apply(record.Meta, existing.ToSynopsis());
-                            Log.Message($"[RimAI.Art] Preserved manual book override for {record.Meta.DefName}.");
+                            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Preserved manual book override for {record.Meta.DefName}.");
                             return;
                         }
 
                         cache.Set(record.Key, BookSynopsisRecord.FromGenerated(synopsis, record.Meta.Type, existing));
                         BookTextApplier.Apply(record.Meta, synopsis);
-                        //Log.Message($"[RimAI.Art] Saved synopsis for {record.Meta.DefName}.");
+                        //RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Saved synopsis for {record.Meta.DefName}.");
                         return;
                     }
 
                     if (record.Attempts < MaxAttempts)
                     {
-                        //Log.Message($"[RimAI.Art] LLM returned null for {record.Meta.DefName}.");
-                        //Log.Message($"[RimAI.Art] Synopsis generation failed; requeue {record.Meta.DefName} (attempt {record.Attempts}).");
+                        //RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] LLM returned null for {record.Meta.DefName}.");
+                        //RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Synopsis generation failed; requeue {record.Meta.DefName} (attempt {record.Attempts}).");
                         PendingBookQueue.Requeue(record);
                     }
                 }
@@ -125,8 +126,8 @@ namespace Ustas.RimAI.Art.synopsis
                 {
                     if (record.Attempts < MaxAttempts)
                     {
-                        Log.Message($"[RimAI.Art] LLM threw exception for {record.Meta.DefName}: {ex.GetType().Name} - {ex.Message}");
-                        Log.Message($"[RimAI.Art] Exception during synopsis generation; requeue {record.Meta.DefName} (attempt {record.Attempts}).");
+                        RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] LLM threw exception for {record.Meta.DefName}: {ex.GetType().Name} - {ex.Message}");
+                        RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Exception during synopsis generation; requeue {record.Meta.DefName} (attempt {record.Attempts}).");
                         PendingBookQueue.Requeue(record);
                     }
                 }

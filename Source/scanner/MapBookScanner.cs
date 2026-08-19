@@ -29,6 +29,7 @@ using RimWorld;
 using System.Collections.Generic;
 using System.Text;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.scanner
 {
@@ -137,7 +138,7 @@ namespace Ustas.RimAI.Art.scanner
 
             if (matched > 0)
             {
-                Log.Message($"[RimAI.Art] Scan map {map.uniqueID}: books {matched}, enqueued {enqueued}, cached {cached}.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Scan map {map.uniqueID}: books {matched}, enqueued {enqueued}, cached {cached}.");
             }
 
             if (detailedLog)
@@ -246,7 +247,7 @@ namespace Ustas.RimAI.Art.scanner
             List<string> queueDuplicateSamples,
             List<string> invalidKeySamples)
         {
-            Log.Message(
+            RimAiLog.Info(RimAiLogCategory.Art, 
                 $"[RimAI.Art] Detailed book scan map {map.uniqueID}: " +
                 $"allThings={mapThingCount}, candidateBooks={candidateCount}, " +
                 $"bookcases={shelfCount}, heldBooks={shelfHeldBooks}, duplicateCandidates={duplicateCandidates}, " +
@@ -276,7 +277,7 @@ namespace Ustas.RimAI.Art.scanner
                 sb.Append(samples[i]);
             }
 
-            Log.Message(sb.ToString());
+            RimAiLog.Info(RimAiLogCategory.Art, sb.ToString());
         }
 
         private static void AddSample(List<string> samples, string value)

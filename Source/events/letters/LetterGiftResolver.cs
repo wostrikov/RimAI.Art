@@ -4,6 +4,7 @@ using System.Linq;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.events.letters
 {
@@ -34,19 +35,19 @@ namespace Ustas.RimAI.Art.events.letters
                 var defFromKind = DefDatabase<ThingDef>.GetNamedSilentFail(giftKind.Trim());
                 if (defFromKind == null)
                 {
-                    Log.Message($"[RimAI.Art] [Letter] Gift def not found for giftKind='{giftKind}'.");
+                    RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Letter] Gift def not found for giftKind='{giftKind}'.");
                     return false;
                 }
                 if (!IsAllowedGiftDef(defFromKind))
                 {
-                    Log.Message($"[RimAI.Art] [Letter] Gift def not allowed: '{defFromKind.defName}'.");
+                    RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Letter] Gift def not allowed: '{defFromKind.defName}'.");
                     return false;
                 }
 
                 var categoryFromKind = ResolveCategoryFromDef(defFromKind);
                 gift = CreateGiftThing(defFromKind, categoryFromKind);
                 if (gift == null)
-                    Log.Message($"[RimAI.Art] [Letter] Gift creation failed for def '{defFromKind.defName}'.");
+                    RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Letter] Gift creation failed for def '{defFromKind.defName}'.");
                 return gift != null;
             }
 
@@ -56,7 +57,7 @@ namespace Ustas.RimAI.Art.events.letters
                 candidates = GetCandidates(null);
             if (candidates.Count == 0)
             {
-                Log.Message($"[RimAI.Art] [Letter] No gift candidates for category '{category?.ToString() ?? "any"}'.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Letter] No gift candidates for category '{category?.ToString() ?? "any"}'.");
                 return false;
             }
 
@@ -64,19 +65,19 @@ namespace Ustas.RimAI.Art.events.letters
             var defCandidate = preferred.RandomElement();
             if (defCandidate == null)
             {
-                Log.Message("[RimAI.Art] [Letter] Gift candidate selection returned null.");
+                RimAiLog.Info(RimAiLogCategory.Art, "[RimAI.Art] [Letter] Gift candidate selection returned null.");
                 return false;
             }
 
             gift = CreateGiftThing(defCandidate, category ?? ResolveCategoryFromDef(defCandidate));
             if (gift == null)
             {
-                Log.Message($"[RimAI.Art] [Letter] Gift creation failed for def '{defCandidate.defName}'.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Letter] Gift creation failed for def '{defCandidate.defName}'.");
                 return false;
             }
             if (gift.stackCount <= 0)
                 gift.stackCount = 1;
-            Log.Message($"[RimAI.Art] [Letter] Gift resolved: def='{defCandidate.defName}', count={gift.stackCount}.");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Letter] Gift resolved: def='{defCandidate.defName}', count={gift.stackCount}.");
             return true;
         }
 

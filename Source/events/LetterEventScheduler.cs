@@ -10,6 +10,7 @@ using Ustas.RimAI.Art.synopsis.llm;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.events
 {
@@ -117,7 +118,7 @@ namespace Ustas.RimAI.Art.events
             }
 
             _diplomacyPending = true;
-            Log.Message($"[RimAI.Art] [Letter] Scheduling ally diplomacy letter from {faction.Name}.");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Letter] Scheduling ally diplomacy letter from {faction.Name}.");
 
             var task = IndependentBookLlmClient.QueryJsonAsync<AllyDiplomacyLetterSpec>(request);
             task.ContinueWith(t =>
@@ -139,7 +140,7 @@ namespace Ustas.RimAI.Art.events
             if (spec == null || faction == null || faction.defeated)
             {
                 data.NextAllyDiplomacyTick = tick + DiplomacyRetryTicks;
-                Log.Message("[RimAI.Art] [Letter] Ally diplomacy letter failed; retry scheduled.");
+                RimAiLog.Info(RimAiLogCategory.Art, "[RimAI.Art] [Letter] Ally diplomacy letter failed; retry scheduled.");
                 return;
             }
 
@@ -168,7 +169,7 @@ namespace Ustas.RimAI.Art.events
             if (!AreEasterLettersEnabled()) return;
             if (_familyPending)
             {
-                Log.Message("[RimAI.Art] [Letter] Family letter pending; skip schedule.");
+                RimAiLog.Info(RimAiLogCategory.Art, "[RimAI.Art] [Letter] Family letter pending; skip schedule.");
                 return;
             }
             if (data.NextFamilyLetterTick <= 0)
@@ -181,14 +182,14 @@ namespace Ustas.RimAI.Art.events
                     out var recipientRelationToSender,
                     out var map))
             {
-                Log.Message("[RimAI.Art] [Letter] Family letter skipped: no eligible relatives.");
+                RimAiLog.Info(RimAiLogCategory.Art, "[RimAI.Art] [Letter] Family letter skipped: no eligible relatives.");
                 data.NextFamilyLetterTick = tick + FamilyRetryTicks;
                 return;
             }
 
             if (!LetterGiftResolver.TryResolveGift(null, relative?.Faction, out var giftSample))
             {
-                Log.Message("[RimAI.Art] [Letter] Family letter skipped: gift sampling failed.");
+                RimAiLog.Info(RimAiLogCategory.Art, "[RimAI.Art] [Letter] Family letter skipped: gift sampling failed.");
                 data.NextFamilyLetterTick = tick + FamilyRetryTicks;
                 return;
             }
@@ -201,7 +202,7 @@ namespace Ustas.RimAI.Art.events
                 giftDefName = mt.InnerThing.def?.defName ?? giftDefName;
                 giftLabel = mt.InnerThing.LabelCap; // 或 mt.InnerThing.def.label.CapitalizeFirst()
             }
-            Log.Message($"[RimAI.Art] [Letter] Gift sample: def='{giftDefName}', label='{giftLabel}'.");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Letter] Gift sample: def='{giftDefName}', label='{giftLabel}'.");
             var request = FamilyLetterRequest.BuildRequest(
                 colonist,
                 relative,
@@ -216,13 +217,13 @@ namespace Ustas.RimAI.Art.events
             }
 
             _familyPending = true;
-            Log.Message($"[RimAI.Art] [Letter] Scheduling family letter for {colonist.LabelShortCap}.");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Letter] Scheduling family letter for {colonist.LabelShortCap}.");
 
             var task = IndependentBookLlmClient.QueryJsonAsync<FamilyLetterSpec>(request);
             task.ContinueWith(t =>
             {
                 var spec = t.Status == TaskStatus.RanToCompletion ? t.Result : null;
-                Log.Message($"[RimAI.Art] [Letter] Family letter LLM completed (null={spec == null}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Letter] Family letter LLM completed (null={spec == null}).");
                 EnqueueAction(() => ApplyFamilyLetterResult(spec, colonist, relative, map, giftDefName));
             }, TaskScheduler.Default);
         }
@@ -239,16 +240,16 @@ namespace Ustas.RimAI.Art.events
             if (spec == null || colonist == null || map == null)
             {
                 data.NextFamilyLetterTick = tick + FamilyRetryTicks;
-                Log.Message("[RimAI.Art] [Letter] Family letter failed; retry scheduled.");
+                RimAiLog.Info(RimAiLogCategory.Art, "[RimAI.Art] [Letter] Family letter failed; retry scheduled.");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(giftDefName) ||
                 !LetterGiftResolver.TryResolveGift(giftDefName, relative?.Faction, out var gift))
             {
-                Log.Message($"[RimAI.Art] [Letter] Gift resolve failed: giftDefName='{giftDefName}', specGiftKind='{spec.GiftKind ?? ""}'.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Letter] Gift resolve failed: giftDefName='{giftDefName}', specGiftKind='{spec.GiftKind ?? ""}'.");
                 data.NextFamilyLetterTick = tick + FamilyRetryTicks;
-                Log.Message("[RimAI.Art] [Letter] Family letter gift resolution failed; retry scheduled.");
+                RimAiLog.Info(RimAiLogCategory.Art, "[RimAI.Art] [Letter] Family letter gift resolution failed; retry scheduled.");
                 return;
             }
 
@@ -375,7 +376,7 @@ namespace Ustas.RimAI.Art.events
 
             if (candidates.Count == 0)
             {
-                Log.Message($"[RimAI.Art] [Letter] No family candidates: colonists={colonists.Count} related={relatedSeen} visible={visible} offMap={offMap} missingDirect={missingDirect}.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Letter] No family candidates: colonists={colonists.Count} related={relatedSeen} visible={visible} offMap={offMap} missingDirect={missingDirect}.");
                 return false;
             }
 
@@ -386,7 +387,7 @@ namespace Ustas.RimAI.Art.events
             relative = chosen.relative;
             senderRelationToRecipient = chosen.senderRelation;
             recipientRelationToSender = chosen.recipientRelation;
-            Log.Message($"[RimAI.Art] [Letter] Picked family pair: recipient={colonist.LabelShortCap}, sender={relative.LabelShortCap}, senderRelation={senderRelationToRecipient}, recipientRelation={recipientRelationToSender}, priority={bestPriority}.");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Letter] Picked family pair: recipient={colonist.LabelShortCap}, sender={relative.LabelShortCap}, senderRelation={senderRelationToRecipient}, recipientRelation={recipientRelationToSender}, priority={bestPriority}.");
             return true;
         }
 
@@ -413,7 +414,7 @@ namespace Ustas.RimAI.Art.events
             // RimAI.catch-boundary: ALLOWED_TOP_LEVEL_BOUNDARY — letter scheduler must not abort on relation lookup
             catch (Exception ex)
             {
-                Log.WarningOnce("[RimAI.Art] Accurate relation labels failed: " + ex, colonist.thingIDNumber ^ relative.thingIDNumber);
+                RimAiLog.WarningOnce(RimAiLogCategory.Art, "[RimAI.Art] Accurate relation labels failed: " + ex, colonist.thingIDNumber ^ relative.thingIDNumber);
                 return false;
             }
 

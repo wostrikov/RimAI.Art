@@ -2,6 +2,7 @@ using HarmonyLib;
 using Ustas.RimAI.Art.patches;
 using Ustas.RimAI.Art.scanner.queue;
 using Ustas.RimAI.Core.Composition;
+using Ustas.RimAI.Core.Diagnostics;
 using Ustas.RimAI.Core.Handshake;
 using Ustas.RimAI.Core.Modules;
 
@@ -62,7 +63,11 @@ public sealed class ArtComposition : IRimAiModuleComposition
         Patch_ScribanParser_TvContent.Unregister();
 
         // Domain pending queues are lifecycle-owned here. Marshal Queue<Action> untouched.
-        PendingArtQueue.Clear();
-        PendingBookQueue.Clear();
+        // D-logging: consume Clear() counts so Stop is diagnosable (not count-and-discard).
+        var clearedArt = PendingArtQueue.Clear();
+        var clearedBook = PendingBookQueue.Clear();
+        RimAiLog.Debug(
+            RimAiLogCategory.Art,
+            $"[RimAI.Art] Stop cleared domain pending queues art={clearedArt} book={clearedBook}");
     }
 }

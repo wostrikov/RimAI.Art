@@ -14,6 +14,7 @@ using Ustas.RimAI.Art.tv;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.manual
 {
@@ -294,7 +295,7 @@ namespace Ustas.RimAI.Art.manual
                 // RimAI.catch-boundary: ALLOWED_TOP_LEVEL_BOUNDARY — CompArt description faults must not abort manual edit
                 catch (Exception ex)
                 {
-                    Log.WarningOnce("[RimAI.Art] CompArt description resolve failed: " + ex, thing?.thingIDNumber ?? 0);
+                    RimAiLog.WarningOnce(RimAiLogCategory.Art, "[RimAI.Art] CompArt description resolve failed: " + ex, thing?.thingIDNumber ?? 0);
                 }
             }
 

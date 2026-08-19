@@ -5,6 +5,7 @@ using Ustas.RimAI.Art.settings;
 using Ustas.RimAI.Art.storage.save;
 using RimWorld;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.tv
 {
@@ -67,9 +68,9 @@ namespace Ustas.RimAI.Art.tv
                 Context = TvProgramPromptBuilder.BuildContext(tvBuilding)
             };
 
-            Log.Message($"[RimAI.Art] TvProgramService: dispatch LLM request for {tvBuilding.def?.defName}.");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] TvProgramService: dispatch LLM request for {tvBuilding.def?.defName}.");
             var program = await TvProgramLlmAdapter.QueryAsync(request);
-            Log.Message($"[RimAI.Art] TvProgramService: LLM request completed for {tvBuilding.def?.defName} (null={program == null}).");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] TvProgramService: LLM request completed for {tvBuilding.def?.defName} (null={program == null}).");
 
             program = Normalize(program);
             if (program != null)

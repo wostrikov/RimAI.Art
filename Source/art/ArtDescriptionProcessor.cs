@@ -4,6 +4,7 @@ using Ustas.RimAI.Art.scanner.queue;
 using Ustas.RimAI.Art.storage;
 using Ustas.RimAI.Art.storage.save;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.art
 {
@@ -21,7 +22,7 @@ namespace Ustas.RimAI.Art.art
             {
                 if (!_loggedDisabled)
                 {
-                    Log.Message($"[RimAI.Art] Art processing disabled ({Ustas.RimAI.Art.integration.ArtCacheUtil.DescribeArtSettings()}).");
+                    RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Art processing disabled ({Ustas.RimAI.Art.integration.ArtCacheUtil.DescribeArtSettings()}).");
                     _loggedDisabled = true;
                 }
                 return;
@@ -32,28 +33,28 @@ namespace Ustas.RimAI.Art.art
             if (!PendingArtQueue.TryDequeue(out var record)) return;
             if (record == null || record.Meta == null)
             {
-                Log.Message("[RimAI.Art] Art queue record invalid; skip.");
+                RimAiLog.Info(RimAiLogCategory.Art, "[RimAI.Art] Art queue record invalid; skip.");
                 return;
             }
             if (record.Meta.Thing == null || record.Meta.Thing.DestroyedOrNull())
             {
-                Log.Message($"[RimAI.Art] Art record thing invalid; skip {record.Meta.DefName ?? "unknown"}.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Art record thing invalid; skip {record.Meta.DefName ?? "unknown"}.");
                 return;
             }
             if (!ArtDefFilterPolicy.IsAllowed(record.Meta.Thing))
             {
-                Log.Message($"[RimAI.Art] Art record filtered out by settings; skip {record.Meta.DefName ?? "unknown"}.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Art record filtered out by settings; skip {record.Meta.DefName ?? "unknown"}.");
                 return;
             }
 
-            Log.Message($"[RimAI.Art] Processing art {record.Meta.ThingLabel} ({record.Meta.DefName}).");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Processing art {record.Meta.ThingLabel} ({record.Meta.DefName}).");
 
             var cache = LiteratureSaveData.Current?.ArtCache;
             if (cache == null) return;
 
             if (cache.TryGet(record.Key, out _))
             {
-                Log.Message($"[RimAI.Art] Art description already cached for {record.Meta.DefName}.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Art description already cached for {record.Meta.DefName}.");
                 return;
             }
 
@@ -66,12 +67,12 @@ namespace Ustas.RimAI.Art.art
                 if (bladelink.CodedPawn != null)
                 {
                     var pawn = bladelink.CodedPawn;
-                    Log.Message($"[RimAI.Art] Persona weapon detected; using bonded pawn context for {record.Meta.DefName}.");
+                    RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Persona weapon detected; using bonded pawn context for {record.Meta.DefName}.");
                     PersonaWeaponAuthoringPipeline.StartGeneration(record.Meta.Thing, pawn, "queue", () => _processing = false);
                     return;
                 }
 
-                Log.Message($"[RimAI.Art] Persona weapon not bonded; skip {record.Meta.DefName}.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Persona weapon not bonded; skip {record.Meta.DefName}.");
                 _processing = false;
                 return;
             }
@@ -79,7 +80,7 @@ namespace Ustas.RimAI.Art.art
             var contextPawn = ResolveContextPawn(record);
             if (contextPawn == null)
             {
-                Log.Message($"[RimAI.Art] No context pawn available for art {record.Meta.DefName}; requeue.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] No context pawn available for art {record.Meta.DefName}; requeue.");
                 if (record.Attempts < MaxAttempts)
                     PendingArtQueue.Requeue(record);
 
@@ -99,19 +100,19 @@ namespace Ustas.RimAI.Art.art
                     {
                         if (cache.TryGet(record.Key, out var existing) && existing != null && existing.IsManualOverride)
                         {
-                            Log.Message($"[RimAI.Art] Preserved manual art override for {record.Meta.DefName}.");
+                            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Preserved manual art override for {record.Meta.DefName}.");
                             return;
                         }
 
                         cache.Set(record.Key, ArtDescriptionRecord.FromGenerated(description, existing));
-                        Log.Message($"[RimAI.Art] Saved art description for {record.Meta.DefName}.");
+                        RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Saved art description for {record.Meta.DefName}.");
                         return;
                     }
 
                     if (record.Attempts < MaxAttempts)
                     {
-                        Log.Message($"[RimAI.Art] LLM returned null for art {record.Meta.DefName}.");
-                        Log.Message($"[RimAI.Art] Art generation failed; requeue {record.Meta.DefName} (attempt {record.Attempts}).");
+                        RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] LLM returned null for art {record.Meta.DefName}.");
+                        RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Art generation failed; requeue {record.Meta.DefName} (attempt {record.Attempts}).");
                         PendingArtQueue.Requeue(record);
                     }
                 }
@@ -119,8 +120,8 @@ namespace Ustas.RimAI.Art.art
                 {
                     if (record.Attempts < MaxAttempts)
                     {
-                        Log.Message($"[RimAI.Art] LLM threw exception for art {record.Meta.DefName}: {ex.GetType().Name} - {ex.Message}");
-                        Log.Message($"[RimAI.Art] Exception during art generation; requeue {record.Meta.DefName} (attempt {record.Attempts}).");
+                        RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] LLM threw exception for art {record.Meta.DefName}: {ex.GetType().Name} - {ex.Message}");
+                        RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Exception during art generation; requeue {record.Meta.DefName} (attempt {record.Attempts}).");
                         PendingArtQueue.Requeue(record);
                     }
                 }

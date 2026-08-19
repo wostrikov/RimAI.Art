@@ -6,6 +6,7 @@ using Ustas.RimAI.Art.storage.save;
 using Ustas.RimAI.Art.synopsis;
 using Ustas.RimAI.Art.synopsis.llm;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.art
 {
@@ -30,9 +31,9 @@ namespace Ustas.RimAI.Art.art
                 Context = ArtPromptBuilder.BuildContext(meta)
             };
 
-            Log.Message($"[RimAI.Art] ArtDescriptionService: dispatch LLM request for {meta.DefName}.");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] ArtDescriptionService: dispatch LLM request for {meta.DefName}.");
             var result = await IndependentBookLlmClient.QueryJsonAsync<ArtDescription>(request);
-            Log.Message($"[RimAI.Art] ArtDescriptionService: LLM request completed for {meta.DefName} (null={result == null}).");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] ArtDescriptionService: LLM request completed for {meta.DefName} (null={result == null}).");
             return ArtDescriptionResultProcessor.Normalize(result);
         }
     }

@@ -30,6 +30,7 @@ using Ustas.RimAI.Art.synopsis.llm;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.events
 {
@@ -64,41 +65,41 @@ namespace Ustas.RimAI.Art.events
             var settings = LiteratureMod.Settings;
             if (settings != null && !settings.enabled)
             {
-                Log.Message($"{LogPrefix} Skip: feature disabled.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Skip: feature disabled.");
                 return;
             }
             if (quest == null)
             {
-                Log.Message($"{LogPrefix} Skip: quest is null.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Skip: quest is null.");
                 return;
             }
             if (quest.hidden || quest.hiddenInUI)
             {
-                Log.Message($"{LogPrefix} Skip: quest hidden (id={quest.id}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Skip: quest hidden (id={quest.id}).");
                 return;
             }
             if (Find.TickManager == null)
             {
-                Log.Message($"{LogPrefix} Skip: TickManager unavailable (quest id={quest.id}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Skip: TickManager unavailable (quest id={quest.id}).");
                 return;
             }
 
             if (!IsQuestAllowed(settings, quest))
             {
-                Log.Message($"{LogPrefix} Skip: quest not allowed (id={quest.id}, def={quest.root?.defName ?? "null"}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Skip: quest not allowed (id={quest.id}, def={quest.root?.defName ?? "null"}).");
                 return;
             }
 
             if (Pending.ContainsKey(quest.id))
             {
-                Log.Message($"{LogPrefix} Skip: quest already queued (id={quest.id}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Skip: quest already queued (id={quest.id}).");
                 return;
             }
 
             string original = GetResolvedDescription(quest);
             if (string.IsNullOrWhiteSpace(original))
             {
-                Log.Message($"{LogPrefix} Skip: empty description (id={quest.id}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Skip: empty description (id={quest.id}).");
                 return;
             }
 
@@ -119,7 +120,7 @@ namespace Ustas.RimAI.Art.events
                 numberTokens,
                 GenTicks.SecondsToTicks(TimeoutSeconds));
             Pending[quest.id] = record;
-            Log.Message($"{LogPrefix} Queued quest (id={quest.id}, def={quest.root?.defName ?? "null"}, name={quest.name ?? "?"}, required={record.RequiredTokens.Count}, optional={record.OptionalTokens.Count}, numbers={record.NumberTokens.Count}).");
+            RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Queued quest (id={quest.id}, def={quest.root?.defName ?? "null"}, name={quest.name ?? "?"}, required={record.RequiredTokens.Count}, optional={record.OptionalTokens.Count}, numbers={record.NumberTokens.Count}).");
         }
 
         public static void Tick()
@@ -133,7 +134,7 @@ namespace Ustas.RimAI.Art.events
             for (int i = 0; i < expired.Count; i++)
             {
                 if (Pending.TryGetValue(expired[i], out var record))
-                    Log.Message($"{LogPrefix} Expired (id={record.QuestId}, def={record.Quest?.root?.defName ?? "null"}).");
+                    RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Expired (id={record.QuestId}, def={record.Quest?.root?.defName ?? "null"}).");
                 Pending.Remove(expired[i]);
             }
 
@@ -159,19 +160,19 @@ namespace Ustas.RimAI.Art.events
             if (request == null)
             {
                 Pending.Remove(record.QuestId);
-                Log.Message($"{LogPrefix} Abort: failed to build request (id={record.QuestId}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Abort: failed to build request (id={record.QuestId}).");
                 return;
             }
 
             record.Requested = true;
-            Log.Message($"{LogPrefix} Dispatching LLM request (id={record.QuestId}, def={record.Quest?.root?.defName ?? "null"}).");
+            RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Dispatching LLM request (id={record.QuestId}, def={record.Quest?.root?.defName ?? "null"}).");
 
             var task = IndependentBookLlmClient.QueryJsonAsync<QuestDescriptionSpec>(request);
             task.ContinueWith(t =>
             {
                 var spec = t.Status == TaskStatus.RanToCompletion ? t.Result : null;
                 if (spec == null)
-                    Log.Message($"{LogPrefix} LLM returned null (id={record.QuestId}).");
+                    RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} LLM returned null (id={record.QuestId}).");
                 EnqueueAction(() => ApplyResult(record.QuestId, spec));
             }, TaskScheduler.Default);
         }
@@ -242,19 +243,19 @@ $@"Напиши доповнення до опису завдання RimWorld.
 
             if (record == null || spec == null)
             {
-                Log.Message($"{LogPrefix} Abort: missing record or spec (id={questId}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Abort: missing record or spec (id={questId}).");
                 return;
             }
             if (Find.TickManager == null) return;
             if (Find.TickManager.TicksGame > record.DeadlineTick)
             {
-                Log.Message($"{LogPrefix} Abort: response late (id={questId}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Abort: response late (id={questId}).");
                 return;
             }
 
             if (!IsQuestActive(record.Quest))
             {
-                Log.Message($"{LogPrefix} Abort: quest no longer active (id={questId}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Abort: quest no longer active (id={questId}).");
                 return;
             }
 
@@ -264,12 +265,12 @@ $@"Напиши доповнення до опису завдання RimWorld.
 
             if (string.IsNullOrWhiteSpace(flavor))
             {
-                Log.Message($"{LogPrefix} Abort: empty LLM output (id={questId}).");
+                RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Abort: empty LLM output (id={questId}).");
                 return;
             }
 
             record.Quest.description = $"{record.OriginalDescription}\n\n{flavor}";
-            Log.Message($"{LogPrefix} Applied flavor (id={questId}, def={record.Quest?.root?.defName ?? "null"}).");
+            RimAiLog.Info(RimAiLogCategory.Art, $"{LogPrefix} Applied flavor (id={questId}, def={record.Quest?.root?.defName ?? "null"}).");
         }
 
         private static bool IsQuestActive(Quest quest)

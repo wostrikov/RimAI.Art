@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using HarmonyLib;
 using Ustas.RimAI.Art.scanner.production;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.patches
 {
@@ -36,7 +37,7 @@ namespace Ustas.RimAI.Art.patches
                 !string.Equals(defName, KiiroRecipeNovel, System.StringComparison.Ordinal))
                 return;
 
-            Log.Message($"[RimAI.Art] Kiiro recipe completed: {defName} by {billDoer.LabelShort}.");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Kiiro recipe completed: {defName} by {billDoer.LabelShort}.");
             BookProductionTracker.NotifyProduced(billDoer);
         }
     }

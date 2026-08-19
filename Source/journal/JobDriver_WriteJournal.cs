@@ -11,6 +11,7 @@ using Ustas.RimAI.Art.synopsis.model;
 using RimWorld;
 using Verse;
 using Verse.AI;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.journal
 {
@@ -23,7 +24,7 @@ namespace Ustas.RimAI.Art.journal
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
             bool reserved = pawn.Reserve(job.targetA, job, errorOnFailed: errorOnFailed);
-            Log.Message($"[RimAI.Art] [Journal] Reserve table={job.targetA.Thing?.LabelCap ?? "null"} result={reserved} pawn={pawn?.LabelShort ?? "null"}");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Journal] Reserve table={job.targetA.Thing?.LabelCap ?? "null"} result={reserved} pawn={pawn?.LabelShort ?? "null"}");
             return reserved;
         }
 
@@ -62,7 +63,7 @@ namespace Ustas.RimAI.Art.journal
                 var log = JournalUtility.FindClosestLog(pawn);
                 if (log == null)
                 {
-                    Log.Message($"[RimAI.Art] [Journal] No available logs for {pawn?.LabelShort ?? "null"}; ending job.");
+                    RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Journal] No available logs for {pawn?.LabelShort ?? "null"}; ending job.");
                     JobFailReason.Is("RimTalkLE_FloatMenu_WriteJournalMissingLogs".Translate());
                     EndJobWith(JobCondition.Incompletable);
                     return;
@@ -70,7 +71,7 @@ namespace Ustas.RimAI.Art.journal
 
                 job.targetB = log;
                 job.count = 1;
-                Log.Message($"[RimAI.Art] [Journal] Found log {log.LabelCap} at {log.Position}.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Journal] Found log {log.LabelCap} at {log.Position}.");
             };
             toil.defaultCompleteMode = ToilCompleteMode.Instant;
             return toil;
@@ -84,7 +85,7 @@ namespace Ustas.RimAI.Art.journal
                 var carried = pawn.carryTracker?.CarriedThing;
                 if (carried != null)
                 {
-                    Log.Message($"[RimAI.Art] [Journal] Consuming carried log {carried.LabelCap} x{carried.stackCount}.");
+                    RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Journal] Consuming carried log {carried.LabelCap} x{carried.stackCount}.");
                     pawn.carryTracker.DestroyCarriedThing();
                 }
             };
@@ -102,11 +103,11 @@ namespace Ustas.RimAI.Art.journal
                 {
                     def = DefDatabase<ThingDef>.GetNamedSilentFail("RimTalk_JournalBook");
                     if (def != null)
-                        Log.Message("[RimAI.Art] [Journal] Loaded RimTalk_JournalBook via DefDatabase fallback.");
+                        RimAiLog.Info(RimAiLogCategory.Art, "[RimAI.Art] [Journal] Loaded RimTalk_JournalBook via DefDatabase fallback.");
                 }
                 if (def == null || Table?.Map == null)
                 {
-                    Log.Message("[RimAI.Art] [Journal] Missing journal def or map; cannot spawn journal book.");
+                    RimAiLog.Info(RimAiLogCategory.Art, "[RimAI.Art] [Journal] Missing journal def or map; cannot spawn journal book.");
                     return;
                 }
 
@@ -114,7 +115,7 @@ namespace Ustas.RimAI.Art.journal
                 var map = Table.Map;
                 var dropCell = Table.InteractionCell;
                 GenPlace.TryPlaceThing(journal, dropCell, map, ThingPlaceMode.Near);
-                Log.Message($"[RimAI.Art] [Journal] Spawned journal book at {dropCell}.");
+                RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Journal] Spawned journal book at {dropCell}.");
 
                 var meta = BookClassifier.Classify(journal);
                 if (meta != null)
@@ -123,16 +124,16 @@ namespace Ustas.RimAI.Art.journal
                     {
                         ApplyPlaceholder(meta, pawn);
                         PendingBookQueue.Enqueue(meta, pawn);
-                        Log.Message($"[RimAI.Art] [Journal] Enqueued journal book for LLM (type={meta.Type}).");
+                        RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Journal] Enqueued journal book for LLM (type={meta.Type}).");
                     }
                     else
                     {
-                        Log.Message($"[RimAI.Art] [Journal] Journal book filtered out by settings ({meta.DefName}).");
+                        RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Journal] Journal book filtered out by settings ({meta.DefName}).");
                     }
                 }
                 else
                 {
-                    Log.Message("[RimAI.Art] [Journal] Failed to classify spawned journal book.");
+                    RimAiLog.Info(RimAiLogCategory.Art, "[RimAI.Art] [Journal] Failed to classify spawned journal book.");
                 }
             };
             toil.defaultCompleteMode = ToilCompleteMode.Instant;

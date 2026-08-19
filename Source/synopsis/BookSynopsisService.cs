@@ -30,6 +30,7 @@ using Ustas.RimAI.Art.storage.save;
 using Ustas.RimAI.Art.synopsis.llm;
 using Ustas.RimAI.Art.synopsis.model;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Art.synopsis
 {
@@ -54,9 +55,9 @@ namespace Ustas.RimAI.Art.synopsis
                 Context = SynopsisPromptBuilder.BuildContext(meta)
             };
 
-            Log.Message($"[RimAI.Art] BookSynopsisService: dispatch LLM request for {meta.DefName}.");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] BookSynopsisService: dispatch LLM request for {meta.DefName}.");
             var synopsis = await SynopsisLLMAdapter.QuerySynopsisAsync(request);
-            Log.Message($"[RimAI.Art] BookSynopsisService: LLM request completed for {meta.DefName} (null={synopsis == null}).");
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] BookSynopsisService: LLM request completed for {meta.DefName} (null={synopsis == null}).");
             return Normalize(synopsis);
         }
 

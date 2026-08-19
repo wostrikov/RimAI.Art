@@ -9,7 +9,7 @@ Measured against `RimAI.Art`. Production scope: `Source/**/*.cs` excluding `obj`
 | B1 | composition Stop unwind (Talk/Scriban Unregister + `_registered` clear) — done |
 | B2 | domain pending queue lifecycle under ArtComposition; Stop Clears — done |
 | C | IsStarted queue barrier; Google/Player2 direct Admit; thin orchestrator/result — done |
-| D-logging | RimAiLog migration (deferred; not started) |
+| D-logging | RimAiLog migration + Clear counts + Admit reject logging — done |
 | D | host/UI/guards/stage close (not started) |
 
 ---
@@ -29,7 +29,7 @@ LiteratureMod (settings + handshake)
        → Patch_ScribanParser_TvContent.Register
   → ArtComposition.Stop
        → Talk/Scriban Unregister
-       → PendingArtQueue.Clear + PendingBookQueue.Clear
+       → PendingArtQueue.Clear + PendingBookQueue.Clear (counts → RimAiLog.Debug)
   → LiteratureGameComponent tick hub
        → queues / processors / schedulers / rewriters
             → *PromptBuilder → LiteratureLlmRequest
@@ -58,14 +58,14 @@ Sibling products under `sources/` do **not** import Art C# types
 
 | Bucket | Art value | Source |
 | --- | --- | --- |
-| Direct host logging (TEMPORARY) | **179** | `direct-host-logging-baseline.json` / phase757 |
+| Direct host logging (TEMPORARY) | **0** (Wave A was **179**) | `direct-host-logging-baseline.json` after D-logging |
 | Catch-all baseline by_module | **9** | `catch-all-baseline.json` |
 | Catch inventory by_module (raw) | 12 | `phase755-catch-inventory.json` (includes bare) |
 | DOMAIN catch (phase755 category) | **4** | `phase755-catch-inventory.json` |
 | Ambient `.Current` | **2** | `ArtComposition.Current`, `LiteratureSaveData.Current` |
 | File I/O TEMPORARY | **0** | no Art keys in `direct-file-io-baseline.json` |
 | Oversized WARN (phase754) | **2** | warn_by_module (historical inventory; current largest file ~731 LOC) |
-| RimAiLog usages | **0** | source scan |
+| RimAiLog usages | **migrated** (category `Art`) | D-logging; Wave A was 0 |
 | Live `[HarmonyPatch]` attributes | **~24** | source scan |
 | Production `.cs` files / LOC | **132** / **~13.7k** | Wave A measure |
 
@@ -79,7 +79,7 @@ Rule: `CURRENT_TEMPORARY <= COMMITTED_TEMPORARY_BASELINE` (never upward).
 | --- | --- |
 | Entry | `LiteratureMod` → `RimAiHandshake.TryActivate(..., ArtComposition.Current.Start)` |
 | Start | Idempotent `IsStarted` guard; module register; Harmony PatchAll (process lifetime); Talk/Scriban `Register()` |
-| Stop | Sets `IsStarted=false` first; nulls `Literature` orchestrator; Unregisters Talk/Scriban; **Clears** domain pending queues; **no** UnpatchAll; **no** marshal clear |
+| Stop | Sets `IsStarted=false` first; nulls `Literature` orchestrator; Unregisters Talk/Scriban; **Clears** domain pending queues and **logs Clear counts** (Debug); **no** UnpatchAll; **no** marshal clear |
 | Start after Stop | Re-runs PatchAll; Talk/Scriban re-subscribe; new `ArtLiteratureOrchestrator`; domain queues empty |
 | Ambient | `ArtComposition.Current` (ALLOWED facade candidate); `LiteratureSaveData.Current` |
 | Long-lived services | Domain pending queue lifecycle + `ArtLiteratureOrchestrator` owned by composition; processors still static |
@@ -239,6 +239,12 @@ Frozen policy (B2):
 | `PostStopInFlightRequeueCannotRepopulateQueues` | **true** |
 | `WaveCIndependentHttpDirectAdmitComplete` | **true** (Google/Player2 direct Admit) |
 | `IndependentProvidersThatBypassArbiter` | empty |
+| `DLoggingChecklistClearCountsConsumed` | **true** |
+| `DLoggingChecklistAdmitRejectionLogged` | **true** |
+| `DLoggingChecklistVerseMigratedToRimAiLog` | **true** |
+| `CompositionStopLogsClearedDomainPendingQueueCounts` | **true** |
+| `IndependentHttpAdmitRejectionIsLogged` | **true** |
+| `RimAiLogMigrated` / Art Verse host-log baseline | **true** / **0** |
 
 Static enqueue/dequeue API retained for scanners/processors; Clear + IsStarted gate are composition-owned.
 `ArtDescriptionResultProcessor` owns art JSON normalize; `ArtLiteratureOrchestrator` is the thin root-owned art-description entry.
@@ -260,7 +266,7 @@ Static enqueue/dequeue API retained for scanners/processors; Clear + IsStarted g
 2. **Stop Clears domain pending queues** (B2) + **IsStarted gate** (C) — in-flight Requeue rejected
 3. **Google/Player2 direct Admit** (C) — OpenAI/Custom still SharedTextAi only; whole-client outer Admit forbidden
 4. **Thin orchestrator / result processor** (C) — `ArtLiteratureOrchestrator`, `ArtDescriptionResultProcessor`; full multi-pipeline orchestrator still deferred
-5. **Logging debt** — 179 Verse baseline / ~184 call sites; `RimAiLog` = 0; **defer migration to late wave near D** (Clear() int counts unused until then)
+5. **Logging (D-logging done)** — Verse host-log baseline Art → **0**; RimAiLog category `Art`; checklist: Clear() counts logged on Stop; independent HTTP Admit rejection logged; mass migration complete
 6. **Processors / marshal queues still static** — Tick gated by IsStarted; marshal not composition-owned
 7. **TvProgram generation dormant** — builder/service without callers
 8. **Largest type** — `IndependentBookLlmClient` still mixes config/transport/parse/logging
@@ -276,7 +282,7 @@ Static enqueue/dequeue API retained for scanners/processors; Clear + IsStarted g
 | B1 | composition ownership + Stop unwind only — **done** |
 | B2 | domain pending queue lifecycle + Stop Clear — **done** |
 | C | IsStarted barrier; Google/Player2 Admit; thin orchestrator/result — **done** |
-| D-logging | RimAiLog migration (incl. consume Clear() counts); separate reviewable diff |
+| D-logging | RimAiLog migration + Clear counts + Admit reject logging — **done** |
 | D | remaining host/UI/guards/stage close |
 
 ---
