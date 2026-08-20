@@ -1,6 +1,6 @@
 using HarmonyLib;
-using Ustas.RimAI.Art.patches;
-using Ustas.RimAI.Art.scanner.queue;
+using Ustas.RimAI.Art.Patches;
+using Ustas.RimAI.Art.Scanner.Queue;
 using Ustas.RimAI.Core.Composition;
 using Ustas.RimAI.Core.Diagnostics;
 using Ustas.RimAI.Core.Handshake;

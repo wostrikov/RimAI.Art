@@ -1,8 +1,8 @@
-using Ustas.RimAI.Art.art;
-using Ustas.RimAI.Art.events;
-using Ustas.RimAI.Art.events.quests;
-using Ustas.RimAI.Art.scanner.production;
-using Ustas.RimAI.Art.synopsis;
+using Ustas.RimAI.Art.Art;
+using Ustas.RimAI.Art.Events;
+using Ustas.RimAI.Art.Events.Quests;
+using Ustas.RimAI.Art.Scanner.Production;
+using Ustas.RimAI.Art.Synopsis;
 using Verse;
 
 namespace Ustas.RimAI.Art

@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
-using Ustas.RimAI.Art.art;
-using Ustas.RimAI.Art.art.model;
+using Ustas.RimAI.Art.Art;
+using Ustas.RimAI.Art.Art.Model;
 using Verse;
 
 namespace Ustas.RimAI.Art
