@@ -15,7 +15,7 @@
  *
  * Do NOT:
  * - Do not generate LLM content here.
- * - Do not modify RimTalk core logic.
+ * - Do not modify RimAI.Communication core logic.
  * - Do not assume the produced Thing is always a book.
  */
 using System.Collections.Generic;

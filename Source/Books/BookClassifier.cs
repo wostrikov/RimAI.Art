@@ -30,7 +30,7 @@
  *
  * Do NOT:
  * - Do not generate book content here.
- * - Do not access LLM or RimTalk services.
+ * - Do not access LLM or RimAI.Communication services.
  * - Do not guess based on defName or label strings.
  */
 
@@ -47,30 +47,21 @@ namespace Ustas.RimAI.Art.Books
 {
     public interface IBookClassifier
     {
-        /// <summary>
-        /// 若能识别则返回 BookMeta，否则返回 null。
-        /// </summary>
         BookMeta TryClassify(Thing thing);
     }
 
-    /// <summary>
-    /// 分类器入口：按顺序尝试各分类器；全部失败则返回 null（表示不是书）。
-    /// </summary>
     public static class BookClassifier
     {
         private static readonly List<IBookClassifier> Classifiers = new List<IBookClassifier>
         {
-            // 先识别 VBE 特种（Newspaper / SkillBook）
             new VBEBookClassifier(),
 
-            // 再识别 Children’s Books（否则会被 Vanilla 泛化吃掉）
             new ChildrensBookClassifier(),
 
             new MOBookClassifier(),
 
             new JournalBookClassifier(),
 
-            // 最后 Vanilla：CompBook/Book
             new VanillaBookClassifier(),
         };
 

@@ -1,3 +1,7 @@
+# HISTORICAL EVIDENCE — Phase 7.5.12 Art inventory
+
+Do not treat as current architecture. Current ownership is RimAI.Art / RimAI Core Text-AI.
+
 # Art Deep Reform inventory — Phase 7.5.12
 
 Measured against `RimAI.Art`. Production scope: `Source/**/*.cs` excluding `obj`/`bin`.

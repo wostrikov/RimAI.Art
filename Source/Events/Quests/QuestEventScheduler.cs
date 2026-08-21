@@ -14,7 +14,7 @@
  * Design notes:
  * - LLM requests run off-thread; quest creation is queued onto the main thread.
  * - Quest offers expire after 3 days; accepted quests expire after 3 days.
- * - Transport pod gifts can fulfill RimTalk LE trade requests via patch.
+ * - Transport pod gifts can fulfill RimAI.Art trade requests via patch.
  */
 using System;
 using System.Collections.Generic;
@@ -78,15 +78,7 @@ namespace Ustas.RimAI.Art.Events.Quests
             var settings = LiteratureMod.Settings;
             if (settings != null && !settings.enabled) return;
 
-            // TODO: Temporarily disable AdvertisementQuest and WarningQuest automatic scheduling due to option display issues
-            // if (tick < _nextCheckTick) return;
-            // _nextCheckTick = tick + CheckIntervalTicks;
-
-            // var data = LiteratureSaveData.Current;
-            // if (data == null) return;
-
-            // QuestEventAdvertisementFlow.TryScheduleAdvertisement(data, tick);
-            // QuestEventWarningFlow.TryScheduleWarning(data, tick);
+            // AdvertisementQuest / WarningQuest auto-scheduling remains disabled (option-display issues).
         }
         public static void TryHandleGiftDelivery(Settlement settlement, List<ActiveTransporterInfo> transporters)
         {

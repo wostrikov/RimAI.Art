@@ -7,7 +7,7 @@
  * - BookSynopsisService (optional finalization)
  *
  * Flow:
- * 1) Build pawn context through RimTalk's context service.
+ * 1) Build pawn context through RimAI.Communication's context service.
  * 2) Use a standalone request to obtain a structured MemorySummarySpec (JSON).
  * 3) Feed the summary into a second request to generate book title/synopsis.
  *

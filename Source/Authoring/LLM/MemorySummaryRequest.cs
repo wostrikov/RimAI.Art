@@ -11,7 +11,7 @@
  *
  * Design notes:
  * - BuildRequest must run on the main thread if it calls PromptService.
- * - QueryAsync sends via the independent LLM client (no RimTalk queue).
+ * - QueryAsync sends via the independent LLM client (no RimAI.Communication queue).
  *
  * Do NOT:
  * - Do not directly invoke AIService.

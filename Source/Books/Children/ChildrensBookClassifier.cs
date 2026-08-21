@@ -50,8 +50,6 @@ namespace Ustas.RimAI.Art.Books.Children
 
             EnsureResolved();
 
-            // 该模组有效书判定要求：t is Book 且 t.def == BBLK_ChildrensBook
-            // 我们在此基础上，额外支持 ColoringBook（该模组同样 DefOf 暴露）
             if (!(thing is Book)) return null;
 
             var def = thing.def;
@@ -71,7 +69,6 @@ namespace Ustas.RimAI.Art.Books.Children
             if (_resolved) return;
             _resolved = true;
 
-            // 1) 反射读取 DefOf 静态字段（最准确，不依赖 defName）
             try
             {
                 var defOfType = FindTypeInLoadedAssemblies(DefOfTypeFullName);
@@ -97,7 +94,6 @@ namespace Ustas.RimAI.Art.Books.Children
             {
             }
 
-            // 2) fallback：按字段名尝试 GetNamedSilentFail（不强保证，但安全）
             if (_childrensBookDef == null)
                 _childrensBookDef = DefDatabase<ThingDef>.GetNamedSilentFail(FieldChildrensBook);
 
@@ -115,7 +111,6 @@ namespace Ustas.RimAI.Art.Books.Children
 
         private static Type FindTypeInLoadedAssemblies(string fullName)
         {
-            // net48：AppDomain assemblies 可用
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             for (int i = 0; i < assemblies.Length; i++)
             {

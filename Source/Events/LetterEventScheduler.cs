@@ -202,7 +202,7 @@ namespace Ustas.RimAI.Art.Events
             if (giftSample is MinifiedThing mt && mt.InnerThing != null)
             {
                 giftDefName = mt.InnerThing.def?.defName ?? giftDefName;
-                giftLabel = mt.InnerThing.LabelCap; // 或 mt.InnerThing.def.label.CapitalizeFirst()
+                giftLabel = mt.InnerThing.LabelCap;
             }
             RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] [Letter] Gift sample: def='{giftDefName}', label='{giftLabel}'.");
             var request = FamilyLetterRequest.BuildRequest(

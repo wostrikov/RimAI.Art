@@ -14,7 +14,7 @@
  *
  * Do NOT:
  * - Do not call AIService.
- * - Do not inject RimTalk Constant.Instruction.
+ * - Do not inject RimAI.Communication Constant.Instruction.
  */
 using System.Text;
 using Ustas.RimAI.Communication.Data;

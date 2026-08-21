@@ -15,7 +15,7 @@
  *
  * Do NOT:
  * - Do not implement LLM logic here.
- * - Do not reference RimTalk services directly (only settings integration).
+ * - Do not reference RimAI.Communication services directly (only settings integration).
  */
 using UnityEngine;
 using Ustas.RimAI.Art;

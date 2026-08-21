@@ -8,7 +8,7 @@
  * - max input lengths
  *
  * Do NOT:
- * - Do not import RimTalk Constant.Instruction or override it.
+ * - Do not import RimAI.Communication Constant.Instruction or override it.
  */
 namespace Ustas.RimAI.Art.Settings
 {

@@ -11,7 +11,7 @@
  * - Draw warnings (e.g., "API key is stored in config").
  *
  * Do NOT:
- * - Do not depend on RimTalk UI classes unless you intentionally want to.
+ * - Do not depend on RimAI.Communication UI classes unless you intentionally want to.
  */
 using System;
 using UnityEngine;

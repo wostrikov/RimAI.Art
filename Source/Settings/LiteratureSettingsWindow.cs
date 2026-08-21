@@ -8,7 +8,7 @@
  *
  * UI requirements:
  * - Checkbox: Enable Literature Expansion
- * - Checkbox: Use same API as RimTalk
+ * - Checkbox: Use same API as RimAI.Communication
  * - If not using Ustas.RimAI.Communication API:
  *   - Text field: Base URL
  *   - Text field (masked if feasible): API Key
@@ -21,7 +21,7 @@
  *
  * Do NOT:
  * - Do not call LLM here.
- * - Do not modify RimTalk settings.
+ * - Do not modify RimAI.Communication settings.
  */
 using System.Collections.Generic;
 using System.Linq;

@@ -7,7 +7,7 @@
  *
  * Fields:
  * - enabled: allow book edits
- * - useRimTalkApi: if true, reuse RimTalk Settings_Api / ApiConfig at runtime
+ * - useRimTalkApi: if true, reuse RimAI.Communication Settings_Api / ApiConfig at runtime
  * - allowArtBuildingEdits: allow art edits for buildings
  * - allowArtWeaponEdits: allow art edits for weapons
  * - allowArtApparelEdits: allow art edits for apparel/gear
@@ -114,7 +114,7 @@ namespace Ustas.RimAI.Art.Settings
                 letterRewriteAllowList = new List<string>();
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                // In inherited mode RimTalk owns the OpenAI credential. Do not retain
+                // In inherited mode RimAI.Communication owns the OpenAI credential. Do not retain
                 // a duplicate legacy key in this add-on's mutable settings.
                 if (useRimTalkApi && api != null)
                     api.apiKey = string.Empty;

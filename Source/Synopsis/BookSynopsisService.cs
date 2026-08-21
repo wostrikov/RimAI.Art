@@ -5,7 +5,7 @@
  * - Central service for generating or retrieving book synopses.
  *
  * Dependencies:
- * - IndependentBookLlmClient (uses RimTalk API config directly)
+ * - IndependentBookLlmClient (uses RimAI.Communication API config directly)
  * - SynopsisPromptBuilder
  * - BookSynopsisCache
  *

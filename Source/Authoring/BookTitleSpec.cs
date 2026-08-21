@@ -14,7 +14,7 @@
  *
  * Do NOT:
  * - Do not add behavior or logic.
- * - Do not reference RimWorld or RimTalk APIs.
+ * - Do not reference RimWorld or RimAI.Communication APIs.
  */
 using System.Runtime.Serialization;
 using Ustas.RimAI.Communication.Data;

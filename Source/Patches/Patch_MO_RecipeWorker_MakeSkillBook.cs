@@ -1,11 +1,4 @@
-/*
- * Purpose:
- * - Detect Medieval Overhaul skill book production and enqueue for authoring.
- *
- * Notes:
- * - Uses RimTalk prompt context via the existing authoring pipeline.
- * - Avoids direct MO assembly references by resolving the worker type by name.
- */
+
 using System;
 using System.Reflection;
 using HarmonyLib;

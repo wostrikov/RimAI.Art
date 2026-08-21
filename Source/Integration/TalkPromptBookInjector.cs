@@ -6,7 +6,7 @@
  *   or telling a story.
  *
  * Dependencies:
- * - RimTalk PromptOverrideService
+ * - RimAI.Communication PromptOverrideService
  * - BookSynopsisCache
  * - BookMeta
  *

@@ -1,14 +1,4 @@
-/*
- * Purpose:
- * - Treat transport pod gifts as fulfillment for RimTalk LE trade requests.
- *
- * Uses:
- * - RimWorld.Planet.TransportersArrivalAction_GiveGift
- * - QuestEventScheduler
- *
- * Responsibilities:
- * - Detect gift deliveries to settlements and forward to quest logic.
- */
+
 using System.Collections.Generic;
 using HarmonyLib;
 using Ustas.RimAI.Art.Events.Quests;

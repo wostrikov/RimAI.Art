@@ -3,7 +3,7 @@
  * - Carry temporary prompt override state for a single TalkRequest.
  *
  * Uses:
- * - RimTalk TalkRequest
+ * - RimAI.Communication TalkRequest
  *
  * Responsibilities:
  * - Store flags / override text used during prompt construction.

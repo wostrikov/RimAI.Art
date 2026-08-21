@@ -2,7 +2,7 @@
  * File: BookType.cs
  *
  * Purpose:
- * - Define internal book categories used by RimTalk Literature Expansion.
+ * - Define internal book categories used by RimAI.Art.
  * - This enum is ONLY for classification results, not gameplay logic.
  *
  * Dependencies:
@@ -32,9 +32,6 @@
 
 namespace Ustas.RimAI.Art.Books
 {
-    /// <summary>
-    /// 仅基于已提供源码/反编译文件能可靠识别的类型
-    /// </summary>
     public enum BookType
     {
         Unknown = 0,
@@ -44,9 +41,6 @@ namespace Ustas.RimAI.Art.Books
         /// </summary>
         VanillaBook = 1,
 
-        /// <summary>
-        /// RimTalk LE: ThingDef has JournalBookExtension
-        /// </summary>
         Journal = 2,
 
         /// <summary>
@@ -54,9 +48,6 @@ namespace Ustas.RimAI.Art.Books
         /// </summary>
         VBE_Newspaper = 10,
 
-        /// <summary>
-        /// VBE：ThingDef 带有 DefModExtension VanillaBooksExpanded.RecipeSkillBook（字段：SkillDef skill）
-        /// </summary>
         VBE_SkillBook = 11,
 
         /// <summary>

@@ -1,10 +1,10 @@
 /*
  * Purpose:
- * - Manage enabling and disabling prompt overrides for RimTalk requests.
+ * - Manage enabling and disabling prompt overrides for RimAI.Communication requests.
  *
  * Uses:
  * - PromptOverrideContext
- * - RimTalk PromptService (via patch)
+ * - RimAI.Communication PromptService (via patch)
  *
  * Responsibilities:
  * - Provide a safe API to apply prompt overrides.
@@ -15,7 +15,7 @@
  *
  * Do NOT:
  * - Do not hardcode prompt text here.
- * - Do not bypass RimTalk context building.
+ * - Do not bypass RimAI.Communication context building.
  */
 using System;
 
