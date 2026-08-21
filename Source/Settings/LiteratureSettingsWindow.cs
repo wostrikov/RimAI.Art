@@ -104,6 +104,9 @@ namespace Ustas.RimAI.Art.Settings
 
         private static void DrawMainPage(Rect inRect, LiteratureSettings settings)
         {
+            if (_settingsViewHeightMain < 1f)
+                _settingsViewHeightMain = EstimateMainPageHeight(settings);
+
             Rect viewRect = new Rect(0f, 0f, inRect.width - 16f, Mathf.Max(_settingsViewHeightMain, inRect.height));
             Widgets.BeginScrollView(inRect, ref _settingsScrollMain, viewRect);
 
@@ -174,8 +177,6 @@ namespace Ustas.RimAI.Art.Settings
             }
 
             listing.Gap(12f);
-            listing.Label("RimTalkLE_Settings_Debug".Translate());
-            listing.Gap(4f);
             settings.synopsisTokenTarget = SettingsUIHelpers.IntFieldLabeled(
                 listing,
                 "RimTalkLE_Settings_TokenTarget".Translate(),
@@ -183,14 +184,36 @@ namespace Ustas.RimAI.Art.Settings
                 LiteratureSettingsDef.MinSynopsisTokenTarget,
                 LiteratureSettingsDef.MaxSynopsisTokenTarget);
 
+            if (Prefs.DevMode)
+                DrawDebugMaintenance(listing, settings);
+
+            listing.End();
+            _settingsViewHeightMain = listing.CurHeight + 10f;
+            Widgets.EndScrollView();
+        }
+
+        private static float EstimateMainPageHeight(LiteratureSettings settings)
+        {
+            float height = 820f;
+            if (settings != null && !settings.useRimTalkApi)
+                height += 140f;
+            if (Prefs.DevMode)
+                height += 180f;
+            return height;
+        }
+
+        private static void DrawDebugMaintenance(Listing_Standard listing, LiteratureSettings settings)
+        {
+            listing.Gap(12f);
+            listing.Label("RimTalkLE_Settings_Debug".Translate());
+            listing.Gap(4f);
+
             Rect buttonRect = listing.GetRect(LiteratureSettingsDef.RowHeight);
             if (Widgets.ButtonText(buttonRect, "RimTalkLE_Settings_ClearBookCache".Translate()))
             {
                 var cache = LiteratureSaveData.Current?.SynopsisCache;
                 if (cache == null)
-                {
                     RimAiLog.Warning(RimAiLogCategory.Art, "[RimAI.Art] No active world data; cannot clear book cache.");
-                }
                 else
                 {
                     int cleared = cache.Clear();
@@ -203,9 +226,7 @@ namespace Ustas.RimAI.Art.Settings
             {
                 var cache = LiteratureSaveData.Current?.ArtCache;
                 if (cache == null)
-                {
                     RimAiLog.Warning(RimAiLogCategory.Art, "[RimAI.Art] No active world data; cannot clear art cache.");
-                }
                 else
                 {
                     int cleared = cache.Clear();
@@ -214,32 +235,27 @@ namespace Ustas.RimAI.Art.Settings
             }
 
             Rect rescanRect = listing.GetRect(LiteratureSettingsDef.RowHeight);
-            if (Widgets.ButtonText(rescanRect, "RimTalkLE_Settings_RescanArtBooks".Translate()))
+            if (!Widgets.ButtonText(rescanRect, "RimTalkLE_Settings_RescanArtBooks".Translate()))
+                return;
+
+            var maps = Find.Maps;
+            if (maps == null || maps.Count == 0)
             {
-                var maps = Find.Maps;
-                if (maps == null || maps.Count == 0)
-                {
-                    RimAiLog.Warning(RimAiLogCategory.Art, "[RimAI.Art] Manual rescan skipped: no active maps.");
-                }
-                else
-                {
-                    RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Manual rescan requested for {maps.Count} maps.");
-                    bool bookEnabled = settings.enabled;
-                    for (int i = 0; i < maps.Count; i++)
-                    {
-                        var map = maps[i];
-                        Ustas.RimAI.Art.Scanner.MapArtScanner.Scan(map);
-                        if (bookEnabled)
-                            Ustas.RimAI.Art.Scanner.MapBookScanner.Scan(map, detailedLog: true);
-                        else
-                            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Book scan skipped: books disabled (map {map?.uniqueID ?? -1}).");
-                    }
-                }
+                RimAiLog.Warning(RimAiLogCategory.Art, "[RimAI.Art] Manual rescan skipped: no active maps.");
+                return;
             }
 
-            listing.End();
-            _settingsViewHeightMain = listing.CurHeight + 10f;
-            Widgets.EndScrollView();
+            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Manual rescan requested for {maps.Count} maps.");
+            bool bookEnabled = settings.enabled;
+            for (int i = 0; i < maps.Count; i++)
+            {
+                var map = maps[i];
+                Ustas.RimAI.Art.Scanner.MapArtScanner.Scan(map);
+                if (bookEnabled)
+                    Ustas.RimAI.Art.Scanner.MapBookScanner.Scan(map, detailedLog: true);
+                else
+                    RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Book scan skipped: books disabled (map {map?.uniqueID ?? -1}).");
+            }
         }
 
         private static void DrawFiltersPage(Rect inRect, LiteratureSettings settings)
