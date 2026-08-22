@@ -5,6 +5,7 @@ using Ustas.RimAI.Art.Authoring;
 using Ustas.RimAI.Art.Authoring.LLM;
 using Ustas.RimAI.Art.Books;
 using Ustas.RimAI.Art.Integration;
+using Ustas.RimAI.Art.Policy;
 using Ustas.RimAI.Art.Journal;
 using Ustas.RimAI.Art.Scanner.Queue;
 using Ustas.RimAI.Art.Settings;
@@ -40,7 +41,8 @@ namespace Ustas.RimAI.Art.Synopsis
             var cache = LiteratureSaveData.Current?.SynopsisCache;
             if (cache == null) return;
 
-            if (cache.TryGet(record.Key, out var cached))
+            if (cache.TryGet(record.Key, out var cached)
+                && ArtDescriptionPipeline.ShouldServeCached(ToSnapshot(cached)))
             {
                 BookTextApplier.Apply(record.Meta, cached.ToSynopsis());
                 RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Applied cached synopsis for {record.Meta.DefName}.");
@@ -102,17 +104,24 @@ namespace Ustas.RimAI.Art.Synopsis
 
                     if (synopsis != null)
                     {
-                        if (cache.TryGet(record.Key, out var existing) && existing != null && existing.IsManualOverride)
+                        cache.TryGet(record.Key, out var existing);
+                        var generated = ArtDescriptionPipeline.Normalize(synopsis.Title, synopsis.Synopsis);
+                        var action = ArtDescriptionPipeline.DecideStore(ToSnapshot(existing), generated);
+                        if (action == ArtStoreAction.PreserveManual)
                         {
                             BookTextApplier.Apply(record.Meta, existing.ToSynopsis());
                             RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Preserved manual book override for {record.Meta.DefName}.");
                             return;
                         }
 
-                        cache.Set(record.Key, BookSynopsisRecord.FromGenerated(synopsis, record.Meta.Type, existing));
-                        BookTextApplier.Apply(record.Meta, synopsis);
-                        //RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Saved synopsis for {record.Meta.DefName}.");
-                        return;
+                        if (action == ArtStoreAction.Write)
+                        {
+                            synopsis.Title = generated.Title;
+                            synopsis.Synopsis = generated.Body;
+                            cache.Set(record.Key, BookSynopsisRecord.FromGenerated(synopsis, record.Meta.Type, existing));
+                            BookTextApplier.Apply(record.Meta, synopsis);
+                            return;
+                        }
                     }
 
                     if (record.Attempts < MaxAttempts)
@@ -164,6 +173,19 @@ namespace Ustas.RimAI.Art.Synopsis
             }
 
             return null;
+        }
+
+        static ArtCacheSnapshot ToSnapshot(BookSynopsisRecord record)
+        {
+            if (record == null)
+                return ArtCacheSnapshot.Missing();
+            return new ArtCacheSnapshot
+            {
+                Found = true,
+                IsManualOverride = record.IsManualOverride,
+                Title = record.Title,
+                Body = record.Synopsis
+            };
         }
 
         private static Pawn TryPickFirst(System.Collections.Generic.IReadOnlyList<Pawn> pawns)

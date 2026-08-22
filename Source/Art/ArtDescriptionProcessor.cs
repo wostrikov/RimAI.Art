@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Ustas.RimAI.Art.Policy;
 using Ustas.RimAI.Art.Scanner.Queue;
 using Ustas.RimAI.Art.Storage;
 using Ustas.RimAI.Art.Storage.Save;
@@ -52,7 +53,8 @@ namespace Ustas.RimAI.Art.Art
             var cache = LiteratureSaveData.Current?.ArtCache;
             if (cache == null) return;
 
-            if (cache.TryGet(record.Key, out _))
+            if (cache.TryGet(record.Key, out var cached)
+                && ArtDescriptionPipeline.ShouldServeCached(ToSnapshot(cached)))
             {
                 RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Art description already cached for {record.Meta.DefName}.");
                 return;
@@ -98,15 +100,23 @@ namespace Ustas.RimAI.Art.Art
                         : await orchestrator.GetOrGenerateArtDescriptionAsync(record.Meta, contextPawn);
                     if (description != null)
                     {
-                        if (cache.TryGet(record.Key, out var existing) && existing != null && existing.IsManualOverride)
+                        cache.TryGet(record.Key, out var existing);
+                        var generated = ArtDescriptionPipeline.Normalize(description.Title, description.Text);
+                        var action = ArtDescriptionPipeline.DecideStore(ToSnapshot(existing), generated);
+                        if (action == ArtStoreAction.PreserveManual)
                         {
                             RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Preserved manual art override for {record.Meta.DefName}.");
                             return;
                         }
 
-                        cache.Set(record.Key, ArtDescriptionRecord.FromGenerated(description, existing));
-                        RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Saved art description for {record.Meta.DefName}.");
-                        return;
+                        if (action == ArtStoreAction.Write)
+                        {
+                            description.Title = generated.Title;
+                            description.Text = generated.Body;
+                            cache.Set(record.Key, ArtDescriptionRecord.FromGenerated(description, existing));
+                            RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Saved art description for {record.Meta.DefName}.");
+                            return;
+                        }
                     }
 
                     if (record.Attempts < MaxAttempts)
@@ -130,6 +140,19 @@ namespace Ustas.RimAI.Art.Art
                     _processing = false;
                 }
             });
+        }
+
+        static ArtCacheSnapshot ToSnapshot(ArtDescriptionRecord record)
+        {
+            if (record == null)
+                return ArtCacheSnapshot.Missing();
+            return new ArtCacheSnapshot
+            {
+                Found = true,
+                IsManualOverride = record.IsManualOverride,
+                Title = record.Title,
+                Body = record.Text
+            };
         }
 
         private static Pawn ResolveContextPawn(PendingArtRecord record)

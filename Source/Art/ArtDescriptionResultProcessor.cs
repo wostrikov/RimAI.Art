@@ -1,5 +1,5 @@
 using Ustas.RimAI.Art.Art.Model;
-using Ustas.RimAI.Art.Synopsis;
+using Ustas.RimAI.Art.Policy;
 
 namespace Ustas.RimAI.Art.Art
 {
@@ -13,17 +13,9 @@ namespace Ustas.RimAI.Art.Art
         {
             if (description == null) return null;
 
-            var title = description.Title?.Trim();
-            var text = description.Text?.Trim();
-
-            if (title != null && title.Length > SynopsisTokenPolicy.TitleMaxChars)
-                title = title.Substring(0, SynopsisTokenPolicy.TitleMaxChars).TrimEnd();
-
-            if (text != null && text.Length > SynopsisTokenPolicy.SynopsisMaxChars)
-                text = text.Substring(0, SynopsisTokenPolicy.SynopsisMaxChars).TrimEnd();
-
-            description.Title = title;
-            description.Text = text;
+            var normalized = ArtDescriptionPipeline.Normalize(description.Title, description.Text);
+            description.Title = normalized.Title;
+            description.Text = normalized.Body;
             return description;
         }
     }

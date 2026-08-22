@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using RimWorld;
 using Ustas.RimAI.Art.Art;
+using Ustas.RimAI.Art.Policy;
 using Ustas.RimAI.Art.Settings;
 using Ustas.RimAI.Art.Storage;
 using Ustas.RimAI.Art.Storage.Save;
@@ -80,31 +81,22 @@ namespace Ustas.RimAI.Art.Integration
             description = null;
             if (record == null) return false;
 
-            var title = record.Title;
-            var text = record.Text;
-            if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(text))
+            var composed = ArtDescriptionPipeline.ComposeDisplay(record.Title, record.Text);
+            if (string.IsNullOrWhiteSpace(composed))
                 return false;
-
-            var sb = new StringBuilder();
-            if (!string.IsNullOrWhiteSpace(title))
-                sb.Append(title.Trim());
-
-            if (!string.IsNullOrWhiteSpace(text))
-            {
-                if (sb.Length > 0)
-                    sb.Append("\n\n");
-                sb.Append(text.Trim());
-            }
 
             if (!string.IsNullOrWhiteSpace(author))
             {
+                var sb = new StringBuilder(composed);
                 sb.Append("\n\n");
                 sb.Append("Author".Translate());
                 sb.Append(": ");
                 sb.Append(author);
+                description = sb.ToString();
+                return true;
             }
 
-            description = sb.ToString();
+            description = composed;
             return true;
         }
 

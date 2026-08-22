@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Source\Policy\ArtDescriptionPipeline.cs" Link="Policy\ArtDescriptionPipeline.cs" />
+    <Compile Include="..\Source\Settings\Util\PromptTemplateUtil.cs" Link="Settings\PromptTemplateUtil.cs" />
+    <None Include="..\Source\Art\ArtDescriptionProcessor.cs" Link="ArtDescriptionProcessor.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Art\ArtDescriptionService.cs" Link="ArtDescriptionService.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Art\ArtDescriptionResultProcessor.cs" Link="ArtDescriptionResultProcessor.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Art\ArtPromptBuilder.cs" Link="ArtPromptBuilder.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Synopsis\BookSynopsisProcessor.cs" Link="BookSynopsisProcessor.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Synopsis\BookSynopsisService.cs" Link="BookSynopsisService.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Integration\ArtCacheUtil.cs" Link="ArtCacheUtil.cs.src" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

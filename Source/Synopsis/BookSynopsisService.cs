@@ -27,6 +27,7 @@ using Ustas.RimAI.Art.Books;
 using Ustas.RimAI.Art.LLM;
 using Ustas.RimAI.Art.Storage;
 using Ustas.RimAI.Art.Storage.Save;
+using Ustas.RimAI.Art.Policy;
 using Ustas.RimAI.Art.Synopsis.LLM;
 using Ustas.RimAI.Art.Synopsis.Model;
 using Verse;
@@ -83,17 +84,9 @@ namespace Ustas.RimAI.Art.Synopsis
         {
             if (synopsis == null) return null;
 
-            var title = synopsis.Title?.Trim();
-            var text = synopsis.Synopsis?.Trim();
-
-            if (title != null && title.Length > SynopsisTokenPolicy.TitleMaxChars)
-                title = title.Substring(0, SynopsisTokenPolicy.TitleMaxChars).TrimEnd();
-
-            if (text != null && text.Length > SynopsisTokenPolicy.SynopsisMaxChars)
-                text = text.Substring(0, SynopsisTokenPolicy.SynopsisMaxChars).TrimEnd();
-
-            synopsis.Title = title;
-            synopsis.Synopsis = text;
+            var normalized = ArtDescriptionPipeline.Normalize(synopsis.Title, synopsis.Synopsis);
+            synopsis.Title = normalized.Title;
+            synopsis.Synopsis = normalized.Body;
             return synopsis;
         }
     }
