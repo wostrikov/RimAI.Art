@@ -15,5 +15,10 @@
     <None Include="..\Source\Synopsis\BookSynopsisProcessor.cs" Link="BookSynopsisProcessor.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Synopsis\BookSynopsisService.cs" Link="BookSynopsisService.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Integration\ArtCacheUtil.cs" Link="ArtCacheUtil.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\ArtComposition.cs" Link="ArtComposition.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Integration\ArtPipelineProbe.cs" Link="ArtPipelineProbe.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Integration\ArtClickSafety.cs" Link="ArtClickSafety.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Patches\Patch_CompArt_Description.cs" Link="Patch_CompArt_Description.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Patches\Patch_CompArt_DescriptionPart.cs" Link="Patch_CompArt_DescriptionPart.cs.src" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

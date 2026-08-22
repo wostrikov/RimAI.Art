@@ -111,6 +111,17 @@ internal static class ArtDescriptionPipelineTests
         T(result.Contains("ArtDescriptionPipeline.Normalize"), "result-normalize");
         T(bookService.Contains("ArtDescriptionPipeline.Normalize"), "book-service-normalize");
         T(prompt.Contains("PromptTemplateUtil.Resolve") || prompt.Contains("PromptTemplateUtil.ApplyTokens"), "prompt-placeholders");
+        string composition = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "ArtComposition.cs.src"));
+        string probe = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "ArtPipelineProbe.cs.src"));
+        string safety = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "ArtClickSafety.cs.src"));
+        string descPatch = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Patch_CompArt_Description.cs.src"));
+        string partPatch = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Patch_CompArt_DescriptionPart.cs.src"));
+        T(composition.Contains("ArtPipelineProbe.Register"), "composition-registers-probe");
+        T(probe.Contains("GenerateImageDescription") && probe.Contains("GetDescriptionPart"), "probe-click-surfaces");
+        T(safety.Contains("taleRef") && safety.Contains("TryGetSafeImageDescription"), "click-safety-taleref");
+        T(descPatch.Contains("ArtClickSafety.TryGetSafeImageDescription") &&
+          descPatch.Contains("IsVanillaDescriptionSafe"), "description-prefix-safety");
+        T(partPatch.Contains("ArtClickSafety.TryGetSafeImageDescription"), "description-part-prefix-safety");
         return n;
     }
 }

@@ -16,10 +16,14 @@ namespace Ustas.RimAI.Art.Patches
             if (__instance?.parent == null) return true;
             if (ArtCacheUtil.AllowsDescriptionEdit(__instance.parent))
             {
-                if (!ArtCacheUtil.TryGetRecord(__instance.parent, out var record))
-                    return true;
+                if (ArtClickSafety.TryGetSafeImageDescription(__instance, out var safe))
+                {
+                    __result = safe.RawText;
+                    return false;
+                }
 
-                if (ArtCacheUtil.TryBuildDescription(record, __instance.AuthorName, out var description))
+                if (ArtCacheUtil.TryGetRecord(__instance.parent, out var record) &&
+                    ArtCacheUtil.TryBuildDescription(record, __instance.AuthorName, out var description))
                 {
                     __result = description;
                     return false;

@@ -1,4 +1,5 @@
 using HarmonyLib;
+using Ustas.RimAI.Art.Integration;
 using Ustas.RimAI.Art.Patches;
 using Ustas.RimAI.Art.Scanner.Queue;
 using Ustas.RimAI.Core.Composition;
@@ -44,6 +45,7 @@ public sealed class ArtComposition : IRimAiModuleComposition
         Patch_PromptService_Override.Register();
         Patch_ScribanParser_TvContent.Register();
         Literature = new ArtLiteratureOrchestrator();
+        ArtPipelineProbe.Register();
         IsStarted = true;
     }
 
