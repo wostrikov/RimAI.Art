@@ -5,18 +5,17 @@
 	<name>RimAI.Art</name>
 	<author>changlusss</author>
 
-	<description>
-RimAI.Art — artistic artifact generation for RimWorld. Literature is the current built-in implementation.
+	<description>RimAI.Art пише назви й описи книг та мистецьких предметів замість порожніх заготовок.
 
-Key Features:
-• Automatically repairs and normalizes book titles and descriptions
-• Generates short, localized book synopses instead of placeholder text
-• Books written by pawns reflect their personal experiences and memories
-• Reading and storytelling dialogue is based on actual book content
-• Optional compatibility with Vanilla Books Expanded and Children’s Books
-• Art-object title/description generation for CompArt items
+Основні можливості:
+• виправляє й нормалізує назви та описи книг
+• генерує короткі синопсиси
+• книги враховують досвід і спогади колоністів
+• розмови про читання й оповідання спираються на зміст книги
+• за потреби сумісний із Vanilla Books Expanded і Children’s Books
+• назви та описи предметів мистецтва
 
-Gameplay text AI uses the shared RimAI configuration. Literature-specific prompts and rewrite lists stay in this module.
+Потрібні Harmony, RimAI.Communication та Interaction Bubbles. Текстовий ШІ береться зі спільних налаштувань RimAI.
 	</description>
 
 	<supportedVersions>
