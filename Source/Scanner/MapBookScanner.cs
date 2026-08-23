@@ -20,7 +20,9 @@
  * - Do not write to save data directly.
  * - Do not run LLM calls.
  */
+using Ustas.RimAI.Art;
 using Ustas.RimAI.Art.Books;
+using Ustas.RimAI.Art.Policy;
 using Ustas.RimAI.Art.Scanner.Queue;
 using Ustas.RimAI.Art.Settings;
 using Ustas.RimAI.Art.Storage;
@@ -101,28 +103,33 @@ namespace Ustas.RimAI.Art.Scanner
                 }
                 matched++;
 
-                if (BookKeyProvider.TryGetKey(meta.Thing, out var key) &&
-                    cache != null &&
-                    cache.Contains(key))
+                bool hasKey = BookKeyProvider.TryGetKey(meta.Thing, out var pendingKey);
+                var enqueue = ArtScanEnqueuePolicy.DecideEnqueue(
+                    ArtComposition.Current.IsStarted,
+                    eligible: true,
+                    hasKey,
+                    cached: hasKey && cache != null && cache.Contains(pendingKey),
+                    alreadyQueued: hasKey && PendingBookQueue.Contains(pendingKey));
+                if (enqueue == ArtScanEnqueueAction.SkipCached)
                 {
                     cached++;
                     AddSample(cachedSamples, DescribeMeta(meta, candidate.Source));
                     continue;
                 }
-
-                if (!BookKeyProvider.TryGetKey(meta.Thing, out var pendingKey))
+                if (enqueue == ArtScanEnqueueAction.SkipNoKey)
                 {
                     invalidKey++;
                     AddSample(invalidKeySamples, DescribeMeta(meta, candidate.Source));
                     continue;
                 }
-
-                if (PendingBookQueue.Contains(pendingKey))
+                if (enqueue == ArtScanEnqueueAction.SkipDuplicate)
                 {
                     queueDuplicate++;
                     AddSample(queueDuplicateSamples, DescribeMeta(meta, candidate.Source));
                     continue;
                 }
+                if (enqueue != ArtScanEnqueueAction.Enqueue)
+                    continue;
 
                 if (PendingBookQueue.Enqueue(meta))
                 {

@@ -68,7 +68,8 @@ namespace Ustas.RimAI.Art.Synopsis
             MemorySummarySpec summary,
             string baseContext = null)
         {
-            if (summary == null || author == null) return null;
+            if (!ArtExperienceBookPolicy.CanAuthorFromExperience(author != null, summary?.Summary))
+                return null;
 
             var spec = await BookFromSummaryRequest.QueryAsync(meta, summary, author, baseContext);
             if (spec == null) return null;

@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ustas.RimAI.Communication.Data;
 using Ustas.RimAI.Art.LLM;
+using Ustas.RimAI.Art.Policy;
 using Ustas.RimAI.Art.Settings;
 using Ustas.RimAI.Art.Settings.Util;
 using Ustas.RimAI.Art.Synopsis.LLM;
@@ -64,7 +65,8 @@ namespace Ustas.RimAI.Art.Events
             ProcessPendingActions();
 
             var settings = LiteratureMod.Settings;
-            if (settings == null || !settings.allowIdeoDescriptionRewrite) return;
+            if (!ArtExperimentalGenerationPolicy.AllowIdeology(settings != null && settings.allowIdeoDescriptionRewrite))
+                return;
             if (Find.TickManager == null) return;
 
             int tick = Find.TickManager.TicksGame;
@@ -98,7 +100,8 @@ namespace Ustas.RimAI.Art.Events
         public static void TryQueue(Ideo ideo, Pawn initiatorOverride = null)
         {
             var settings = LiteratureMod.Settings;
-            if (settings == null || !settings.allowIdeoDescriptionRewrite) return;
+            if (!ArtExperimentalGenerationPolicy.AllowIdeology(settings != null && settings.allowIdeoDescriptionRewrite))
+                return;
             if (ideo == null || ideo.hidden) return;
             if (Find.TickManager == null) return;
 

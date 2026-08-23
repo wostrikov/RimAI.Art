@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ustas.RimAI.Art.LLM;
 using Ustas.RimAI.Art.Books;
+using Ustas.RimAI.Art.Policy;
 using Ustas.RimAI.Art.Settings;
 using Ustas.RimAI.Art.Settings.Util;
 using Ustas.RimAI.Art.Synopsis;
@@ -34,8 +35,13 @@ namespace Ustas.RimAI.Art.Authoring.LLM
         {
             if (summary == null || author == null) return null;
 
+            if (!ArtExperienceBookPolicy.CanAuthorFromExperience(author != null, summary?.Summary))
+                return null;
+
             var prompt = BuildPrompt();
             var context = BuildContext(meta, summary, baseContext);
+            if (string.IsNullOrWhiteSpace(context))
+                return null;
 
             return new LiteratureLlmRequest(prompt)
             {
@@ -106,18 +112,16 @@ $@"Пиши мовою {Constant.Lang}. Виведи лише JSON.
 
         private static string BuildContext(BookMeta meta, MemorySummarySpec summary, string baseContext)
         {
+            var memory = ArtExperienceBookPolicy.ComposeMemoryContext(
+                baseContext,
+                summary?.Summary,
+                summary?.Keywords,
+                summary?.Tone);
+            if (string.IsNullOrWhiteSpace(memory))
+                return null;
+
             var sb = new StringBuilder();
-            if (!string.IsNullOrWhiteSpace(baseContext))
-                sb.AppendLine(baseContext.TrimEnd());
-
-            sb.AppendLine("[MemorySummary]");
-            sb.AppendLine(summary.Summary ?? string.Empty);
-
-            if (summary.Keywords != null && summary.Keywords.Length > 0)
-                sb.AppendLine("Keywords: " + string.Join(", ", summary.Keywords));
-
-            if (!string.IsNullOrWhiteSpace(summary.Tone))
-                sb.AppendLine("Tone: " + summary.Tone);
+            sb.AppendLine(memory);
 
             if (meta != null)
             {

@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using Ustas.RimAI.Art.Authoring.LLM;
 using Ustas.RimAI.Art.Books;
 using Ustas.RimAI.Art.LLM;
+using Ustas.RimAI.Art.Policy;
 using Ustas.RimAI.Art.Synopsis;
 using Ustas.RimAI.Art.Synopsis.Model;
 using Verse;
@@ -49,7 +50,8 @@ namespace Ustas.RimAI.Art.Authoring
             if (meta == null || author == null || summaryRequest == null) return null;
 
             var summary = await MemorySummaryRequest.QueryAsync(summaryRequest);
-            if (summary == null) return null;
+            if (!ArtExperienceBookPolicy.CanAuthorFromExperience(author != null, summary?.Summary))
+                return null;
 
             return await BookSynopsisService.GenerateFromSummaryAsync(meta, author, summary, summaryRequest.Context);
         }

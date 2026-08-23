@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ustas.RimAI.Communication.Service;
 using Ustas.RimAI.Art.Events.Letters;
+using Ustas.RimAI.Art.Policy;
 using Ustas.RimAI.Art.Settings;
 using Ustas.RimAI.Art.Storage.Save;
 using Ustas.RimAI.Art.Synopsis.LLM;
@@ -88,7 +89,9 @@ namespace Ustas.RimAI.Art.Events
         private static bool AreEasterLettersEnabled()
         {
             var settings = LiteratureMod.Settings;
-            return settings != null && settings.enabled && settings.allowEasterLetters;
+            return ArtExperimentalGenerationPolicy.AllowEasterLetters(
+                settings != null && settings.enabled,
+                settings != null && settings.allowEasterLetters);
         }
 
         private static void TryScheduleAllyDiplomacy(LiteratureSaveData data, int tick)

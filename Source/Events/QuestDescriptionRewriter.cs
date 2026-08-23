@@ -25,6 +25,7 @@ using System.Globalization;
 using Ustas.RimAI.Communication.Data;
 using Ustas.RimAI.Communication.Service;
 using Ustas.RimAI.Art.LLM;
+using Ustas.RimAI.Art.Policy;
 using Ustas.RimAI.Art.Settings;
 using Ustas.RimAI.Art.Synopsis.LLM;
 using RimWorld;
@@ -283,11 +284,10 @@ $@"Напиши доповнення до опису завдання RimWorld.
         private static bool IsQuestAllowed(LiteratureSettings settings, Quest quest)
         {
             if (settings == null || quest == null) return false;
-            var def = quest.root;
-            if (def == null || string.IsNullOrWhiteSpace(def.defName)) return false;
-            var allowList = settings.questRewriteAllowList;
-            if (allowList == null || allowList.Count == 0) return false;
-            return allowList.Contains(def.defName);
+            return ArtExperimentalGenerationPolicy.AllowQuestRewrite(
+                settings.enabled,
+                quest.root?.defName,
+                settings.questRewriteAllowList);
         }
 
 

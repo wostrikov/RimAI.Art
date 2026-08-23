@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ustas.RimAI.Communication.Data;
 using Ustas.RimAI.Art.LLM;
+using Ustas.RimAI.Art.Policy;
 using Ustas.RimAI.Art.Settings;
 using Ustas.RimAI.Art.Settings.Util;
 using Ustas.RimAI.Art.Synopsis.LLM;
@@ -59,7 +60,8 @@ namespace Ustas.RimAI.Art.Events
             ProcessPendingActions();
 
             var settings = LiteratureMod.Settings;
-            if (settings == null || !settings.allowLetterTextRewrite) return;
+            if (!ArtExperimentalGenerationPolicy.AllowLetterRewrite(settings != null && settings.allowLetterTextRewrite))
+                return;
             if (Find.TickManager == null || Pending.Count == 0) return;
 
             int tick = Find.TickManager.TicksGame;
@@ -83,7 +85,8 @@ namespace Ustas.RimAI.Art.Events
         public static void TryQueue(Letter letter)
         {
             var settings = LiteratureMod.Settings;
-            if (settings == null || !settings.allowLetterTextRewrite) return;
+            if (!ArtExperimentalGenerationPolicy.AllowLetterRewrite(settings != null && settings.allowLetterTextRewrite))
+                return;
             if (letter == null) return;
             if (letter is BundleLetter) return;
             if (!string.IsNullOrWhiteSpace(letter.debugInfo) && letter.debugInfo.Contains(CustomLetterDebugInfo))
@@ -256,11 +259,7 @@ $@"Напиши коротке сповіщення про надходженн�
         private static bool IsLetterAllowed(LiteratureSettings settings, Letter letter)
         {
             if (settings == null || letter == null) return false;
-            var def = letter.def;
-            if (def == null || string.IsNullOrWhiteSpace(def.defName)) return false;
-            var allowList = settings.letterRewriteAllowList;
-            if (allowList == null || allowList.Count == 0) return false;
-            return allowList.Contains(def.defName);
+            return ArtExperimentalGenerationPolicy.AllowListed(letter.def?.defName, settings.letterRewriteAllowList);
         }
 
         private static bool TryGetLetterText(Letter letter, out string text)

@@ -23,9 +23,9 @@
  * - Do not generate synopsis here.
  */
 using System;
-using System.Text;
 using Ustas.RimAI.Communication.Data;
 using Ustas.RimAI.Art.Books;
+using Ustas.RimAI.Art.Policy;
 using Ustas.RimAI.Art.Scanner.Queue;
 using Ustas.RimAI.Art.Settings;
 using Ustas.RimAI.Art.Storage;
@@ -44,61 +44,42 @@ namespace Ustas.RimAI.Art.Integration
         {
             if (request == null) return;
             var settings = LiteratureMod.Settings;
-            if (settings != null && !settings.enabled) return;
+            bool enabled = settings == null || settings.enabled;
 
             BookMeta meta = null;
-            if (!TryResolveBookMeta(request.Initiator, out meta) &&
-                !TryResolveBookMeta(request.Recipient, out meta))
-            {
-                return;
-            }
-
-            if (!BookFilterPolicy.IsAllowed(meta))
-                return;
+            bool hasBook = TryResolveBookMeta(request.Initiator, out meta) ||
+                TryResolveBookMeta(request.Recipient, out meta);
+            bool allowed = hasBook && BookFilterPolicy.IsAllowed(meta);
 
             var cache = LiteratureSaveData.Current?.SynopsisCache;
-            if (cache == null) return;
-
-            if (!BookKeyProvider.TryGetKey(meta.Thing, out var key)) return;
-
-            if (!cache.TryGet(key, out var record))
+            bool cached = false;
+            BookSynopsis synopsis = null;
+            if (hasBook && cache != null && BookKeyProvider.TryGetKey(meta.Thing, out var key) &&
+                cache.TryGet(key, out var record))
             {
-                PendingBookQueue.Enqueue(meta);
+                synopsis = record.ToSynopsis();
+                cached = synopsis != null;
+            }
+
+            var action = ArtReadingDialoguePolicy.Decide(enabled, hasBook, allowed, cached);
+            if (action == ArtReadingInjectAction.SkipDisabled ||
+                action == ArtReadingInjectAction.SkipNoBook ||
+                action == ArtReadingInjectAction.SkipFiltered)
+                return;
+
+            if (action == ArtReadingInjectAction.EnqueueMissing)
+            {
+                if (meta != null)
+                    PendingBookQueue.Enqueue(meta);
                 return;
             }
 
-            var synopsis = record.ToSynopsis();
-            if (synopsis == null) return;
-
-            var snippet = BuildSnippet(meta, synopsis);
-            if (string.IsNullOrWhiteSpace(snippet)) return;
-
-            if (string.IsNullOrWhiteSpace(request.Context))
-                request.Context = snippet;
-            else
-                request.Context = $"{request.Context}\n\n{snippet}";
-        }
-
-        private static string BuildSnippet(BookMeta meta, BookSynopsis synopsis)
-        {
             var title = string.IsNullOrWhiteSpace(synopsis.Title) ? meta?.Title : synopsis.Title;
-            var text = synopsis.Synopsis ?? string.Empty;
-
-            if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(text)) return null;
-
-            if (text.Length > SynopsisTokenPolicy.PromptSynopsisMaxChars)
-                text = text.Substring(0, SynopsisTokenPolicy.PromptSynopsisMaxChars).TrimEnd();
-
-            var sb = new StringBuilder();
-            sb.AppendLine("[Book]");
-
-            if (!string.IsNullOrWhiteSpace(title))
-                sb.AppendLine($"Title: {title}");
-
-            if (!string.IsNullOrWhiteSpace(text))
-                sb.AppendLine($"Text: {text}");
-
-            return sb.ToString().TrimEnd();
+            var snippet = ArtReadingDialoguePolicy.BuildSnippet(
+                title,
+                synopsis.Synopsis,
+                SynopsisTokenPolicy.PromptSynopsisMaxChars);
+            request.Context = ArtReadingDialoguePolicy.AppendToContext(request.Context, snippet);
         }
 
         private static bool TryResolveBookMeta(Pawn pawn, out BookMeta meta)

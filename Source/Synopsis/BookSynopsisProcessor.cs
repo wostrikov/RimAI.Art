@@ -73,7 +73,7 @@ namespace Ustas.RimAI.Art.Synopsis
                 {
                     BookSynopsis synopsis = null;
 
-                    if (record.HasAuthor && summaryRequest != null)
+                    if (ArtExperienceBookPolicy.ShouldDispatchExperienceAuthoring(record.HasAuthor, summaryRequest != null))
                     {
                         //RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Prepare Generating from author memories for {record.Meta.DefName}.");
                         if (record.Meta.Type == BookType.Journal)

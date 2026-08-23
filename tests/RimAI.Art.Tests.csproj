@@ -7,6 +7,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Source\Policy\ArtDescriptionPipeline.cs" Link="Policy\ArtDescriptionPipeline.cs" />
+    <Compile Include="..\Source\Policy\ArtExperienceBookPolicy.cs" Link="Policy\ArtExperienceBookPolicy.cs" />
+    <Compile Include="..\Source\Policy\ArtReadingDialoguePolicy.cs" Link="Policy\ArtReadingDialoguePolicy.cs" />
+    <Compile Include="..\Source\Policy\ArtExperimentalGenerationPolicy.cs" Link="Policy\ArtExperimentalGenerationPolicy.cs" />
+    <Compile Include="..\Source\Policy\ArtScanEnqueuePolicy.cs" Link="Policy\ArtScanEnqueuePolicy.cs" />
     <Compile Include="..\Source\Settings\Util\PromptTemplateUtil.cs" Link="Settings\PromptTemplateUtil.cs" />
     <None Include="..\Source\Art\ArtDescriptionProcessor.cs" Link="ArtDescriptionProcessor.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Art\ArtDescriptionService.cs" Link="ArtDescriptionService.cs.src" CopyToOutputDirectory="PreserveNewest" />
@@ -20,5 +24,22 @@
     <None Include="..\Source\Integration\ArtClickSafety.cs" Link="ArtClickSafety.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Patches\Patch_CompArt_Description.cs" Link="Patch_CompArt_Description.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Patches\Patch_CompArt_DescriptionPart.cs" Link="Patch_CompArt_DescriptionPart.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Authoring\BookAuthoringPipeline.cs" Link="BookAuthoringPipeline.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Authoring\LLM\BookFromSummaryRequest.cs" Link="BookFromSummaryRequest.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Integration\TalkPromptBookInjector.cs" Link="TalkPromptBookInjector.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Patches\Patch_PromptService_Override.cs" Link="Patch_PromptService_Override.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Events\IdeoDescriptionRewriter.cs" Link="IdeoDescriptionRewriter.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Events\LetterEventScheduler.cs" Link="LetterEventScheduler.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Events\LetterTextRewriter.cs" Link="LetterTextRewriter.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Events\QuestDescriptionRewriter.cs" Link="QuestDescriptionRewriter.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Events\Quests\QuestEventScheduler.cs" Link="QuestEventScheduler.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Scanner\ArtScanScheduler.cs" Link="ArtScanScheduler.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Scanner\BookScanScheduler.cs" Link="BookScanScheduler.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Scanner\MapArtScanner.cs" Link="MapArtScanner.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Scanner\MapBookScanner.cs" Link="MapBookScanner.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Scanner\Production\ArtProductionTracker.cs" Link="ArtProductionTracker.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Scanner\Production\BookProductionTracker.cs" Link="BookProductionTracker.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Patches\Patch_Tick_DailyScan.cs" Link="Patch_Tick_DailyScan.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Patches\Patch_MapLoaded_Scan.cs" Link="Patch_MapLoaded_Scan.cs.src" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

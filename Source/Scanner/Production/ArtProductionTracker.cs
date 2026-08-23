@@ -4,7 +4,9 @@
  * Purpose:
  * - Track newly generated art and enqueue for LLM description.
  */
+using Ustas.RimAI.Art;
 using Ustas.RimAI.Art.Art;
+using Ustas.RimAI.Art.Policy;
 using Ustas.RimAI.Art.Scanner.Queue;
 using Ustas.RimAI.Art.Storage;
 using Ustas.RimAI.Art.Storage.Save;
@@ -39,12 +41,15 @@ namespace Ustas.RimAI.Art.Scanner.Production
             }
 
             var cache = LiteratureSaveData.Current?.ArtCache;
-            if (ArtKeyProvider.TryGetKey(thing, out var key) &&
-                cache != null &&
-                cache.Contains(key))
-            {
+            bool hasKey = ArtKeyProvider.TryGetKey(thing, out var key);
+            var enqueue = ArtScanEnqueuePolicy.DecideEnqueue(
+                ArtComposition.Current.IsStarted,
+                eligible: true,
+                hasKey,
+                cached: hasKey && cache != null && cache.Contains(key),
+                alreadyQueued: hasKey && PendingArtQueue.Contains(key));
+            if (enqueue != ArtScanEnqueueAction.Enqueue)
                 return;
-            }
 
             if (PendingArtQueue.Enqueue(meta))
                 RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Enqueued art {meta.ThingLabel} ({meta.DefName}) from generation.");

@@ -18,6 +18,7 @@
  */
 using System.Collections.Generic;
 using RimWorld;
+using Ustas.RimAI.Art.Policy;
 using Verse;
 
 namespace Ustas.RimAI.Art.Scanner
@@ -30,7 +31,8 @@ namespace Ustas.RimAI.Art.Scanner
         public static void OnMapLoaded(Map map)
         {
             if (map == null) return;
-            if (ScannedMapIds.Contains(map.uniqueID)) return;
+            if (!ArtScanEnqueuePolicy.ShouldScanLoadedMap(ScannedMapIds.Contains(map.uniqueID)))
+                return;
 
             ScannedMapIds.Add(map.uniqueID);
             MapBookScanner.Scan(map);
@@ -42,13 +44,14 @@ namespace Ustas.RimAI.Art.Scanner
             if (Find.Maps == null || Find.Maps.Count == 0) return;
 
             int currentTick = GenTicks.TicksGame;
-            if (_lastScanTick < 0)
+            var cadence = ArtScanEnqueuePolicy.DecideCadence(_lastScanTick, currentTick, GenDate.TicksPerDay);
+            if (cadence == ArtScanCadenceAction.ArmFirstTick)
             {
                 _lastScanTick = currentTick;
                 return;
             }
-
-            if (currentTick - _lastScanTick < GenDate.TicksPerDay) return;
+            if (cadence != ArtScanCadenceAction.ScanDue)
+                return;
 
             _lastScanTick = currentTick;
             for (int i = 0; i < Find.Maps.Count; i++)

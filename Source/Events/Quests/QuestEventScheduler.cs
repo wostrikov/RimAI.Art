@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LudeonTK;
 using Ustas.RimAI.Art.Events;
+using Ustas.RimAI.Art.Policy;
 using Ustas.RimAI.Art.Settings;
 using Ustas.RimAI.Art.Storage.Save;
 using Ustas.RimAI.Art.Synopsis.LLM;
@@ -76,9 +77,13 @@ namespace Ustas.RimAI.Art.Events.Quests
             QuestEventWarningFlow.ProcessWarningRaidQueue(tick);
 
             var settings = LiteratureMod.Settings;
-            if (settings != null && !settings.enabled) return;
+            if (!ArtExperimentalGenerationPolicy.AllowAutoExperimentalQuest(settings == null || settings.enabled))
+                return;
 
-            // AdvertisementQuest / WarningQuest auto-scheduling remains disabled (option-display issues).
+            var data = LiteratureSaveData.Current;
+            if (data == null) return;
+            QuestEventAdvertisementFlow.TryScheduleAdvertisement(data, tick);
+            QuestEventWarningFlow.TryScheduleWarning(data, tick);
         }
         public static void TryHandleGiftDelivery(Settlement settlement, List<ActiveTransporterInfo> transporters)
         {
@@ -121,6 +126,9 @@ namespace Ustas.RimAI.Art.Events.Quests
             actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void DebugTriggerAdvertisementQuest()
         {
+            var settings = LiteratureMod.Settings;
+            if (!ArtExperimentalGenerationPolicy.AllowManualExperimentalQuest(settings == null || settings.enabled))
+                return;
             var data = LiteratureSaveData.Current;
             if (data == null || Find.TickManager == null) return;
             int tick = Find.TickManager.TicksGame;
@@ -132,6 +140,9 @@ namespace Ustas.RimAI.Art.Events.Quests
             actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.PlayingOnMap)]
         private static void DebugTriggerWarningQuest()
         {
+            var settings = LiteratureMod.Settings;
+            if (!ArtExperimentalGenerationPolicy.AllowManualExperimentalQuest(settings == null || settings.enabled))
+                return;
             var data = LiteratureSaveData.Current;
             if (data == null || Find.TickManager == null) return;
             int tick = Find.TickManager.TicksGame;

@@ -20,7 +20,9 @@
  * - Do not write to save data directly.
  * - Do not run LLM calls.
  */
+using Ustas.RimAI.Art;
 using Ustas.RimAI.Art.Art;
+using Ustas.RimAI.Art.Policy;
 using Ustas.RimAI.Art.Scanner.Queue;
 using Ustas.RimAI.Art.Storage;
 using Ustas.RimAI.Art.Storage.Save;
@@ -79,13 +81,20 @@ namespace Ustas.RimAI.Art.Scanner
                 }
                 matched++;
 
-                if (ArtKeyProvider.TryGetKey(meta.Thing, out var key) &&
-                    cache != null &&
-                    cache.Contains(key))
+                bool hasKey = ArtKeyProvider.TryGetKey(meta.Thing, out var key);
+                var enqueue = ArtScanEnqueuePolicy.DecideEnqueue(
+                    ArtComposition.Current.IsStarted,
+                    eligible: true,
+                    hasKey,
+                    cached: hasKey && cache != null && cache.Contains(key),
+                    alreadyQueued: hasKey && PendingArtQueue.Contains(key));
+                if (enqueue == ArtScanEnqueueAction.SkipCached)
                 {
                     cached++;
                     continue;
                 }
+                if (enqueue != ArtScanEnqueueAction.Enqueue)
+                    continue;
 
                 if (PendingArtQueue.Enqueue(meta))
                     enqueued++;

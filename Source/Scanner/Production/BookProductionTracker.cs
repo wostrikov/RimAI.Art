@@ -17,7 +17,9 @@
  * - Do not scan based on position; use direct product tracking.
  */
 using System.Collections.Generic;
+using Ustas.RimAI.Art;
 using Ustas.RimAI.Art.Books;
+using Ustas.RimAI.Art.Policy;
 using Ustas.RimAI.Art.Scanner.Queue;
 using Ustas.RimAI.Art.Settings;
 using Ustas.RimAI.Art.Storage;
@@ -60,13 +62,20 @@ namespace Ustas.RimAI.Art.Scanner.Production
                 if (!BookFilterPolicy.IsAllowed(meta)) continue;
                 matched++;
 
-                if (BookKeyProvider.TryGetKey(meta.Thing, mapOverride, out var key) &&
-                    cache != null &&
-                    cache.Contains(key))
+                bool hasKey = BookKeyProvider.TryGetKey(meta.Thing, mapOverride, out var key);
+                var enqueue = ArtScanEnqueuePolicy.DecideEnqueue(
+                    ArtComposition.Current.IsStarted,
+                    eligible: true,
+                    hasKey,
+                    cached: hasKey && cache != null && cache.Contains(key),
+                    alreadyQueued: hasKey && PendingBookQueue.Contains(key));
+                if (enqueue == ArtScanEnqueueAction.SkipCached)
                 {
                     cached++;
                     continue;
                 }
+                if (enqueue != ArtScanEnqueueAction.Enqueue)
+                    continue;
 
                 if (PendingBookQueue.Enqueue(meta, worker, mapOverride))
                     enqueued++;
