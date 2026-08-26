@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup Condition="'$(MSBuildProjectName)' == 'RimAI.Art'">
-    <BaseOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-Literature-Expansion\bin\</BaseOutputPath>
-    <BaseIntermediateOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-Literature-Expansion\obj\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimAI.Art\bin\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimAI.Art\obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(MSBuildProjectName)' == 'RimAI.Art.Tests'">
     <BaseOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimAI.Art.Tests\bin\</BaseOutputPath>

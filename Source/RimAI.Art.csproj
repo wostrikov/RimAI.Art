@@ -18,8 +18,8 @@
     <AssemblyName>RimAI.Art</AssemblyName>
 
     <!-- RimWorld mod layout: put DLL directly under <GameVersion>/Assemblies -->
-    <BaseOutputPath Condition=" '$(BaseOutputPath)' == '' ">$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-Literature-Expansion\bin\</BaseOutputPath>
-    <BaseIntermediateOutputPath Condition=" '$(BaseIntermediateOutputPath)' == '' ">$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-Literature-Expansion\obj\</BaseIntermediateOutputPath>
+    <BaseOutputPath Condition=" '$(BaseOutputPath)' == '' ">$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimAI.Art\bin\</BaseOutputPath>
+    <BaseIntermediateOutputPath Condition=" '$(BaseIntermediateOutputPath)' == '' ">$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimAI.Art\obj\</BaseIntermediateOutputPath>
     <OutputPath>$(BaseOutputPath)$(Configuration)\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
