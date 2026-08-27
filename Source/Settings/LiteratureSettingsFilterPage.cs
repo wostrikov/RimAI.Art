@@ -321,6 +321,12 @@ internal static class LiteratureSettingsFilterPage
             Widgets.BeginScrollView(inRect, ref LiteratureSettingsWindow._settingsScrollPrompts, viewRect);
 
             var listing = new Listing_Standard();
+            // Verse silently starts a second column when content passes the rect
+            // height: NewColumnIfNeeded resets curY to 0 and pushes curX a full
+            // column right, off the visible view. CurHeight then reports the new
+            // column, so measuring the scroll height from it latches the panel
+            // short and the overflow becomes unreachable until a restart.
+            listing.maxOneColumn = true;
             listing.Begin(viewRect);
 
             listing.Label("RimTalkLE_Settings_PromptPageTitle".Translate());
