@@ -14,6 +14,7 @@ using Ustas.RimAI.Art.Storage.Save;
 using Ustas.RimAI.Art.Synopsis.Model;
 using Verse;
 using Ustas.RimAI.Core.Diagnostics;
+using RimAI.Core.Runtime;
 
 namespace Ustas.RimAI.Art.Synopsis
 {
@@ -67,7 +68,7 @@ namespace Ustas.RimAI.Art.Synopsis
                 return;
             }
 
-            Task.Run(async () =>
+            RimAiBackground.Run(async () =>
             {
                 try
                 {

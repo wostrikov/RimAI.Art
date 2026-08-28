@@ -21,6 +21,7 @@ using Ustas.RimAI.Core.Net;
 using Ustas.RimAI.Core.Player2;
 using Verse;
 using Ustas.RimAI.Core.Diagnostics;
+using RimAI.Core.Runtime;
 
 namespace Ustas.RimAI.Art.Synopsis.LLM
 {
@@ -464,7 +465,7 @@ namespace Ustas.RimAI.Art.Synopsis.LLM
 
             if (provider != AIProvider.Google && provider != AIProvider.Player2)
             {
-                var shared = await Task.Run(() => SharedTextAiOrchestrator.Complete(new TextAiRequest
+                var shared = await RimAiBackground.Run(() => SharedTextAiOrchestrator.Complete(new TextAiRequest
                 {
                     PrebuiltJson = json,
                     BaseUrl = url,

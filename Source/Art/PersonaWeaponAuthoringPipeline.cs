@@ -13,6 +13,7 @@ using Ustas.RimAI.Art.Storage;
 using Ustas.RimAI.Art.Storage.Save;
 using Verse;
 using Ustas.RimAI.Core.Diagnostics;
+using RimAI.Core.Runtime;
 
 namespace Ustas.RimAI.Art.Art
 {
@@ -73,7 +74,7 @@ namespace Ustas.RimAI.Art.Art
 
             RimAiLog.Info(RimAiLogCategory.Art, $"[RimAI.Art] Persona weapon update start ({reason}): {meta.ThingLabel} ({meta.DefName}) for {pawn.LabelShortCap ?? pawn.Name?.ToStringShort ?? "Unknown"}.");
 
-            Task.Run(async () =>
+            RimAiBackground.Run(async () =>
             {
                 try
                 {
