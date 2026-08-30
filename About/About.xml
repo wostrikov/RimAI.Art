@@ -26,6 +26,7 @@
 		<li>
 			<packageId>ustas.rimai.communication</packageId>
 			<displayName>RimAI.Communication</displayName>
+		    <downloadUrl>https://github.com/wostrikov/RimAI.Communication</downloadUrl>
 		</li>
 		<li>
 			<packageId>brrainz.harmony</packageId>
