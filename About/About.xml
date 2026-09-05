@@ -44,7 +44,7 @@
 	<loadAfter>
 		<li>ustas.rimai.communication</li>
 		<li>brrainz.harmony</li>
-		<li>Jaxe.Bubbles</li>
+		<li>ustas.jaxe.bubbles</li>
 	</loadAfter>
 
 	<incompatibleWith>
