@@ -113,8 +113,18 @@ namespace Ustas.RimAI.Art.Integration
 
                 if (art != null)
                 {
-                    _ = art.Title;
-                    _ = art.GenerateImageDescription();
+                    // Title and the image description belong to art that has been
+                    // made. Asked of a comp that has not - a chair nobody has
+                    // engraved - the game logs an error and writes "Error" in as
+                    // the title, which no click of a player's ever does: every
+                    // surface he reaches checks Active first, as the two calls
+                    // after these do themselves.
+                    if (art.Active)
+                    {
+                        _ = art.Title;
+                        _ = art.GenerateImageDescription();
+                    }
+
                     _ = art.GetDescriptionPart();
                     _ = art.TransformLabel(thing.def?.label ?? "art");
                 }
