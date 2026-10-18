@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ustas.RimAI.Communication;
 using Ustas.RimAI.Communication.Client;
+using Ustas.RimAI.Communication.Client.OpenAI;
 using Ustas.RimAI.Communication.Data;
 using Ustas.RimAI.Communication.Util;
 using Ustas.RimAI.Art.LLM;
@@ -335,7 +336,7 @@ namespace Ustas.RimAI.Art.Synopsis.LLM
                     return NormalizePlayer2Endpoint(GetProviderEndpointUrl(config.Provider));
                 case AIProvider.Local:
                 case AIProvider.Custom:
-                    return NormalizeEndpoint(config.BaseUrl);
+                    return ChatCompletionsEndpoint.Format(config.BaseUrl);
                 default:
                     return GetProviderEndpointUrl(config.Provider);
             }
@@ -368,20 +369,6 @@ namespace Ustas.RimAI.Art.Synopsis.LLM
         {
             if (string.IsNullOrWhiteSpace(baseUrl)) return string.Empty;
             return Player2Endpoints.ChatCompletions(baseUrl);
-        }
-
-        private static string NormalizeEndpoint(string baseUrl)
-        {
-            if (string.IsNullOrWhiteSpace(baseUrl)) return string.Empty;
-
-            var trimmed = baseUrl.Trim().TrimEnd('/');
-            if (!Uri.TryCreate(trimmed, UriKind.Absolute, out var uri))
-                return trimmed;
-
-            if (string.IsNullOrEmpty(uri.AbsolutePath) || uri.AbsolutePath == "/")
-                return trimmed + "/v1/chat/completions";
-
-            return trimmed;
         }
 
         private static string BuildRequestJson(AIProvider provider, string model, string instruction, string context, int maxTokens)

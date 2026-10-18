@@ -117,6 +117,12 @@ internal static class ArtLiteraturePolicyTests
         T(bookProd.Contains("ArtScanEnqueuePolicy.DecideEnqueue"), "host-book-prod");
         T(daily.Contains("ArtScanScheduler.TryDailyScan") && daily.Contains("BookScanScheduler.TryDailyScan"), "host-daily");
         T(loaded.Contains("ArtScanScheduler.OnMapLoaded") && loaded.Contains("BookScanScheduler.OnMapLoaded"), "host-map-load");
+
+        // Local and Custom base URLs go through Communication's formatter, so a base that stops
+        // at /v1 gets the same endpoint here as in dialogue.
+        string independent = Read("IndependentBookLlmClient.cs.src");
+        T(independent.Contains("ChatCompletionsEndpoint.Format(config.BaseUrl)"), "independent-shared-endpoint");
+        T(!independent.Contains("\"/v1/chat/completions\""), "independent-no-own-endpoint-rule");
         return n;
     }
 

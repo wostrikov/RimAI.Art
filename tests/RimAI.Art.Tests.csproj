@@ -18,6 +18,7 @@
     <None Include="..\Source\Art\ArtPromptBuilder.cs" Link="ArtPromptBuilder.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Synopsis\BookSynopsisProcessor.cs" Link="BookSynopsisProcessor.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Synopsis\BookSynopsisService.cs" Link="BookSynopsisService.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Synopsis\LLM\IndependentBookLlmClient.cs" Link="IndependentBookLlmClient.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Integration\ArtCacheUtil.cs" Link="ArtCacheUtil.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\ArtComposition.cs" Link="ArtComposition.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Integration\ArtPipelineProbe.cs" Link="ArtPipelineProbe.cs.src" CopyToOutputDirectory="PreserveNewest" />
